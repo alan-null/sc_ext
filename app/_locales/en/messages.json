@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "Sitecore Extensions",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "Small improvements which will make your work with Sitecore much easier.",
+    "description": "The description of the application"
+  }
+}
