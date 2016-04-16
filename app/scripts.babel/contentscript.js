@@ -1,10 +1,23 @@
 'use strict';
 
-var script = document.createElement('script');
-script.src = chrome.extension.getURL('/scripts/sc_ext.js');
-script.onload = function () {
-    this.parentNode.removeChild(this);
+var common = scExt.htmlHelpers.createElement('script', {
+    src: chrome.extension.getURL('/scripts/sc_ext-common.js'),
+    onload: function () {
+        this.parentNode.removeChild(this);
+    }
+});
+
+var script = scExt.htmlHelpers.createElement('script', {
+    src: chrome.extension.getURL('/scripts/sc_ext.js'),
+    onload: function () {
+        this.parentNode.removeChild(this);
+    }
+});
+
+common.onload = function () {
+    scExt.htmlHelpers.injectScript(script);
+
 };
-(document.head || document.documentElement).appendChild(script);
+scExt.htmlHelpers.injectScript(common);
 
 chrome.runtime.sendMessage({ 'newIconPath': 'images/icon-128.png' });

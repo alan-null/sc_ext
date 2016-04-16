@@ -27,6 +27,7 @@
         "https://*/sitecore/shell/Applications/Content%20Editor.aspx*"
       ],
       "js": [
+        "scripts/sc_ext-common.js",
         "scripts/contentscript.js"
       ],
       "run_at": "document_end",
@@ -43,6 +44,7 @@
   "web_accessible_resources": [
     "scripts/sc_ext.js",
     "scripts/popup.js",
-    "styles/main.css"
+    "styles/main.css",
+    "scripts/sc_ext-common.js"
   ]
 }
