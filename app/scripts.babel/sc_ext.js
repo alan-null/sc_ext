@@ -49,22 +49,23 @@ scExt.extensions.sectionSwitches = (function () {
         }
     }
 
-    function addTreeNodeGlyphHandlers(element) {
+    function addTreeNodeGlyphHandlers(element) {        
         var nodes = element.querySelectorAll('.scContentTreeNodeGlyph')
         for (var i = 0; i < nodes.length; i++) {
-            nodes[i].addEventListener('click', function (evt) {
-                var parent = evt.srcElement.parentElement;
-                var predicate = function () {
-                    var children = parent.querySelectorAll('.scContentTreeNode > div .scContentTreeNode')
-                    return children.length > 0;
-                }
-                scExt.htmlHelpers.observe(parent, 10, 10, predicate, function () {
-                    addTreeNodeHandlers(parent);
-                });
-            });
+            nodes[i].setAttribute("onclick", "javascript:scExt.extensions.sectionSwitches.bindTreeNodes(event)")
         }
     }
 
+    api.bindTreeNodes = function (evt) {
+        var parent = evt.srcElement.parentElement;
+        var predicate = function () {
+            var children = parent.querySelectorAll('.scContentTreeNode > div .scContentTreeNode')
+            return children.length > 0;
+        }
+        scExt.htmlHelpers.observe(parent, 200, 10, predicate, function () {
+            addTreeNodeHandlers(parent);
+        });
+    }
     api.init = function () {
         window.addEventListener('load', insertButtons);
         addTreeNodeHandlers(document);
