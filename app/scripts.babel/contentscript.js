@@ -14,9 +14,17 @@ var script = scExt.htmlHelpers.createElement('script', {
     }
 });
 
-common.onload = function () {
-    scExt.htmlHelpers.injectScript(script);
+var dispatchEvent = function (name, parameters) {
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent(name, true, true, parameters);
+    document.dispatchEvent(evt);
+};
 
+common.onload = function () {
+    var url = chrome.runtime.getURL('');
+    dispatchEvent('setStore', { url: url });
+
+    scExt.htmlHelpers.injectScript(script);
 };
 scExt.htmlHelpers.injectScript(common);
 
