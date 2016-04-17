@@ -27,6 +27,41 @@ scExt.htmlHelpers = {
   },
   injectScript: function (scriptElement) {
     (document.head || document.documentElement).appendChild(scriptElement);
+  },
+  triggerEventOnSelector: function (selector, event) {
+    var sections = document.querySelectorAll(selector)
+    this.triggerEventOnCollection(sections, event);
+  },
+  triggerEventOnCollection: function (elements, event) {
+    for (var i = 0; i < elements.length; i++) {
+      this.triggerEventOnElement(elements[i], event)
+    }
+  },
+  triggerEventOnElement: function (element, event) {
+    var evnt = element[event];
+    if (typeof (evnt) == 'function') {
+      evnt.call(element);
+    }
+  },
+  /**
+     * Observe DOM element and waits until specific criteria are meet, then execute callback 
+      * @param {Element} parent element to observe changes
+      * @param {Number} ticksCount determines number of miliseconds per each tick
+      * @param {Number} count is a numbeer of 10ms ticks between each check
+      * @param {Function} predicate determines whether certain criteria are meet. If true callback function will be executed                 
+      * @param  {Function} callback called when predicate returns true                  
+     **/
+  observe: function (parent, tick, ticksCount, predicate, callback) {
+    if (ticksCount < 0) {
+      return;
+    }
+    if (predicate()) {
+      callback();
+    } else {
+      setTimeout(function () {
+        scExt.htmlHelpers.observe(parent, tick, --ticksCount, predicate, callback)
+      }, tick);
+    }
   }
 };
 
