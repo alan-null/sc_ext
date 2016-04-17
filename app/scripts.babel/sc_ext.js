@@ -2,32 +2,57 @@
 scExt.extensions = {};
 
 scExt.extensions.closeOpenedSections = function () {
-    function closeOpenedSections() {
-        var sections = document.querySelectorAll('.scEditorSectionCaptionExpanded .scEditorSectionCaptionGlyph')
+    function clickSections(sections) {
         for (var i = 0; i < sections.length; i++) {
             sections[i].click();
         }
+    }
+
+    function closeOpenedSections() {
+        var sections = document.querySelectorAll('.scEditorSectionCaptionExpanded .scEditorSectionCaptionGlyph')
+        clickSections(sections);
     };
+
+    function openClosedSections() {
+        var sections = document.querySelectorAll('.scEditorSectionCaptionCollapsed .scEditorSectionCaptionGlyph')
+        clickSections(sections);
+    };
+
     function insertCollapseAllButton() {
         var controlsTab = document.querySelector('.scEditorTabControlsTab5');
-        controlsTab.insertBefore(linkNode, controlsTab.firstChild);
+        controlsTab.insertBefore(lnkCollapse, controlsTab.firstChild);
     };
 
-    if (typeof scContentEditor != 'undefined') {
-        var text = scExt.htmlHelpers.createElement('span', {});
-        text.innerText = 'Collapse all sections'
-        var linkNode = scExt.htmlHelpers.createElement('a', {
-            href: '#',
-            class: 'scEditorHeaderNavigator scEditorHeaderButton scButton'
-        });
-        linkNode.onclick = closeOpenedSections
-        linkNode.appendChild(text);
+    function insertExpandAllButton() {
+        var controlsTab = document.querySelector('.scEditorTabControlsTab5');
+        controlsTab.insertBefore(lnkExpand, controlsTab.firstChild);
+    };
 
-        window.onload = scContentEditor.prototype.onEditorClick = function () {
+    var text = scExt.htmlHelpers.createElement('span', {});
+    text.innerText = 'Collapse all sections'
+    var lnkCollapse = scExt.htmlHelpers.createElement('a', {
+        href: '#',
+        class: 'scEditorHeaderNavigator scEditorHeaderButton scButton'
+    });
+    lnkCollapse.onclick = closeOpenedSections
+    lnkCollapse.appendChild(text);
+
+    var lnkExpand = lnkCollapse.cloneNode(true);
+    lnkExpand.firstChild.innerText = "Expand all sections"
+    lnkExpand.onclick = openClosedSections;
+
+    //add event handlers
+    window.addEventListener("load", insertCollapseAllButton);
+    window.addEventListener("load", insertExpandAllButton);
+    var x = document.getElementsByClassName("scContentTreeNode");
+    for (var i = 0; i < x.length; i++) {
+        x[i].addEventListener('click', function (evt) {
             setTimeout(function () {
-                insertCollapseAllButton()
-            }, 100);
-        };
+                insertCollapseAllButton();
+                insertExpandAllButton();
+                console.log(evt.srcElement);
+            }, 10);
+        });
     }
 };
 
