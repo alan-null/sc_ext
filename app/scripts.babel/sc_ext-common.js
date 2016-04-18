@@ -62,6 +62,13 @@ scExt.htmlHelpers = {
         scExt.htmlHelpers.observe(parent, tick, --ticksCount, predicate, callback)
       }, tick);
     }
+  },
+  addProxy: function (object, functionName, proxyFn) {
+    var proxied = object.prototype[functionName];
+    object.prototype[functionName] = function () {
+      proxyFn();
+      return proxied.apply(this, arguments);
+    }
   }
 };
 
