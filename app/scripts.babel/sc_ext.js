@@ -64,4 +64,25 @@ scExt.extensions.sectionSwitches = (function () {
     return api;
 })();
 
+scExt.extensions.dbName = (function () {
+    var api = {};
+
+    function getDbName() {
+        return document.querySelector("#__CurrentItem").value.split('/').slice(2, 3)[0];
+    }
+
+    function adDbNameToHeader(dbName) {
+        var dbnameDiv = scExt.htmlHelpers.createElement("div", { class: 'sc-globalHeader-loginInfo' })
+        dbnameDiv.innerText = dbName;
+        var startButton = document.querySelector('.sc-globalHeader-content .col2');
+        startButton.insertBefore(dbnameDiv, startButton.firstChild);
+    }
+
+    api.init = function () {
+        adDbNameToHeader(getDbName().toUpperCase());
+    };
+    return api;
+})();
+
 scExt.extensions.sectionSwitches.init();
+scExt.extensions.dbName.init();
