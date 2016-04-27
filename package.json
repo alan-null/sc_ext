@@ -26,7 +26,10 @@
     "gulp-zip": "^3.2.0",
     "main-bower-files": "^2.11.1",
     "run-sequence": "^1.1.5",
-    "wiredep": "^4.0.0"
+    "wiredep": "^4.0.0",
+    "typescript": "1.8.10",
+    "merge2": "1.0.2",
+    "gulp-typescript": "2.13.0"
   },
   "eslintConfig": {
     "env": {
