@@ -73,6 +73,8 @@ scExt.htmlHelpers = {
 };
 
 
+scExt.libraries = {};
+
 document.addEventListener('setStore', function (e) {
   scExt.htmlHelpers.store.setStore(e.detail);
 });

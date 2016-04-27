@@ -30,6 +30,9 @@
         "scripts/sc_ext-common.js",
         "scripts/contentscript.js"
       ],
+      "css": [
+        "styles/launcher.css"
+      ],
       "run_at": "document_end",
       "all_frames": false
     }
@@ -45,6 +48,7 @@
     "scripts/sc_ext.js",
     "scripts/popup.js",
     "styles/main.css",
-    "scripts/sc_ext-common.js"
+    "scripts/sc_ext-common.js",
+    "scripts/fuse.js"
   ]
 }

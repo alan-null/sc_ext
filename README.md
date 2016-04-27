@@ -14,4 +14,5 @@ Sitecore Extensions is a google chrome extension which provides small improvemen
 - Icon colour - changes colour to red when using Sitecore on current tab, otherwise will be grayed,
 - Collapse all sections - you can collapse all opened sections in Content Editor with just one click.
 - Expand all sections - you can expand all opened sections in Content Editor with just one click.
+- Launcher - launch Sitecore commands using command omnibox
 
