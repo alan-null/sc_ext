@@ -127,7 +127,7 @@ gulp.task('babel', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('watch', ['lint', 'babel', 'html'], () => {
+gulp.task('watch', ['lint', 'babel', 'typescript', 'html'], () => {
     $.livereload.listen();
 
     gulp.watch([
@@ -139,6 +139,7 @@ gulp.task('watch', ['lint', 'babel', 'html'], () => {
     ]).on('change', $.livereload.reload);
 
     gulp.watch('app/scripts.babel/**/*.js', ['lint', 'babel']);
+    gulp.watch('app/scripts.ts/**/*.ts', ['lint', 'typescript']);
     gulp.watch('bower.json', ['wiredep']);
 });
 
