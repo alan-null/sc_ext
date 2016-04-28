@@ -164,7 +164,7 @@ gulp.task('package', function () {
 
 gulp.task('build', (cb) => {
     runSequence(
-        'lint', 'typescript', 'chromeManifest',
+        'lint', 'babel' , 'typescript', 'chromeManifest',
         ['html', 'images', 'extras'],
         'web_accessible_resources',
         'size', cb);
