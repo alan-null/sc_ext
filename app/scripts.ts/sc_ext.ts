@@ -12,7 +12,7 @@ namespace SitecoreExtensions.Modules {
         initialize(): void;
     }
 
-    export class BaseModule {
+    export class ModuleBase {
         moduleName: string;
         description: string;
         constructor(name: string, description: string) {
@@ -23,7 +23,7 @@ namespace SitecoreExtensions.Modules {
 }
 
 namespace SitecoreExtensions.Modules.DatabaseName {
-    export class DatabaseNameModule extends BaseModule implements ISitecoreExtensionsModule {
+    export class DatabaseNameModule extends ModuleBase implements ISitecoreExtensionsModule {
         constructor(name: string, description: string) {
             super(name, description);
         }
@@ -50,7 +50,7 @@ namespace SitecoreExtensions.Modules.DatabaseName {
 }
 
 namespace SitecoreExtensions.Modules.SectionSwitches {
-    export class SectionSwitchesModule extends BaseModule implements ISitecoreExtensionsModule {
+    export class SectionSwitchesModule extends ModuleBase implements ISitecoreExtensionsModule {
         sectionSwitchButtonClassName: string;
         constructor(name: string, description: string) {
             super(name, description);
@@ -130,16 +130,15 @@ namespace SitecoreExtensions.Modules.Launcher {
         canExecute(): boolean
     }
 
-    export class LauncherModule extends BaseModule implements ISitecoreExtensionsModule {
+    export class LauncherModule extends ModuleBase implements ISitecoreExtensionsModule {
         fuse: any;
-        modalElement: any;
-        searchResultsElement: any;
-        searchBoxElement: any;
-        selectedCommand: any;
+        modalElement: HTMLDivElement;
+        searchResultsElement: HTMLUListElement;
+        searchBoxElement: HTMLInputElement;
+        selectedCommand: NodeListOf<HTMLLIElement>;
         launcherOptions: any;
         commands: ICommand[];
         options: any;
-        launcherControl: any;
         searchResults: any;
 
         constructor(name: string, description: string) {
@@ -275,7 +274,8 @@ namespace SitecoreExtensions.Modules.Launcher {
             if (evt.keyCode == this.launcherOptions.shortcuts.executeCommand && this.selectedCommand[0]) {
 
                 var command = <ICommand>this.commands.find((cmd: ICommand) => {
-                    return cmd.id == this.selectedCommand[0].id
+                    var selectedComandId = parseInt((<HTMLLIElement>this.selectedCommand[0]).id)
+                    return cmd.id == selectedComandId
                 });
                 console.log(command);
                 command.execute();
@@ -289,7 +289,7 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.appendResults(results);
 
                 if (this.searchResultsElement.children.length > 0) {
-                    this.searchResultsElement.firstChild.setAttribute('class', 'selected');
+                    (<HTMLLIElement>this.searchResultsElement.firstChild).setAttribute('class', 'selected');
                 }
             }
         }
@@ -304,13 +304,13 @@ namespace SitecoreExtensions.Modules.Launcher {
         commandSelectionEvent(evt): void {
             var commands = this.searchResultsElement.querySelectorAll('li')
             if (commands.length > 0) {
-                var selected = this.searchResultsElement.querySelector('.selected')
-                if (selected == undefined) selected = this.searchResultsElement.querySelector('li')
+                var selected = <HTMLLIElement>this.searchResultsElement.querySelector('.selected');
+                if (selected == undefined) selected = <HTMLLIElement>this.searchResultsElement.querySelector('li')
 
                 if (evt.keyCode == this.launcherOptions.shortcuts.selectPrevResult && commands[0] != selected) {
                     if (selected.className == 'selected') {
-                        selected.removeAttribute('class')
-                        selected.previousSibling.setAttribute('class', 'selected');
+                        selected.removeAttribute('class');
+                        (<HTMLLIElement>selected.previousSibling).setAttribute('class', 'selected');
                     } else {
                         selected.setAttribute('class', 'selected');
                     }
@@ -318,8 +318,8 @@ namespace SitecoreExtensions.Modules.Launcher {
 
                 if (evt.keyCode == this.launcherOptions.shortcuts.selectNextResult && commands.length != 0) {
                     if (selected.className == 'selected' && commands[commands.length - 1] !== selected) {
-                        selected.removeAttribute('class')
-                        selected.nextSibling.setAttribute('class', 'selected');
+                        selected.removeAttribute('class');
+                        (<HTMLLIElement>selected.nextSibling).setAttribute('class', 'selected');
                     } else {
                         selected.setAttribute('class', 'selected');
                     }
@@ -342,10 +342,10 @@ namespace SitecoreExtensions.Modules.Launcher {
         initialize(): void {
             this.injectlauncherHtml();
             this.registerGlobalShortcuts();
-            this.modalElement = document.getElementById('myModal');
-            this.searchBoxElement = document.getElementById('scESearchBox')
-            this.searchResultsElement = document.getElementById('searchResults')
-            this.selectedCommand = document.getElementsByClassName('selected')
+            this.modalElement = <HTMLDivElement>document.getElementById('myModal');
+            this.searchBoxElement = <HTMLInputElement>document.getElementById('scESearchBox')
+            this.searchResultsElement = <HTMLUListElement>document.getElementById('searchResults')
+            this.selectedCommand = document.getElementsByClassName('selected') as NodeListOf<HTMLLIElement>;
         }
     }
 }
