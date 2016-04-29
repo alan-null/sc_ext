@@ -9,12 +9,9 @@ var merge = require('merge2');
 
 const $ = gulpLoadPlugins();
 
-gulp.task('typescript', function () {
+gulp.task('typescript', function() {
     var tsResult = gulp.src('app/scripts.ts/*.ts')
-        .pipe(ts({
-            declaration: true,
-            noExternalResolve: true,
-        }));
+        .pipe(ts({}));
 
     return merge([
         tsResult.dts.pipe(gulp.dest('app/definitions')),
@@ -31,9 +28,9 @@ gulp.task('extras', () => {
         '!app/*.json',
         '!app/*.html',
     ], {
-            base: 'app',
-            dot: true
-        }).pipe(gulp.dest('dist'));
+        base: 'app',
+        dot: true
+    }).pipe(gulp.dest('dist'));
 });
 
 function lint(files, options) {
@@ -53,13 +50,15 @@ gulp.task('lint', lint('app/scripts.babel/**/*.js', {
 gulp.task('images', () => {
     return gulp.src('app/images/**/*')
         .pipe($.if($.if.isFile, $.cache($.imagemin({
-            progressive: true,
-            interlaced: true,
-            // don't remove IDs = require ( SVGs, they are often use)d
-            // as hooks for embedding and styling
-            svgoPlugins: [{ cleanupIDs: false }]
-        }))
-            .on('error', function (err) {
+                progressive: true,
+                interlaced: true,
+                // don't remove IDs = require ( SVGs, they are often use)d
+                // as hooks for embedding and styling
+                svgoPlugins: [{
+                    cleanupIDs: false
+                }]
+            }))
+            .on('error', function(err) {
                 console.log(err);
                 this.end();
             })))
@@ -68,12 +67,19 @@ gulp.task('images', () => {
 
 gulp.task('html', () => {
     return gulp.src('app/*.html')
-        .pipe($.useref({ searchPath: ['.tmp', 'app', '.'] }))
+        .pipe($.useref({
+            searchPath: ['.tmp', 'app', '.']
+        }))
         .pipe($.sourcemaps.init())
         .pipe($.if('*.js', $.uglify()))
-        .pipe($.if('*.css', $.cleanCss({ compatibility: '*' })))
+        .pipe($.if('*.css', $.cleanCss({
+            compatibility: '*'
+        })))
         .pipe($.sourcemaps.write())
-        .pipe($.if('*.html', $.htmlmin({ removeComments: true, collapseWhitespace: true })))
+        .pipe($.if('*.html', $.htmlmin({
+            removeComments: true,
+            collapseWhitespace: true
+        })))
         .pipe(gulp.dest('dist'));
 });
 
@@ -88,7 +94,9 @@ gulp.task('chromeManifest', () => {
                 ]
             }
         }))
-        .pipe($.if('*.css', $.cleanCss({ compatibility: '*' })))
+        .pipe($.if('*.css', $.cleanCss({
+            compatibility: '*'
+        })))
         .pipe($.if('*.js', $.sourcemaps.init()))
         .pipe($.if('*.js', $.uglify()))
         .pipe($.if('*.js', $.sourcemaps.write('.')))
@@ -97,7 +105,7 @@ gulp.task('chromeManifest', () => {
 
 
 gulp.task('web_accessible_resources', () => {
-    fs.readFile('./app/manifest.json', function (err, _data) {
+    fs.readFile('./app/manifest.json', function(err, _data) {
         if (err) {
             console.log(err);
             return;
@@ -107,7 +115,9 @@ gulp.task('web_accessible_resources', () => {
             resources[index] = "app/" + resources[index]
         }
         return gulp.src(resources)
-            .pipe($.if('*.css', $.cleanCss({ compatibility: '*' })))
+            .pipe($.if('*.css', $.cleanCss({
+                compatibility: '*'
+            })))
             .pipe($.if('*.js', $.sourcemaps.init()))
             .pipe($.if('*.js', $.uglify()))
             .pipe($.if('*.js', $.sourcemaps.write('.')))
@@ -144,7 +154,10 @@ gulp.task('watch', ['lint', 'babel', 'typescript', 'html'], () => {
 });
 
 gulp.task('size', () => {
-    return gulp.src('dist/**/*').pipe($.size({ title: 'build', gzip: true }));
+    return gulp.src('dist/**/*').pipe($.size({
+        title: 'build',
+        gzip: true
+    }));
 });
 
 gulp.task('wiredep', () => {
@@ -155,7 +168,7 @@ gulp.task('wiredep', () => {
         .pipe(gulp.dest('app'));
 });
 
-gulp.task('package', function () {
+gulp.task('package', function() {
     var manifest = require('./dist/manifest.json');
     return gulp.src('dist/**')
         .pipe($.zip('sc ext-' + manifest.version + '.zip'))
@@ -164,8 +177,7 @@ gulp.task('package', function () {
 
 gulp.task('build', (cb) => {
     runSequence(
-        'lint', 'babel' , 'typescript', 'chromeManifest',
-        ['html', 'images', 'extras'],
+        'lint', 'babel', 'typescript', 'chromeManifest', ['html', 'images', 'extras'],
         'web_accessible_resources',
         'size', cb);
 });
