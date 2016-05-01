@@ -91,7 +91,7 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
         }
 
         refreshButtons(): void {
-            if (() => !this.buttonsExists()) {
+            if (!this.buttonsExists()) {
                 this.insertButtons();
             }
         }
@@ -99,7 +99,7 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
         addTreeNodeHandlers(className: string): void {
             var nodes = document.getElementsByClassName(className);
             for (var i = 0; i < nodes.length; i++) {
-                nodes[i].addEventListener('click', function (evt) {
+                nodes[i].addEventListener('click', (evt) => {
                     setTimeout(() => {
                         this.refreshButtons();
                     }, 10);
@@ -114,12 +114,12 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
         initialize(): void {
             window.addEventListener('load', () => this.insertButtons());
             this.addTreeNodeHandlers('scContentTree');
-            scExt.htmlHelpers.addProxy(scSitecore, 'postEvent', () => setTimeout(this.refreshButtons, 10)
-            )
+            scExt.htmlHelpers.addProxy(scSitecore, 'postEvent', () => {
+                setTimeout(() => { this.refreshButtons(); }, 10);
+            });
         }
     }
 }
-
 
 namespace SitecoreExtensions.Modules.Launcher {
     export interface ICommand {
