@@ -327,6 +327,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.modalElement.style.display = 'block';
             this.searchBoxElement.focus();
         }
+
         hideLauncher(): void {
             this.modalElement.style.display = 'none';
             this.searchBoxElement.value = '';
@@ -346,6 +347,7 @@ namespace SitecoreExtensions.Modules.Launcher {
                 }
             }
         }
+
         clearResults(): void {
             this.searchResultsElement.className = 'term-list hidden';
             this.searchResultsElement.innerHTML = '';
@@ -380,11 +382,11 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         registerGlobalShortcuts(): void {
-            document.onkeydown = (e) => {
-                // e = e || window.event;
-                switch (e.which || e.keyCode) {
+            document.onkeydown = (evt: KeyboardEvent) => {
+                evt = (evt != null ? evt : <KeyboardEvent>window.event);
+                switch (evt.which || evt.keyCode) {
                     case this.launcherOptions.shortcuts.show: {
-                        if (e.ctrlKey) {
+                        if (evt.ctrlKey) {
                             this.showLauncher();
                             break;
                         }
@@ -398,8 +400,15 @@ namespace SitecoreExtensions.Modules.Launcher {
                     }
                     default: return;
                 }
-                e.preventDefault();
+                evt.preventDefault();
             };
+        }
+
+        addFlowConditionForKeyDownEvent(): void {
+            scExt.htmlHelpers.addFlowConditionToEvent(scSitecore, 'onKeyDown', (evt: KeyboardEvent) => {
+                evt = (evt != null ? evt : <KeyboardEvent>window.event);
+                return evt.srcElement.id != "scESearchBox";
+            });
         }
 
         inputKeyUpEvent(evt: KeyboardEvent): void {
@@ -425,14 +434,14 @@ namespace SitecoreExtensions.Modules.Launcher {
             }
         }
 
-        windowClickEvent(event) {
-            if (event.target == this.modalElement) {
+        windowClickEvent(evt: MouseEvent): void {
+            if (evt.target == this.modalElement) {
                 this.modalElement.style.display = 'none';
                 this.searchBoxElement.value = ''
             }
         }
 
-        commandSelectionEvent(evt): void {
+        commandSelectionEvent(evt: KeyboardEvent): void {
             var commands = this.searchResultsElement.querySelectorAll('li')
             if (commands.length > 0) {
                 var selected = <HTMLLIElement>this.searchResultsElement.querySelector('.selected');
@@ -472,6 +481,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         initialize(): void {
             this.injectlauncherHtml();
             this.registerGlobalShortcuts();
+            this.addFlowConditionForKeyDownEvent();
             this.modalElement = <HTMLDivElement>document.getElementById('myModal');
             this.searchBoxElement = <HTMLInputElement>document.getElementById('scESearchBox')
             this.searchResultsElement = <HTMLUListElement>document.getElementById('searchResults')
