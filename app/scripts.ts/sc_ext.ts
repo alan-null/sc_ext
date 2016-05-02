@@ -421,8 +421,8 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         injectlauncherHtml(): void {
-            var modal = scExt.htmlHelpers.createElement('div', { class: 'modal', id: 'myModal' });
-            var div = scExt.htmlHelpers.createElement('div', { class: 'modal-content' });
+            var modal = scExt.htmlHelpers.createElement('div', { class: 'launcher-modal', id: 'myModal' });
+            var div = scExt.htmlHelpers.createElement('div', { class: 'launcher-modal-content' });
             var input = scExt.htmlHelpers.createElement('input', { class: 'search-field', id: 'scESearchBox' })
 
             var ul = scExt.htmlHelpers.createElement('ul', { class: 'term-list hidden', id: 'searchResults' })
@@ -431,7 +431,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             div.appendChild(ul);
             window.onclick = (e) => this.windowClickEvent(e);
             modal.appendChild(div);
-            document.getElementById('Body').appendChild(modal);
+            document.querySelector('body').appendChild(modal);
         }
 
         registerGlobalShortcuts(): void {
@@ -534,7 +534,9 @@ namespace SitecoreExtensions.Modules.Launcher {
         initialize(): void {
             this.injectlauncherHtml();
             this.registerGlobalShortcuts();
-            this.addFlowConditionForKeyDownEvent();
+            if (SitecoreExtensions.Context.Location() == Location.ContentEditor) {
+                this.addFlowConditionForKeyDownEvent();
+            }
             this.modalElement = <HTMLDivElement>document.getElementById('myModal');
             this.searchBoxElement = <HTMLInputElement>document.getElementById('scESearchBox')
             this.searchResultsElement = <HTMLUListElement>document.getElementById('searchResults')
@@ -587,9 +589,9 @@ namespace SitecoreExtensions {
         static Database(): string {
             var pageMode = this.Location();
             if (pageMode == Location.ContentEditor) {
-            var value = this.GetCurrentItem();
-            return value.split('/').slice(2, 3)[0];
-        }
+                var value = this.GetCurrentItem();
+                return value.split('/').slice(2, 3)[0];
+            }
             if (pageMode == Location.Desktop) {
                 return (document.querySelector('.scDatabaseName') as HTMLDivElement).innerText;
             }

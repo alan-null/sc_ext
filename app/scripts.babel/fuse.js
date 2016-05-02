@@ -741,21 +741,6 @@
         return matchedIndices
     }
 
-    // Export to Common JS Loader
-    if (typeof exports === 'object') {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like environments that support module.exports,
-        // like Node.
-        module.exports = Fuse
-    } else if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define(function () {
-            return Fuse
-        })
-    } else {
-        // Browser globals (root is window)
-        // global.Fuse = Fuse
-        scExt.libraries.Fuse = Fuse;
-    }
+    scExt.libraries.Fuse = Fuse;
 })()
 

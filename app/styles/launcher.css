@@ -1,4 +1,4 @@
-.modal {
+.launcher-modal {
     display: none;
     position: fixed;
     z-index: 1;
@@ -13,7 +13,7 @@
     z-index: 9999;
 }
 
-.modal-content {
+.launcher-modal-content {
     margin: auto;
     padding: 20px;
     width: 50%;
@@ -31,7 +31,7 @@
 
 .search-field {
     display: block;
-    width: 30%;
+    width: 100%;
     margin: 1em auto 0;
     padding: 0.5em 10px;
     border: 1px solid #999;
