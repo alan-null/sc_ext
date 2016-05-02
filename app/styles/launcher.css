@@ -21,6 +21,7 @@
 
 
 /*serach box css*/
+
 .search-field,
 .term-list {
     -moz-border-radius: 3px;
@@ -74,6 +75,17 @@
 span.command-description {
     float: right;
     padding-right: 10px;
+    font-size: 90%;
+    line-height: 100%;
+    width: 65%;
+    padding-top: -6px;
+    text-align: right;
+}
+
+@media only screen and (max-width: 1250px) {
+    .command-description {
+        display: none;
+    }
 }
 
 span.command-name {
