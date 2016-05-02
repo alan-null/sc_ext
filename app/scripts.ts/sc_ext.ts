@@ -31,16 +31,19 @@ namespace SitecoreExtensions.Modules.DatabaseName {
         adDbNameToHeader(dbName: string): void {
             var dbnameDiv = scExt.htmlHelpers.createElement('div', { class: 'sc-globalHeader-loginInfo' })
             dbnameDiv.innerText = dbName;
-            var startButton = document.querySelector('.sc-globalHeader-content .col2');
+            var startButton = document.querySelector('.sc-globalHeader-content > div');
             startButton.insertBefore(dbnameDiv, startButton.firstChild);
         }
 
         canExecute(): boolean {
-            return true;
+            return SitecoreExtensions.Context.Database() != null;
         }
 
         initialize(): void {
-            this.adDbNameToHeader(SitecoreExtensions.Context.Database().toUpperCase());
+            var dbName = SitecoreExtensions.Context.Database();
+            if (dbName != null) {
+                this.adDbNameToHeader(dbName.toUpperCase());
+            }
         }
     }
 }
@@ -104,7 +107,7 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
         }
 
         canExecute(): boolean {
-            return true;
+            return SitecoreExtensions.Context.Location() == Location.ContentEditor;
         }
 
         initialize(): void {
@@ -582,14 +585,53 @@ namespace SitecoreExtensions {
         }
 
         static Database(): string {
+            var pageMode = this.Location();
+            if (pageMode == Location.ContentEditor) {
             var value = this.GetCurrentItem();
             return value.split('/').slice(2, 3)[0];
+        }
+            if (pageMode == Location.Desktop) {
+                return (document.querySelector('.scDatabaseName') as HTMLDivElement).innerText;
+            }
+            else {
+                var contendDb = <HTMLMetaElement>document.querySelector('[data-sc-name=sitecoreContentDatabase]')
+                if (contendDb != null) {
+                    if (contendDb.attributes['data-sc-content'] != undefined) {
+                        return contendDb.attributes['data-sc-content'].value
+                    }
+                }
+            }
+            return null;
         }
 
         static ItemID(): string {
             var value = this.GetCurrentItem();
             return value.match(/{.*}/)[0];
         }
+
+        static Location(): Location {
+            if (document.querySelector('body.contentEditor') !== null) {
+                return Location.ContentEditor;
+            }
+            if (document.querySelector('.sc-launchpad') !== null) {
+                return Location.Launchpad;
+            }
+            if (document.querySelector('input#__FRAMENAME') !== null) {
+                return Location.Desktop;
+            }
+            if (document.querySelector('#scWebEditRibbon') !== null) {
+                return Location.ExperienceEditor;
+            }
+            return Location.Unknown;
+        }
+    }
+
+    export enum Location {
+        ContentEditor,
+        ExperienceEditor,
+        Launchpad,
+        Desktop,
+        Unknown
     }
 }
 

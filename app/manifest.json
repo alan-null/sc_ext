@@ -17,14 +17,14 @@
   },
   "permissions": [
     "tabs",
-    "http://*/sitecore/shell/Applications/Content%20Editor.aspx*",
-    "https://*/sitecore/shell/Applications/Content%20Editor.aspx*"
+    "http://*/*",
+    "https://*/*"
   ],
   "content_scripts": [
     {
       "matches": [
-        "http://*/sitecore/shell/Applications/Content%20Editor.aspx*",
-        "https://*/sitecore/shell/Applications/Content%20Editor.aspx*"
+        "http://*/*",
+        "https://*/*"
       ],
       "js": [
         "scripts/sc_ext-common.js",
