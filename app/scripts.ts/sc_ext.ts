@@ -255,7 +255,7 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.addCommand('Revert', 'Revert this item bucket to a normal folder. (Ctrl+Shift+D)', () => { scForm.invoke('item:unbucket', 'click'); }, canExecute)
                 this.addCommand('Sync', 'Synchronize this item bucket. (Ctrl+Shift+U)', () => { scForm.invoke('item:syncbucket', 'click'); }, canExecute)
                 this.addCommand('Bucketable:Current item', 'Allow the current item to be stored as an unstructured item in an item bucket.', () => { scForm.postEvent(this, 'click', 'item:bucketable'); }, canExecute)
-                this.addCommand('Bucketable:Standard values', 'Allow every item based on the Sample Item template to be stored as an unstructured item in an item bucket.', () => { scForm.postEvent(this, 'click', 'template:bucketable'); }, canExecute)
+                this.addCommand('Bucketable:Standard values', 'Allow all items based on the Sample Item to be stored as an unstructured item in a bucket.', () => { scForm.postEvent(this, 'click', 'template:bucketable'); }, canExecute)
                 this.addCommand('Assign', 'Assign insert options', () => { scForm.postEvent(this, 'click', 'item:setmasters'); }, canExecute)
                 this.addCommand('Reset', 'Reset to the insert options defined on the template.', () => { scForm.postEvent(this, 'click', 'masters:reset'); }, canExecute)
                 this.addCommand('Change', 'Change to another template.', () => { scForm.postEvent(this, 'click', 'item:changetemplate'); }, canExecute)
@@ -406,7 +406,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             super(name, description);
             this.commands = new Array<ICommand>();
             this.launcherOptions = {
-                searchResultsCount: 5,
+                searchResultsCount: 8,
                 shortcuts: {
                     show: 32,
                     hide: 27,
@@ -491,6 +491,15 @@ namespace SitecoreExtensions.Modules.Launcher {
             li.appendChild(spanName);
             li.appendChild(spanDescription);
 
+            li.onclick = (e) => {
+                var element = <Element>e.srcElement;
+                if (element.tagName != 'LI') {
+                    element = <Element>element.parentNode;
+                }
+                this.changeSelectedCommand(element);
+                this.searchBoxElement.focus();
+            };
+            li.ondblclick = _ => this.executeSelectedCommand();
             return li;
         }
 
@@ -538,15 +547,18 @@ namespace SitecoreExtensions.Modules.Launcher {
             });
         }
 
+        executeSelectedCommand(): void {
+            var command = <ICommand>this.commands.find((cmd: ICommand) => {
+                var selectedComandId = parseInt((<HTMLLIElement>this.selectedCommand[0]).id)
+                return cmd.id == selectedComandId
+            });
+            command.execute();
+            this.hideLauncher()
+        }
+
         inputKeyUpEvent(evt: KeyboardEvent): void {
             if (evt.keyCode == this.launcherOptions.shortcuts.executeCommand && this.selectedCommand[0]) {
-
-                var command = <ICommand>this.commands.find((cmd: ICommand) => {
-                    var selectedComandId = parseInt((<HTMLLIElement>this.selectedCommand[0]).id)
-                    return cmd.id == selectedComandId
-                });
-                command.execute();
-                this.hideLauncher()
+                this.executeSelectedCommand();
                 return;
             }
             if (evt.keyCode == this.launcherOptions.shortcuts.selectPrevResult || evt.keyCode == this.launcherOptions.shortcuts.selectNextResult) {
@@ -568,6 +580,12 @@ namespace SitecoreExtensions.Modules.Launcher {
             }
         }
 
+        changeSelectedCommand(newSelected): void {
+            var oldSelected = <HTMLLIElement>this.searchResultsElement.querySelector('.selected');
+            oldSelected.removeAttribute('class');
+            newSelected.setAttribute('class', 'selected');
+        }
+
         commandSelectionEvent(evt: KeyboardEvent): void {
             var commands = this.searchResultsElement.querySelectorAll('li')
             if (commands.length > 0) {
@@ -576,19 +594,13 @@ namespace SitecoreExtensions.Modules.Launcher {
 
                 if (evt.keyCode == this.launcherOptions.shortcuts.selectPrevResult && commands[0] != selected) {
                     if (selected.className == 'selected') {
-                        selected.removeAttribute('class');
-                        (<HTMLLIElement>selected.previousSibling).setAttribute('class', 'selected');
-                    } else {
-                        selected.setAttribute('class', 'selected');
+                        this.changeSelectedCommand(selected.previousSibling)
                     }
                 }
 
                 if (evt.keyCode == this.launcherOptions.shortcuts.selectNextResult && commands.length != 0) {
                     if (selected.className == 'selected' && commands[commands.length - 1] !== selected) {
-                        selected.removeAttribute('class');
-                        (<HTMLLIElement>selected.nextSibling).setAttribute('class', 'selected');
-                    } else {
-                        selected.setAttribute('class', 'selected');
+                        this.changeSelectedCommand(selected.nextSibling)
                     }
                 }
             }
