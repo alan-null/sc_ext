@@ -169,7 +169,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             getCommands(): ICommand[]
         }
 
-        export class ContentEditorRibbonCommandsprovider implements ICommandsProvider {
+        export class ContentEditorRibbonCommandsProvider implements ICommandsProvider {
             commands: ICommand[];
 
             constructor() {
@@ -318,6 +318,77 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.commands.push(cmd)
             }
         }
+
+        class ShortcutCommand implements ICommand {
+            id: number;
+            name: string;
+            description: string;
+            aspx: string;
+
+            constructor(name, description, aspx) {
+                this.id = 0;
+                this.aspx = aspx;
+                this.name = name;
+                this.description = description;
+            }
+
+            navigate(aspx: string): void {
+                var location = window.location.origin + "/sitecore/admin/" + aspx + ".aspx"
+                document.location.href = location;
+            }
+
+            canExecute(): boolean {
+                return true;
+            }
+
+            execute(): void {
+                this.navigate(this.aspx)
+            }
+        }
+
+        export class AdminShortcutsCommandsProvider implements ICommandsProvider {
+            commands: ICommand[];
+
+            constructor() {
+                this.commands = Array<ICommand>();
+                this.createCommands();
+            }
+
+            createCommands(): void {
+                this.addCommand('Administration Tools ', 'List of all administrative tools', 'default');
+                this.addCommand('Cache', 'Caches overview.', 'cache');
+                this.addCommand('DB Browser', 'The interface for various item manipulations.', 'dbbrowser');
+                this.addCommand('Database Cleanup', 'Perform various cleanup operations on specific databases.', 'DbCleanup');
+                this.addCommand('EventQueue Statistics ', 'Overview of the EventQueue processing.', 'EventQueueStats');
+                this.addCommand('Fill DB - Sitecore Item Generator', 'Fill the specific database with dummy items.', 'FillDB');
+                this.addCommand('Jobs Viewer', 'Overview of jobs execution.', 'Jobs');
+                this.addCommand('Ling Scratch Pad', 'Execute custom search code.', 'LinqScratchPad');
+                this.addCommand('Package Item', 'Package specific items with their dependencies.', 'PackageItem');
+                this.addCommand('Pipeline Profiler', 'Pipelines execution timings.', 'pipelines');
+                this.addCommand('PublishQueue statistics', 'Overview of the PublishQueue processing.', 'PublishQueueStats');
+                this.addCommand('Raw Search ', 'Search for the specific string in database or on the file system.', 'RawSearch');
+                this.addCommand('Remove Broken Links', 'Remove broken links from the specific database.', 'RemoveBrokenLinks');
+                this.addCommand('Restore Item ', 'Restore items from archive.', 'restore');
+                this.addCommand('Security Tools', 'Various login and user management features.', 'SecurityTools');
+                this.addCommand('Serialization', 'Serialize and revert databases', 'serialization');
+                this.addCommand('Set Application Center Endpoint', 'Change Application Center endpoint address', 'SetSACEndpoint');
+                this.addCommand('Show Config', 'Merge configuration files.', 'ShowConfig');
+                this.addCommand('Sql Shell', 'Execute sql sripts using the specific connection strings.', 'SqlShell');
+                this.addCommand('Rendering statistics', 'Overview of renderings performance', 'stats');
+                this.addCommand('Unlock Admin', 'Unlock Admin user.', 'unlock_admin');
+                this.addCommand('Update Installation Wizard', 'Install Sitecore updates.', 'UpdateInstallationWizard');
+                this.addCommand('User Info ', 'Logged in user details.', 'UserInfo');
+            }
+
+
+            addCommand(name: string, description: string, aspx: string): void {
+                this.commands.push(new ShortcutCommand(name, description, aspx))
+            }
+
+            getCommands(): ICommand[] {
+                return this.commands;
+            }
+        }
     }
 
     export class LauncherModule extends ModuleBase implements ISitecoreExtensionsModule {
@@ -362,7 +433,8 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         private registerModuleCommands(): void {
-            this.registerProviderCommands(new Providers.ContentEditorRibbonCommandsprovider());
+            this.registerProviderCommands(new Providers.ContentEditorRibbonCommandsProvider());
+            this.registerProviderCommands(new Providers.AdminShortcutsCommandsProvider());
         }
 
         registerProviderCommands(provider: Providers.ICommandsProvider): void {

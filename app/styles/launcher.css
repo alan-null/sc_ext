@@ -31,9 +31,10 @@
 
 .search-field {
     display: block;
-    width: 100%;
+    width: 100% !important;
     margin: 1em auto 0;
-    padding: 0.5em 10px;
+    padding: 0.5em 0px !important;
+    text-indent: 10px;
     border: 1px solid #999;
     font-size: 140% !important;
     font-family: "Arvo", "Helvetica Neue", Helvetica, arial, sans-serif !important;
@@ -77,7 +78,7 @@ span.command-description {
     padding-right: 10px;
     font-size: 90%;
     line-height: 100%;
-    width: 65%;
+    width: 50%;
     padding-top: -6px;
     text-align: right;
 }
