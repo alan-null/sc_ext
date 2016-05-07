@@ -92,3 +92,7 @@ span.command-description {
 span.command-name {
     padding-left: 10px;
 }
+
+span.command-name .term {
+    color: white;
+}

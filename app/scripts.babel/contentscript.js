@@ -11,7 +11,7 @@ var common = scExt.htmlHelpers.createElement('script', {
 });
 
 var fuse = scExt.htmlHelpers.createElement('script', {
-    src: chrome.extension.getURL('/scripts/fuse.js'),
+    src: chrome.extension.getURL('/scripts/fuzzy.min.js'),
 });
 
 var script = scExt.htmlHelpers.createElement('script', {

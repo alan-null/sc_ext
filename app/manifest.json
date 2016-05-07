@@ -49,6 +49,6 @@
     "scripts/popup.js",
     "styles/main.css",
     "scripts/sc_ext-common.js",
-    "scripts/fuse.js"
+    "scripts/fuzzy.min.js"
   ]
 }

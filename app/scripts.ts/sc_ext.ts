@@ -1,4 +1,4 @@
-/// <reference path="../../typings/es6-shim/es6-shim.d.ts"/>
+/// <reference path='../../typings/es6-shim/es6-shim.d.ts'/>
 'use strict';
 declare var scExt: any;
 declare var scSitecore: any;
@@ -132,14 +132,14 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
             var cmd1: ICommand = {
                 id: 0,
                 name: 'Open sections',
-                description: "Open all closed sections",
+                description: 'Open all closed sections',
                 execute: SectionSwitchesModule.prototype.openClosedSections,
                 canExecute: () => { return SitecoreExtensions.Context.Location() == Location.ContentEditor; }
             };
             var cmd2: ICommand = {
                 id: 0,
                 name: 'Close sections',
-                description: "Close all opened sections",
+                description: 'Close all opened sections',
                 execute: SectionSwitchesModule.prototype.closeOpenedSections,
                 canExecute: () => { return SitecoreExtensions.Context.Location() == Location.ContentEditor; }
             };
@@ -160,6 +160,13 @@ namespace SitecoreExtensions.Modules.Launcher {
         description: string;
         execute: Function;
         canExecute: Function
+    }
+
+    class SearchResult {
+        command: ICommand
+        score: number;
+        term: string;
+        highlightedTerm: string;
     }
 
     export namespace Providers {
@@ -214,11 +221,11 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.addCommand('Markup', 'Send all HTML fields to the W3C HTML Validator.', () => { scForm.invoke('contenteditor:validatemarkup', 'click'); }, canExecute)
                 this.addCommand('Validation', 'View the validation results. (F7)', () => { scForm.invoke('contenteditor:showvalidationresult', 'click'); }, canExecute)
                 this.addCommand('My items', 'View the items you have locked.', () => { scForm.invoke('item:myitems', 'click'); }, canExecute)
-                this.addCommand("Set reminder", 'Set reminder', () => { scForm.postEvent(this, 'click', 'item:reminderset(id=' + SitecoreExtensions.Context.ItemID() + ')'); }, canExecute)
-                this.addCommand("Clear reminder", 'Clear reminder', () => { scForm.postEvent(this, 'click', 'item:reminderclear(id=' + SitecoreExtensions.Context.ItemID() + ')'); }, canExecute)
-                this.addCommand("Archive item now", 'Archive item now', () => { scForm.postEvent(this, 'click', 'item:archiveitem(id=' + SitecoreExtensions.Context.ItemID() + ')'); }, canExecute)
-                this.addCommand("Archive version now", 'Archive version now', () => { scForm.postEvent(this, 'click', 'item:archiveversion(id=' + SitecoreExtensions.Context.ItemID() + ', la=en, vs=1)'); }, canExecute)
-                this.addCommand("Set archive date", 'Set archive date', () => { scForm.postEvent(this, 'click', 'item:archivedateset(id=' + SitecoreExtensions.Context.ItemID() + ')'); }, canExecute)
+                this.addCommand('Set reminder', 'Set reminder', () => { scForm.postEvent(this, 'click', 'item:reminderset(id=' + SitecoreExtensions.Context.ItemID() + ')'); }, canExecute)
+                this.addCommand('Clear reminder', 'Clear reminder', () => { scForm.postEvent(this, 'click', 'item:reminderclear(id=' + SitecoreExtensions.Context.ItemID() + ')'); }, canExecute)
+                this.addCommand('Archive item now', 'Archive item now', () => { scForm.postEvent(this, 'click', 'item:archiveitem(id=' + SitecoreExtensions.Context.ItemID() + ')'); }, canExecute)
+                this.addCommand('Archive version now', 'Archive version now', () => { scForm.postEvent(this, 'click', 'item:archiveversion(id=' + SitecoreExtensions.Context.ItemID() + ', la=en, vs=1)'); }, canExecute)
+                this.addCommand('Set archive date', 'Set archive date', () => { scForm.postEvent(this, 'click', 'item:archivedateset(id=' + SitecoreExtensions.Context.ItemID() + ')'); }, canExecute)
 
                 //Analyze
                 this.addCommand('Goals', 'Associate goals with the selected item.', () => { scForm.invoke('analytics:opengoals', 'click'); }, canExecute)
@@ -243,7 +250,7 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.addCommand('Compare', 'Compare the versions of the selected item.', () => { scForm.postEvent(this, 'click', 'item:compareversions'); }, canExecute)
                 this.addCommand('Remove', 'Remove the item version that is currently displayed.', () => { scForm.postEvent(this, 'click', 'item:deleteversion'); }, canExecute)
                 this.addCommand('Remove all versions', 'Remove all versions', () => { scForm.postEvent(this, 'click', 'item:removelanguage'); }, canExecute)
-                this.addCommand('Translate', 'Show the translate mode.', () => { scForm.postRequest("", "", "", "Translate_Click"); }, canExecute)
+                this.addCommand('Translate', 'Show the translate mode.', () => { scForm.postRequest('', '', '', 'Translate_Click'); }, canExecute)
 
                 //Configure
                 this.addCommand('Help', 'Write help texts.', () => { scForm.postEvent(this, 'click', 'item:sethelp'); }, canExecute)
@@ -333,7 +340,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             }
 
             navigate(aspx: string): void {
-                var location = window.location.origin + "/sitecore/admin/" + aspx + ".aspx"
+                var location = window.location.origin + '/sitecore/admin/' + aspx + '.aspx'
                 document.location.href = location;
             }
 
@@ -461,7 +468,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.clearResults();
         }
 
-        appendResults(sortedResults: any[]): void {
+        appendResults(sortedResults: SearchResult[]): void {
             this.clearResults();
             if (sortedResults.length > 0) {
                 for (var i = 0; i < sortedResults.length && i < this.launcherOptions.searchResultsCount; i++) {
@@ -480,13 +487,13 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.searchResultsElement.innerHTML = '';
         }
 
-        buildCommandHtml(command): HTMLLIElement {
-            var li = scExt.htmlHelpers.createElement('li', { id: command.id });
+        buildCommandHtml(sr: SearchResult): HTMLLIElement {
+            var li = scExt.htmlHelpers.createElement('li', { id: sr.command.id });
 
             var spanName = scExt.htmlHelpers.createElement('span', { class: 'command-name' });
-            spanName.innerText = command.name;
+            spanName.innerHTML = sr.highlightedTerm;
             var spanDescription = scExt.htmlHelpers.createElement('span', { class: 'command-description' });
-            spanDescription.innerText = command.description;
+            spanDescription.innerText = sr.command.description;
 
             li.appendChild(spanName);
             li.appendChild(spanDescription);
@@ -543,7 +550,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         addFlowConditionForKeyDownEvent(): void {
             scExt.htmlHelpers.addFlowConditionToEvent(scSitecore, 'onKeyDown', (evt: KeyboardEvent) => {
                 evt = (evt != null ? evt : <KeyboardEvent>window.event);
-                return evt.srcElement.id != "scESearchBox";
+                return evt.srcElement.id != 'scESearchBox';
             });
         }
 
@@ -610,11 +617,28 @@ namespace SitecoreExtensions.Modules.Launcher {
             return command.canExecute();
         }
 
-        search(phrase: string): any[] {
-            if (this.fuse == undefined) {
-                this.fuse = new scExt.libraries.Fuse(this.commands.filter(this.canBeExecuted), this.options);
+        search(query: string): SearchResult[] {
+            var results = new Array<SearchResult>();
+            var i;
+
+            if (query === '') {
+                return [];
             }
-            return this.fuse.search(phrase);
+
+            var availableCommands = this.commands.filter(this.canBeExecuted);
+
+            for (i = 0; i < availableCommands.length; i++) {
+                var cmd = availableCommands[i];
+                var f = scExt.libraries.fuzzy(cmd.name, query);
+                results[i] = <SearchResult>{
+                    command: cmd,
+                    score: f.score,
+                    term: f.term,
+                    highlightedTerm: f.highlightedTerm,
+                }
+            }
+            results.sort(scExt.libraries.fuzzy.matchComparator);
+            return results.slice(0, this.launcherOptions.searchResultsCount);
         }
 
         canExecute(): boolean {
@@ -631,6 +655,9 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.searchBoxElement = <HTMLInputElement>document.getElementById('scESearchBox')
             this.searchResultsElement = <HTMLUListElement>document.getElementById('searchResults')
             this.selectedCommand = document.getElementsByClassName('selected') as NodeListOf<HTMLLIElement>;
+
+            scExt.libraries.fuzzy.highlighting.before = "<span class='term'>";
+            scExt.libraries.fuzzy.highlighting.after = '</span>';
         }
     }
 }
