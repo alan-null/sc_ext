@@ -16,12 +16,15 @@ Store.prototype.setStore = function(values) {
 
 scExt.htmlHelpers = {
     store: new Store(),
-    createElement: function(tagName, attributes) {
+    createElement: function(tagName, attributes, dataset) {
         var element = document.createElement(tagName);
         for (var attr in attributes) {
             if (attributes.hasOwnProperty(attr)) {
                 element.setAttribute(attr, attributes[attr]);
             }
+        }
+        for (var d in dataset) {
+            element.dataset[d] = dataset[d];
         }
         return element;
     },

@@ -488,8 +488,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         buildCommandHtml(sr: SearchResult): HTMLLIElement {
-            var li = scExt.htmlHelpers.createElement('li', { id: sr.command.id });
-
+            var li = scExt.htmlHelpers.createElement('li', null, { id: sr.command.id });
             var spanName = scExt.htmlHelpers.createElement('span', { class: 'command-name' });
             spanName.innerHTML = sr.highlightedTerm;
             var spanDescription = scExt.htmlHelpers.createElement('span', { class: 'command-description' });
@@ -556,7 +555,7 @@ namespace SitecoreExtensions.Modules.Launcher {
 
         executeSelectedCommand(): void {
             var command = <ICommand>this.commands.find((cmd: ICommand) => {
-                var selectedComandId = parseInt((<HTMLLIElement>this.selectedCommand[0]).id)
+                var selectedComandId = parseInt((<HTMLLIElement>this.selectedCommand[0]).dataset['id'])
                 return cmd.id == selectedComandId
             });
             command.execute();
