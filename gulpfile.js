@@ -6,6 +6,7 @@ var wiredep = require('wiredep');
 var fs = require('fs');
 var ts = require('gulp-typescript');
 var merge = require('merge2');
+var sass = require('gulp-sass');
 
 const $ = gulpLoadPlugins();
 
@@ -19,6 +20,11 @@ gulp.task('typescript', function() {
     ]);
 });
 
+gulp.task('sass', function () {
+  return gulp.src('./app/styles.sass/**/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('./app/styles'));
+});
 
 gulp.task('extras', () => {
     return gulp.src([
@@ -137,7 +143,7 @@ gulp.task('babel', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('watch', ['lint', 'babel', 'typescript', 'html'], () => {
+gulp.task('watch', ['lint', 'babel', 'typescript', 'sass', 'html'], () => {
     $.livereload.listen();
 
     gulp.watch([
@@ -150,6 +156,7 @@ gulp.task('watch', ['lint', 'babel', 'typescript', 'html'], () => {
 
     gulp.watch('app/scripts.babel/**/*.js', ['lint', 'babel']);
     gulp.watch('app/scripts.ts/**/*.ts', ['lint', 'typescript']);
+    gulp.watch('app/styles.sass/**/*.scss', ['lint', 'sass']);   
     gulp.watch('bower.json', ['wiredep']);
 });
 
@@ -177,7 +184,7 @@ gulp.task('package', function() {
 
 gulp.task('build', (cb) => {
     runSequence(
-        'lint', 'babel', 'typescript', 'chromeManifest', ['html', 'images', 'extras'],
+        'lint', 'babel', 'typescript', 'sass', 'chromeManifest', ['html', 'images', 'extras'],
         'web_accessible_resources',
         'size', cb);
 });

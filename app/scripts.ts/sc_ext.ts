@@ -511,11 +511,11 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         injectlauncherHtml(): void {
-            var modal = scExt.htmlHelpers.createElement('div', { class: 'launcher-modal', id: 'myModal' });
+            var modal = scExt.htmlHelpers.createElement('div', { class: 'launcher-modal', id: 'sc-ext-modal' });
             var div = scExt.htmlHelpers.createElement('div', { class: 'launcher-modal-content' });
-            var input = scExt.htmlHelpers.createElement('input', { class: 'search-field', id: 'scESearchBox' })
+            var input = scExt.htmlHelpers.createElement('input', { class: 'search-field', id: 'sc-ext-searchBox' })
 
-            var ul = scExt.htmlHelpers.createElement('ul', { class: 'term-list hidden', id: 'searchResults' })
+            var ul = scExt.htmlHelpers.createElement('ul', { class: 'term-list hidden', id: 'sc-ext-searchResults' })
             input.onkeyup = (e) => this.inputKeyUpEvent(e);
             div.appendChild(input);
             div.appendChild(ul);
@@ -550,7 +550,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         addFlowConditionForKeyDownEvent(): void {
             scExt.htmlHelpers.addFlowConditionToEvent(scSitecore, 'onKeyDown', (evt: KeyboardEvent) => {
                 evt = (evt != null ? evt : <KeyboardEvent>window.event);
-                return evt.srcElement.id != 'scESearchBox';
+                return evt.srcElement.id != 'sc-ext-searchBox';
             });
         }
 
@@ -651,9 +651,9 @@ namespace SitecoreExtensions.Modules.Launcher {
             if (SitecoreExtensions.Context.Location() == Location.ContentEditor) {
                 this.addFlowConditionForKeyDownEvent();
             }
-            this.modalElement = <HTMLDivElement>document.getElementById('myModal');
-            this.searchBoxElement = <HTMLInputElement>document.getElementById('scESearchBox')
-            this.searchResultsElement = <HTMLUListElement>document.getElementById('searchResults')
+            this.modalElement = <HTMLDivElement>document.getElementById('sc-ext-modal');
+            this.searchBoxElement = <HTMLInputElement>document.getElementById('sc-ext-searchBox')
+            this.searchResultsElement = <HTMLUListElement>document.getElementById('sc-ext-searchResults')
             this.selectedCommand = document.getElementsByClassName('selected') as NodeListOf<HTMLLIElement>;
 
             scExt.libraries.fuzzy.highlighting.before = "<span class='term'>";
