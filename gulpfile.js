@@ -11,13 +11,13 @@ var sass = require('gulp-sass');
 const $ = gulpLoadPlugins();
 
 gulp.task('typescript', function() {
-    var tsResult = gulp.src('app/scripts.ts/*.ts')
-        .pipe(ts({
-            declaration: true
-        }));
+    var tsProject = ts.createProject('tsconfig.json');
+    
+    var tsResult = tsProject.src()
+        .pipe(ts(tsProject));
 
     return merge([
-        tsResult.dts.pipe(gulp.dest('app/definitions')),
+        tsResult.dts.pipe(gulp.dest('typings/sc-ext')),
         tsResult.js.pipe(gulp.dest('app/scripts'))
     ]);
 });
@@ -191,6 +191,6 @@ gulp.task('build', (cb) => {
         'size', cb);
 });
 
-gulp.task('default', ['clean'], cb => {
+gulp.task('default', ['clean'], cb => {    
     runSequence('build', cb);
 });

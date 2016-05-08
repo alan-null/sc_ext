@@ -1,10 +1,7 @@
 'use strict';
 namespace SitecoreExtensions {
     export class HTMLHelpers {
-        static createElement(tagName, attributes): Element {
-            return HTMLHelpers.createElementWithDataset(tagName, attributes, null);
-        }
-        static createElementWithDataset(tagName, attributes, dataset): Element {
+        static createElement<T>(tagName, attributes?, dataset?): T {
             var element = document.createElement(tagName);
             for (var attr in attributes) {
                 if (attributes.hasOwnProperty(attr)) {
@@ -14,7 +11,7 @@ namespace SitecoreExtensions {
             for (var d in dataset) {
                 element.dataset[d] = dataset[d];
             }
-            return element;
+            return <any>element;
         }
         static injectScript(scriptElement) {
             (document.head || document.documentElement).appendChild(scriptElement);
