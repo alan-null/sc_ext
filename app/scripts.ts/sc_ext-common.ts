@@ -1,10 +1,10 @@
 'use strict';
 namespace SitecoreExtensions {
     export class HTMLHelpers {
-        static createElement(tagName, attributes) {
+        static createElement(tagName, attributes): Element {
             return HTMLHelpers.createElementWithDataset(tagName, attributes, null);
         }
-        static createElementWithDataset(tagName, attributes, dataset) {
+        static createElementWithDataset(tagName, attributes, dataset): Element {
             var element = document.createElement(tagName);
             for (var attr in attributes) {
                 if (attributes.hasOwnProperty(attr)) {

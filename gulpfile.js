@@ -12,7 +12,9 @@ const $ = gulpLoadPlugins();
 
 gulp.task('typescript', function() {
     var tsResult = gulp.src('app/scripts.ts/*.ts')
-        .pipe(ts({}));
+        .pipe(ts({
+            declaration: true
+        }));
 
     return merge([
         tsResult.dts.pipe(gulp.dest('app/definitions')),
