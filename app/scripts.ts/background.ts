@@ -1,3 +1,4 @@
+/// <reference path='../../typings/chrome/chrome.d.ts'/>
 'use strict';
 
 chrome.runtime.onInstalled.addListener(details => {

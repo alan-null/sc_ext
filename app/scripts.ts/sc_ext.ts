@@ -398,15 +398,12 @@ namespace SitecoreExtensions.Modules.Launcher {
     }
 
     export class LauncherModule extends ModuleBase implements ISitecoreExtensionsModule {
-        fuse: any;
         modalElement: HTMLDivElement;
         searchResultsElement: HTMLUListElement;
         searchBoxElement: HTMLInputElement;
         selectedCommand: NodeListOf<HTMLLIElement>;
         launcherOptions: any;
         commands: ICommand[];
-        options: any;
-        searchResults: any;
 
         constructor(name: string, description: string) {
             super(name, description);
@@ -423,19 +420,6 @@ namespace SitecoreExtensions.Modules.Launcher {
             };
 
             this.registerModuleCommands();
-
-            this.options = {
-                caseSensitive: false,
-                includeScore: false,
-                shouldSort: true,
-                tokenize: false,
-                threshold: 0.6,
-                location: 0,
-                distance: 100,
-                maxPatternLength: 32,
-                keys: ['name', 'description'],
-                // verbose: true
-            };
         }
 
         private registerModuleCommands(): void {

@@ -1,3 +1,4 @@
+/// <reference path='../../typings/chrome/chrome.d.ts'/>
 'use strict';
 
 // Reload client for Chrome Apps & Extensions.
