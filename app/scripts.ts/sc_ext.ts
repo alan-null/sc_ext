@@ -1,6 +1,6 @@
 /// <reference path='../../typings/es6-shim/es6-shim.d.ts'/>
+/// <reference path='../../app/definitions/sc_ext-common.d.ts'/>
 'use strict';
-declare var scExt: any;
 declare var scSitecore: any;
 
 namespace SitecoreExtensions.Modules {
@@ -29,7 +29,7 @@ namespace SitecoreExtensions.Modules.DatabaseName {
         }
 
         adDbNameToHeader(dbName: string): void {
-            var dbnameDiv = scExt.htmlHelpers.createElement('div', { class: 'sc-ext-dbName' })
+            var dbnameDiv = HTMLHelpers.createElement('div', { class: 'sc-ext-dbName' }) as HTMLDivElement;
             dbnameDiv.innerText = dbName;
             document.querySelector('.sc-globalHeader-loginInfo').parentNode.appendChild(dbnameDiv);
         }
@@ -56,21 +56,21 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
         }
 
         closeOpenedSections() {
-            scExt.htmlHelpers.triggerEventOnSelector('.scEditorSectionCaptionExpanded .scEditorSectionCaptionGlyph', 'click');
+            HTMLHelpers.triggerEventOnSelector('.scEditorSectionCaptionExpanded .scEditorSectionCaptionGlyph', 'click');
         };
 
         openClosedSections() {
-            scExt.htmlHelpers.triggerEventOnSelector('.scEditorSectionCaptionCollapsed .scEditorSectionCaptionGlyph', 'click');
+            HTMLHelpers.triggerEventOnSelector('.scEditorSectionCaptionCollapsed .scEditorSectionCaptionGlyph', 'click');
         };
 
-        createTabControlButton(text: string, callback: Function): HTMLAnchorElement {
-            var span = scExt.htmlHelpers.createElement('span', {});
+        createTabControlButton(text: string, callback: { (e: MouseEvent): any }): HTMLAnchorElement {
+            var span = HTMLHelpers.createElement('span', {}) as HTMLSpanElement;
             span.innerText = text
-            var link = scExt.htmlHelpers.createElement('a', {
+            var link = HTMLHelpers.createElement('a', {
                 href: '#',
                 class: 'scEditorHeaderNavigator scEditorHeaderButton scButton ' + this.sectionSwitchButtonClassName
-            });
-            link.onclick = callback
+            }) as HTMLAnchorElement;
+            link.onclick = callback;
             link.appendChild(span);
             return link;
         }
@@ -112,7 +112,7 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
         initialize(): void {
             window.addEventListener('load', () => this.insertButtons());
             this.addTreeNodeHandlers('scContentTree');
-            scExt.htmlHelpers.addProxy(scSitecore, 'postEvent', () => {
+            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => {
                 setTimeout(() => { this.refreshButtons(); }, 10);
             });
         }
@@ -471,10 +471,10 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         buildCommandHtml(sr: SearchResult): HTMLLIElement {
-            var li = scExt.htmlHelpers.createElement('li', null, { id: sr.command.id });
-            var spanName = scExt.htmlHelpers.createElement('span', { class: 'command-name' });
+            var li = <HTMLLIElement>HTMLHelpers.createElementWithDataset('li', null, { id: sr.command.id });
+            var spanName = HTMLHelpers.createElement('span', { class: 'command-name' });
             spanName.innerHTML = sr.highlightedTerm;
-            var spanDescription = scExt.htmlHelpers.createElement('span', { class: 'command-description' });
+            var spanDescription = <HTMLSpanElement>HTMLHelpers.createElement('span', { class: 'command-description' });
             spanDescription.innerText = sr.command.description;
 
             li.appendChild(spanName);
@@ -493,11 +493,11 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         injectlauncherHtml(): void {
-            var modal = scExt.htmlHelpers.createElement('div', { class: 'launcher-modal', id: 'sc-ext-modal' });
-            var div = scExt.htmlHelpers.createElement('div', { class: 'launcher-modal-content' });
-            var input = scExt.htmlHelpers.createElement('input', { class: 'search-field', id: 'sc-ext-searchBox' })
+            var modal = HTMLHelpers.createElement('div', { class: 'launcher-modal', id: 'sc-ext-modal' }) as HTMLDivElement;
+            var div = HTMLHelpers.createElement('div', { class: 'launcher-modal-content' }) as HTMLDivElement;
+            var input = HTMLHelpers.createElement('input', { class: 'search-field', id: 'sc-ext-searchBox' }) as HTMLInputElement;
 
-            var ul = scExt.htmlHelpers.createElement('ul', { class: 'term-list hidden', id: 'sc-ext-searchResults' })
+            var ul = HTMLHelpers.createElement('ul', { class: 'term-list hidden', id: 'sc-ext-searchResults' }) as HTMLUListElement;
             input.onkeyup = (e) => this.inputKeyUpEvent(e);
             div.appendChild(input);
             div.appendChild(ul);
@@ -530,7 +530,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         addFlowConditionForKeyDownEvent(): void {
-            scExt.htmlHelpers.addFlowConditionToEvent(scSitecore, 'onKeyDown', (evt: KeyboardEvent) => {
+            HTMLHelpers.addFlowConditionToEvent(scSitecore, 'onKeyDown', (evt: KeyboardEvent) => {
                 evt = (evt != null ? evt : <KeyboardEvent>window.event);
                 return evt.srcElement.id != 'sc-ext-searchBox';
             });
@@ -611,7 +611,7 @@ namespace SitecoreExtensions.Modules.Launcher {
 
             for (i = 0; i < availableCommands.length; i++) {
                 var cmd = availableCommands[i];
-                var f = scExt.libraries.fuzzy(cmd.name, query);
+                var f = Libraries['fuzzy'](cmd.name, query);
                 results[i] = <SearchResult>{
                     command: cmd,
                     score: f.score,
@@ -619,7 +619,7 @@ namespace SitecoreExtensions.Modules.Launcher {
                     highlightedTerm: f.highlightedTerm,
                 }
             }
-            results.sort(scExt.libraries.fuzzy.matchComparator);
+            results.sort(Libraries['fuzzy'].matchComparator);
             return results.slice(0, this.launcherOptions.searchResultsCount);
         }
 
@@ -638,8 +638,8 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.searchResultsElement = <HTMLUListElement>document.getElementById('sc-ext-searchResults')
             this.selectedCommand = document.getElementsByClassName('selected') as NodeListOf<HTMLLIElement>;
 
-            scExt.libraries.fuzzy.highlighting.before = "<span class='term'>";
-            scExt.libraries.fuzzy.highlighting.after = '</span>';
+            Libraries['fuzzy'].highlighting.before = "<span class='term'>";
+            Libraries['fuzzy'].highlighting.after = '</span>';
         }
     }
 }
