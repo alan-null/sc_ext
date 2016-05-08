@@ -31,7 +31,8 @@
         "scripts/contentscript.js"
       ],
       "css": [
-        "styles/launcher.css"
+        "styles/launcher.css",
+        "styles/databaseName.css"
       ],
       "run_at": "document_end",
       "all_frames": false
