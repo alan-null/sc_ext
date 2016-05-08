@@ -1,41 +1,34 @@
 /// <reference path='../../typings/chrome/chrome.d.ts'/>
-declare var scExt: any;
-
 'use strict';
-function dispatchEvent(name, parameters) {
-    var evt = document.createEvent('CustomEvent');
-    evt.initCustomEvent(name, true, true, parameters);
-    document.dispatchEvent(evt);
-};
 
-var common = scExt.htmlHelpers.createElement('script', {
-    src: chrome.extension.getURL('/scripts/sc_ext-common.js'),
-});
+function createScriptElement(src: string): HTMLScriptElement {
+    var script = <HTMLScriptElement>document.createElement("script");
+    script.src = chrome.extension.getURL(src);
+    return script;
+}
 
-var fuse = scExt.htmlHelpers.createElement('script', {
-    src: chrome.extension.getURL('/scripts/fuzzy.min.js'),
-});
+function injectScripts(scripts: HTMLScriptElement[]) {
+    if (scripts.length > 0) {
+        var otherScripts = scripts.slice(1);
+        var script = scripts[0];
+        var onload = function () {
+            script.parentNode.removeChild(script);
+            injectScripts(otherScripts);
+        };
+        if (script.src != "") {
+            script.onload = onload;
+            document.head.appendChild(script);
+        } else {
+            document.head.appendChild(script);
+            onload();
+        }
+    }
+}
 
-var script = scExt.htmlHelpers.createElement('script', {
-    src: chrome.extension.getURL('/scripts/sc_ext.js'),
-});
+injectScripts([
+    createScriptElement("/scripts/sc_ext-common.js"),
+    createScriptElement("/scripts/fuzzy.min.js"),
+    createScriptElement("/scripts/sc_ext.js")
+]);
 
-script.onload = function () {
-    this.parentNode.removeChild(this);
-};
-
-common.onload = function () {
-    var url = chrome.runtime.getURL('');
-    dispatchEvent('setStore', { url: url });
-
-    scExt.htmlHelpers.injectScript(fuse);
-    this.parentNode.removeChild(this);
-};
-fuse.onload = function () {
-    scExt.htmlHelpers.injectScript(script);
-    this.parentNode.removeChild(this);
-};
-
-
-scExt.htmlHelpers.injectScript(common);
 chrome.runtime.sendMessage({ 'newIconPath': 'images/icon-128.png' });
