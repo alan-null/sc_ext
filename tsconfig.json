@@ -1,5 +1,8 @@
 {
-    "compilerOptions": {},
+    "compilerOptions": {
+        "rootDir": "app/scripts.ts",
+        "outDir": "app/scripts"
+    },
     "exclude": [
         "node_modules",
         "typings",
