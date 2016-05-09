@@ -6,6 +6,10 @@ chrome.runtime.onInstalled.addListener(details => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+
+  chrome.browserAction.setBadgeText({ text: request.modulesCount, });
+  chrome.browserAction.setBadgeBackgroundColor({ color: '#666' });
+
   chrome.browserAction.setIcon({
     path: request.newIconPath,
     tabId: sender.tab.id
@@ -16,4 +20,3 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     popup: 'popup.html'
   });
 });
-

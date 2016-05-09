@@ -658,11 +658,9 @@ namespace SitecoreExtensions {
         }
 
         initModules(): void {
-            this.modules.forEach(m => {
-                if (m.canExecute()) {
-                    m.initialize();
-                }
-            });
+            this.modules
+                .filter(m => { return m.canExecute(); })
+                .forEach(m => { m.initialize(); });
         }
 
         getModule(type: any): ISitecoreExtensionsModule {
@@ -759,5 +757,6 @@ if (SitecoreExtensions.Context.IsValid()) {
 
     window.postMessage({
         sc_ext_enabled: true,
+        sc_ext_modules_count: scExtManager.modules.filter(m => { return m.canExecute(); }).length.toString()
     }, '*');
 }

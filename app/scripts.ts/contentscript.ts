@@ -4,6 +4,7 @@ window.addEventListener('message', function (event) {
     if (event.data.sc_ext_enabled) {
         chrome.runtime.sendMessage({
             'newIconPath': 'images/icon-128.png',
+            'modulesCount': event.data.sc_ext_modules_count
         });
     }
 });
