@@ -198,26 +198,27 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.addCommand('Copy to', 'Copy the item to another location.', () => { scForm.postEvent(this, 'click', 'item:copyto'); }, canExecute);
                 this.addCommand('Move to', 'Move the item to another location.', () => { scForm.postEvent(this, 'click', 'item:moveto'); }, canExecute);
                 this.addCommand('Delete', 'Delete the item.', () => { scForm.invoke('item:delete(id=' + SitecoreExtensions.Context.ItemID() + ')'); }, canExecute)
-                this.addCommand('Delete subitems', 'Delete current item subitems.', () => { scForm.postEvent(this, 'click', 'item:deletechildren(id=)'); }, canExecute);
+                this.addCommand('Delete children', 'Delete current item subitems.', () => { scForm.postEvent(this, 'click', 'item:deletechildren(id=)'); }, canExecute);
                 this.addCommand('Rename', 'Rename the item key. (F2)', () => { scForm.postEvent(this, 'click', 'item:rename'); }, canExecute);
                 this.addCommand('Display name', 'Change the language-specific name.', () => { scForm.postEvent(this, 'click', 'item:setdisplayname'); }, canExecute);
-                this.addCommand('Up', 'Move the item one step up in the Content Tree. (Ctrl+Shift+Alt+Up)', () => { scForm.postEvent(this, 'click', 'item:moveup'); }, canExecute);
-                this.addCommand('Down', 'Move the item one step down in the Content Tree. (Ctrl+Shift+Alt+Down)', () => { scForm.postEvent(this, 'click', 'item:movedown'); }, canExecute);
-                this.addCommand('First', 'Move the item to the first place at this level in the Content Tree.', () => { scForm.postEvent(this, 'click', 'item:movefirst'); }, canExecute);
-                this.addCommand('Last', 'Move the item to the last place at this level in the Content Tree.', () => { scForm.postEvent(this, 'click', 'item:movelast'); }, canExecute);
+                this.addCommand('Move Up', 'Move the item one step up in the Content Tree. (Ctrl+Shift+Alt+Up)', () => { scForm.postEvent(this, 'click', 'item:moveup'); }, canExecute);
+                this.addCommand('Move Down', 'Move the item one step down in the Content Tree. (Ctrl+Shift+Alt+Down)', () => { scForm.postEvent(this, 'click', 'item:movedown'); }, canExecute);
+                this.addCommand('Move First', 'Move the item to the first place at this level in the Content Tree.', () => { scForm.postEvent(this, 'click', 'item:movefirst'); }, canExecute);
+                this.addCommand('Move Last', 'Move the item to the last place at this level in the Content Tree.', () => { scForm.postEvent(this, 'click', 'item:movelast'); }, canExecute);
 
                 //Navigate
                 this.addCommand('Open', 'Open an item.', () => { scForm.invoke('item:open'); }, canExecute);
-                this.addCommand('Back', 'Go to the previously selected item.', () => { scForm.invoke('contenteditor:back', 'click'); }, canExecute)
-                this.addCommand('Up', 'Go to the parent item.', () => { scForm.invoke('contenteditor:up', 'click'); }, canExecute)
-                this.addCommand('Home', 'Go to your home item. (Ctrl+Shift+Home)', () => { scForm.invoke('contenteditor:home', 'click'); }, canExecute)
+                this.addCommand('Navigate: Back', 'Go to the previously selected item.', () => { scForm.invoke('contenteditor:back', 'click'); }, canExecute)
+                this.addCommand('Navigate: Forward', 'Go to the next selected item.', () => { scForm.invoke('contenteditor:forward', 'click'); }, canExecute)
+                this.addCommand('Navigate: Up', 'Go to the parent item.', () => { scForm.invoke('contenteditor:up', 'click'); }, canExecute)
+                this.addCommand('Navigate: Home', 'Go to your home item. (Ctrl+Shift+Home)', () => { scForm.invoke('contenteditor:home', 'click'); }, canExecute)
                 this.addCommand('Add to favorites', 'Add current item to favourites', () => { scForm.postEvent(this, 'click', 'favorites:add(id=' + SitecoreExtensions.Context.ItemID() + ')'); }, canExecute);
                 this.addCommand('Organize', 'Organize favorites', () => { scForm.postEvent(this, 'click', 'favorites:organize'); }, canExecute);
                 this.addCommand('Search', 'Open the Search application. (Ctrl+Shift+F)', () => { scForm.invoke('shell:search', 'click'); }, canExecute)
 
                 //Review
-                this.addCommand('Spelling', 'Run the spellcheck on all text and HTML fields in th selected item.', () => { scForm.invoke('contenteditor:spellcheck', 'click'); }, canExecute)
-                this.addCommand('Markup', 'Send all HTML fields to the W3C HTML Validator.', () => { scForm.invoke('contenteditor:validatemarkup', 'click'); }, canExecute)
+                this.addCommand('Spellcheck', 'Run the spellcheck on all text and HTML fields in th selected item.', () => { scForm.invoke('contenteditor:spellcheck', 'click'); }, canExecute)
+                this.addCommand('Validate Markup', 'Send all HTML fields to the W3C HTML Validator.', () => { scForm.invoke('contenteditor:validatemarkup', 'click'); }, canExecute)
                 this.addCommand('Validation', 'View the validation results. (F7)', () => { scForm.invoke('contenteditor:showvalidationresult', 'click'); }, canExecute)
                 this.addCommand('My items', 'View the items you have locked.', () => { scForm.invoke('item:myitems', 'click'); }, canExecute)
                 this.addCommand('Set reminder', 'Set reminder', () => { scForm.postEvent(this, 'click', 'item:reminderset(id=' + SitecoreExtensions.Context.ItemID() + ')'); }, canExecute)
@@ -229,25 +230,25 @@ namespace SitecoreExtensions.Modules.Launcher {
                 //Analyze
                 this.addCommand('Goals', 'Associate goals with the selected item.', () => { scForm.invoke('analytics:opengoals', 'click'); }, canExecute)
                 this.addCommand('Attributes', 'Associate attributes to the selected item.', () => { scForm.invoke('analytics:opentrackingfield', 'click'); }, canExecute)
-                this.addCommand('Details', 'View the attributes assigned to the selected item.', () => { scForm.invoke('analytics:viewtrackingdetails', 'click'); }, canExecute)
+                this.addCommand('Tracking Details', 'View the attributes assigned to the selected item.', () => { scForm.invoke('analytics:viewtrackingdetails', 'click'); }, canExecute)
                 this.addCommand('Page Analyzer', 'Page Analyzer', () => { scForm.invoke('pathanalyzer:open-page-analyzer', 'click'); }, canExecute)
                 this.addCommand('Reports', 'Run an item report on the selected item.', () => { scForm.invoke('analytics:authoringfeedback', 'click'); }, canExecute)
 
                 //Publish
-                this.addCommand('Change', 'Set up the publishing settings.', () => { scForm.invoke('item:setpublishing', 'click'); }, canExecute)
-                this.addCommand('Publish', 'Publish the item in all languages to all publishing targets.', () => { scForm.invoke('item:publishnow(related=1,subitems=0,smart=1)'); }, canExecute)
-                this.addCommand('Publish item', 'Publish item', () => { scForm.postEvent(this, 'click', 'item:publish(id=)'); }, canExecute)
-                this.addCommand('Publish site', 'Publish site', () => { scForm.postEvent(this, 'click', 'system:publish'); }, canExecute)
+                this.addCommand('Change Publishing Settings', 'Set up the publishing settings.', () => { scForm.invoke('item:setpublishing', 'click'); }, canExecute)
+                this.addCommand('Publish Now', 'Publish the item in all languages to all publishing targets.', () => { scForm.invoke('item:publishnow(related=1,subitems=0,smart=1)'); }, canExecute)
+                this.addCommand('Publish Item', 'Publish item', () => { scForm.postEvent(this, 'click', 'item:publish(id=)'); }, canExecute)
+                this.addCommand('Publish Site', 'Publish site', () => { scForm.postEvent(this, 'click', 'system:publish'); }, canExecute)
                 this.addCommand('Experience Editor', 'Start the Experience Editor.', () => { scForm.postEvent(this, 'click', 'webedit:openexperienceeditor'); }, canExecute)
                 this.addCommand('Preview', 'Start the Preview mode.', () => { scForm.postEvent(this, 'click', 'item:preview'); }, canExecute)
                 this.addCommand('Publishing viewer', 'View the publishing dates of each version.', () => { scForm.postEvent(this, 'click', 'item:publishingviewer(id=)'); }, canExecute)
                 this.addCommand('Messages', 'Create, edit, and post a message on a target ntwork.', () => { scForm.invoke('social:dialog:show', 'click'); }, canExecute)
 
                 //Versions
-                this.addCommand('Reset', 'Reset the field values.', () => { scForm.invoke('item:resetfields', 'click'); }, canExecute)
-                this.addCommand('Add', 'Add a version of the selected item.', () => { scForm.postEvent(this, 'click', 'item:addversion(id=)'); }, canExecute)
-                this.addCommand('Compare', 'Compare the versions of the selected item.', () => { scForm.postEvent(this, 'click', 'item:compareversions'); }, canExecute)
-                this.addCommand('Remove', 'Remove the item version that is currently displayed.', () => { scForm.postEvent(this, 'click', 'item:deleteversion'); }, canExecute)
+                this.addCommand('Reset Fields', 'Reset the field values.', () => { scForm.invoke('item:resetfields', 'click'); }, canExecute)
+                this.addCommand('Add Version', 'Add a version of the selected item.', () => { scForm.postEvent(this, 'click', 'item:addversion(id=)'); }, canExecute)
+                this.addCommand('Compare Versions', 'Compare the versions of the selected item.', () => { scForm.postEvent(this, 'click', 'item:compareversions'); }, canExecute)
+                this.addCommand('Remove Version', 'Remove the item version that is currently displayed.', () => { scForm.postEvent(this, 'click', 'item:deleteversion'); }, canExecute)
                 this.addCommand('Remove all versions', 'Remove all versions', () => { scForm.postEvent(this, 'click', 'item:removelanguage'); }, canExecute)
                 this.addCommand('Translate', 'Show the translate mode.', () => { scForm.postRequest('', '', '', 'Translate_Click'); }, canExecute)
 
@@ -262,26 +263,26 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.addCommand('Sync', 'Synchronize this item bucket. (Ctrl+Shift+U)', () => { scForm.invoke('item:syncbucket', 'click'); }, canExecute)
                 this.addCommand('Bucketable:Current item', 'Allow the current item to be stored as an unstructured item in an item bucket.', () => { scForm.postEvent(this, 'click', 'item:bucketable'); }, canExecute)
                 this.addCommand('Bucketable:Standard values', 'Allow all items based on the Sample Item to be stored as an unstructured item in a bucket.', () => { scForm.postEvent(this, 'click', 'template:bucketable'); }, canExecute)
-                this.addCommand('Assign', 'Assign insert options', () => { scForm.postEvent(this, 'click', 'item:setmasters'); }, canExecute)
+                this.addCommand('Set Masters', 'Assign insert options', () => { scForm.postEvent(this, 'click', 'item:setmasters'); }, canExecute)
                 this.addCommand('Reset', 'Reset to the insert options defined on the template.', () => { scForm.postEvent(this, 'click', 'masters:reset'); }, canExecute)
-                this.addCommand('Change', 'Change to another template.', () => { scForm.postEvent(this, 'click', 'item:changetemplate'); }, canExecute)
-                this.addCommand('Edit', 'Open the Template Editor.', () => { scForm.postEvent(this, 'click', 'shell:edittemplate'); }, canExecute)
+                this.addCommand('Change Template', 'Change to another template.', () => { scForm.postEvent(this, 'click', 'item:changetemplate'); }, canExecute)
+                this.addCommand('Edit Template', 'Open the Template Editor.', () => { scForm.postEvent(this, 'click', 'shell:edittemplate'); }, canExecute)
                 this.addCommand('Hide Item', 'Mark the item as hidden or visible.', () => { scForm.postEvent(this, 'click', 'item:togglehidden'); }, canExecute)
                 this.addCommand('Protect Item', 'Protect or unprotect the item from changes. (Ctrl+Shift+Alt+L)', () => { scForm.postEvent(this, 'click', 'item:togglereadonly'); }, canExecute)
 
                 //Presentation
-                this.addCommand('Details', 'View and edit the layout details for the selected tem.', () => { scForm.invoke('item:setlayoutdetails', 'click'); }, canExecute)
-                this.addCommand('Reset', 'Reset the layout details to the settings defined n the template level.', () => { scForm.invoke('pagedesigner:reset', 'click'); }, canExecute)
+                this.addCommand('Layout Details', 'View and edit the layout details for the selected tem.', () => { scForm.invoke('item:setlayoutdetails', 'click'); }, canExecute)
+                this.addCommand('Reset Layout', 'Reset the layout details to the settings defined n the template level.', () => { scForm.invoke('pagedesigner:reset', 'click'); }, canExecute)
                 this.addCommand('Preview', 'Preview of the selected item presentation.', () => { scForm.invoke('contenteditor:preview', 'click'); }, canExecute)
                 this.addCommand('Screenshots', 'Take screenshots of your webpages.', () => { scForm.invoke('contenteditor:pagepreviews(width=90%,height=90%)', 'click'); }, canExecute)
                 this.addCommand('Aliases', 'Assign URL aliases.', () => { scForm.invoke('item:setaliases', 'click'); }, canExecute)
-                this.addCommand('Design', 'Set up the design of RSS feed for the selected item.', () => { scForm.invoke('item:setfeedpresentation', 'click'); }, canExecute)
+                this.addCommand('Set Feed Presentation', 'Set up the design of RSS feed for the selected item.', () => { scForm.invoke('item:setfeedpresentation', 'click'); }, canExecute)
 
                 //Security
                 this.addCommand('Remove Inherit', 'Security Preset: Remove Inherit', () => { scForm.invoke('item:securitypreset(preset={74A590B5-CC32-4777-8ADE-7369C753B7FF})'); }, canExecute)
                 this.addCommand('Require Login', 'Security Preset: Require Login', () => { scForm.invoke('item:securitypreset(preset={506FC890-44A4-4037-8696-4934CB75C00A})'); }, canExecute)
                 this.addCommand('Assign', 'Assign security rights for the selected item.', () => { scForm.invoke('item:openitemsecurityeditor', 'click'); }, canExecute)
-                this.addCommand('Details', 'View assigned security rights for the selected item.', () => { scForm.invoke('contenteditor:opensecurity', 'click'); }, canExecute)
+                this.addCommand('Security Details', 'View assigned security rights for the selected item.', () => { scForm.invoke('contenteditor:opensecurity', 'click'); }, canExecute)
                 this.addCommand('Change', 'Change of the ownership', () => { scForm.invoke('item:setowner', 'click'); }, canExecute)
                 this.addCommand('Access Viewer', 'Open the Access Viewer.', () => { scForm.postEvent(this, 'click', 'shell:accessviewer'); }, canExecute)
                 this.addCommand('User Manager', 'Open the User Manager.', () => { scForm.postEvent(this, 'click', 'shell:usermanager'); }, canExecute)
@@ -298,9 +299,9 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.addCommand('Customize', 'Customize My Toolbar', () => { scForm.invoke('ribbon:customize', 'click'); }, canExecute)
 
                 //Developer
-                this.addCommand('Create', 'Create a new template', () => { scForm.postEvent(this, 'click', 'templates:new'); }, canExecute)
-                this.addCommand('Branch', 'Go to the first branch', () => { scForm.postEvent(this, 'click', 'item:gotomaster'); }, canExecute)
-                this.addCommand('Template', 'Go to the template', () => { scForm.postEvent(this, 'click', 'item:gototemplate'); }, canExecute)
+                this.addCommand('Create Template', 'Create a new template', () => { scForm.postEvent(this, 'click', 'templates:new'); }, canExecute)
+                this.addCommand('Go to Master', 'Go to the first branch', () => { scForm.postEvent(this, 'click', 'item:gotomaster'); }, canExecute)
+                this.addCommand('Go to Template', 'Go to the template', () => { scForm.postEvent(this, 'click', 'item:gototemplate'); }, canExecute)
                 this.addCommand('Serialize item', 'Serialize the item to the file system', () => { scForm.postEvent(this, 'click', 'itemsync:dumpitem'); }, canExecute)
                 this.addCommand('Serialize tree', 'Serialize the item and subitems to the file system', () => { scForm.postEvent(this, 'click', 'itemsync:dumptree'); }, canExecute)
                 this.addCommand('Update item', 'Update the item from the file system', () => { scForm.postEvent(this, 'click', 'itemsync:loaditem'); }, canExecute)
@@ -361,29 +362,29 @@ namespace SitecoreExtensions.Modules.Launcher {
             }
 
             createCommands(): void {
-                this.addCommand('Administration Tools ', 'List of all administrative tools', 'default');
-                this.addCommand('Cache', 'Caches overview.', 'cache');
-                this.addCommand('DB Browser', 'The interface for various item manipulations.', 'dbbrowser');
-                this.addCommand('Database Cleanup', 'Perform various cleanup operations on specific databases.', 'DbCleanup');
-                this.addCommand('EventQueue Statistics ', 'Overview of the EventQueue processing.', 'EventQueueStats');
-                this.addCommand('Fill DB - Sitecore Item Generator', 'Fill the specific database with dummy items.', 'FillDB');
-                this.addCommand('Jobs Viewer', 'Overview of jobs execution.', 'Jobs');
-                this.addCommand('Ling Scratch Pad', 'Execute custom search code.', 'LinqScratchPad');
-                this.addCommand('Package Item', 'Package specific items with their dependencies.', 'PackageItem');
-                this.addCommand('Pipeline Profiler', 'Pipelines execution timings.', 'pipelines');
-                this.addCommand('PublishQueue statistics', 'Overview of the PublishQueue processing.', 'PublishQueueStats');
-                this.addCommand('Raw Search ', 'Search for the specific string in database or on the file system.', 'RawSearch');
-                this.addCommand('Remove Broken Links', 'Remove broken links from the specific database.', 'RemoveBrokenLinks');
-                this.addCommand('Restore Item ', 'Restore items from archive.', 'restore');
-                this.addCommand('Security Tools', 'Various login and user management features.', 'SecurityTools');
-                this.addCommand('Serialization', 'Serialize and revert databases', 'serialization');
-                this.addCommand('Set Application Center Endpoint', 'Change Application Center endpoint address', 'SetSACEndpoint');
-                this.addCommand('Show Config', 'Merge configuration files.', 'ShowConfig');
-                this.addCommand('Sql Shell', 'Execute sql sripts using the specific connection strings.', 'SqlShell');
-                this.addCommand('Rendering statistics', 'Overview of renderings performance', 'stats');
-                this.addCommand('Unlock Admin', 'Unlock Admin user.', 'unlock_admin');
-                this.addCommand('Update Installation Wizard', 'Install Sitecore updates.', 'UpdateInstallationWizard');
-                this.addCommand('User Info ', 'Logged in user details.', 'UserInfo');
+                this.addCommand('Administration Tools.aspx', 'List of all administrative tools', 'default');
+                this.addCommand('Cache.aspx', 'Caches overview.', 'cache');
+                this.addCommand('DB Browser.aspx', 'The interface for various item manipulations.', 'dbbrowser');
+                this.addCommand('Database Cleanup.aspx', 'Perform various cleanup operations on specific databases.', 'DbCleanup');
+                this.addCommand('EventQueue Statistics.aspx', 'Overview of the EventQueue processing.', 'EventQueueStats');
+                this.addCommand('Fill DB - Sitecore Item Generator.aspx', 'Fill the specific database with dummy items.', 'FillDB');
+                this.addCommand('Jobs Viewer.aspx', 'Overview of jobs execution.', 'Jobs');
+                this.addCommand('Ling Scratch Pad.aspx', 'Execute custom search code.', 'LinqScratchPad');
+                this.addCommand('Package Item.aspx', 'Package specific items with their dependencies.', 'PackageItem');
+                this.addCommand('Pipeline Profiler.aspx', 'Pipelines execution timings.', 'pipelines');
+                this.addCommand('PublishQueue statistics.aspx', 'Overview of the PublishQueue processing.', 'PublishQueueStats');
+                this.addCommand('Raw Search.aspx', 'Search for the specific string in database or on the file system.', 'RawSearch');
+                this.addCommand('Remove Broken Links.aspx', 'Remove broken links from the specific database.', 'RemoveBrokenLinks');
+                this.addCommand('Restore Item.aspx', 'Restore items from archive.', 'restore');
+                this.addCommand('Security Tools.aspx', 'Various login and user management features.', 'SecurityTools');
+                this.addCommand('Serialization.aspx', 'Serialize and revert databases', 'serialization');
+                this.addCommand('Set Application Center Endpoint.aspx', 'Change Application Center endpoint address', 'SetSACEndpoint');
+                this.addCommand('Show Config.aspx', 'Merge configuration files.', 'ShowConfig');
+                this.addCommand('Sql Shell.aspx', 'Execute sql sripts using the specific connection strings.', 'SqlShell');
+                this.addCommand('Rendering statistics.aspx', 'Overview of renderings performance', 'stats');
+                this.addCommand('Unlock Admin.aspx', 'Unlock Admin user.', 'unlock_admin');
+                this.addCommand('Update Installation Wizard.aspx', 'Install Sitecore updates.', 'UpdateInstallationWizard');
+                this.addCommand('User Info.aspx', 'Logged in user details.', 'UserInfo');
             }
 
 
