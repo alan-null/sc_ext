@@ -111,7 +111,7 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
 
         initialize(): void {
             window.addEventListener('load', () => this.insertButtons());
-            this.addTreeNodeHandlers('scContentTree');            
+            this.addTreeNodeHandlers('scContentTree');
             HTMLHelpers.addProxy(scSitecore, 'postEvent', () => {
                 setTimeout(() => { this.refreshButtons(); }, 10);
             });
@@ -681,6 +681,10 @@ namespace SitecoreExtensions {
         itemID: string;
         constructor() { }
 
+        static IsValid(): boolean {
+            return window.location.pathname.indexOf('/sitecore/') == 0 || Context.Location() == Location.ExperienceEditor;
+        }
+
         static GetCurrentItem(): string {
             var element = <HTMLInputElement>document.querySelector('#__CurrentItem');
             return element.value;
@@ -738,16 +742,22 @@ namespace SitecoreExtensions {
 }
 
 
-var scExtManager = new SitecoreExtensions.ExtensionsManager();
-var sectionSwitchesModule = new SitecoreExtensions.Modules.SectionSwitches.SectionSwitchesModule('Section Switches', 'Easily open/close all item sections with just one click');
-var dbNameModule = new SitecoreExtensions.Modules.DatabaseName.DatabaseNameModule('Database Name', 'Displays current database name in the Content Editor header');
-var launcher = new SitecoreExtensions.Modules.Launcher.LauncherModule('Launcher', 'Feel like power user using Sitecore Extensions command launcher.');
+if (SitecoreExtensions.Context.IsValid()) {
+    var scExtManager = new SitecoreExtensions.ExtensionsManager();
+    var sectionSwitchesModule = new SitecoreExtensions.Modules.SectionSwitches.SectionSwitchesModule('Section Switches', 'Easily open/close all item sections with just one click');
+    var dbNameModule = new SitecoreExtensions.Modules.DatabaseName.DatabaseNameModule('Database Name', 'Displays current database name in the Content Editor header');
+    var launcher = new SitecoreExtensions.Modules.Launcher.LauncherModule('Launcher', 'Feel like power user using Sitecore Extensions command launcher.');
 
-scExtManager.addModule(sectionSwitchesModule);
-scExtManager.addModule(dbNameModule);
-scExtManager.addModule(launcher);
+    scExtManager.addModule(sectionSwitchesModule);
+    scExtManager.addModule(dbNameModule);
+    scExtManager.addModule(launcher);
 
-scExtManager.initModules();
+    scExtManager.initModules();
 
 
-launcher.registerProviderCommands(new SitecoreExtensions.Modules.SectionSwitches.SectionSwitchesCommandsProvider())
+    launcher.registerProviderCommands(new SitecoreExtensions.Modules.SectionSwitches.SectionSwitchesCommandsProvider())
+
+    window.postMessage({
+        sc_ext_enabled: true,
+    }, '*');
+}

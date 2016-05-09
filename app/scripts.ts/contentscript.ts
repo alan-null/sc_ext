@@ -1,5 +1,12 @@
 /// <reference path='../../typings/chrome/chrome.d.ts'/>
 'use strict';
+window.addEventListener('message', function (event) {
+    if (event.data.sc_ext_enabled) {
+        chrome.runtime.sendMessage({
+            'newIconPath': 'images/icon-128.png',
+        });
+    }
+});
 
 function createScriptElement(src: string): HTMLScriptElement {
     var script = <HTMLScriptElement>document.createElement("script");
@@ -30,5 +37,3 @@ injectScripts([
     createScriptElement("/scripts/fuzzy.min.js"),
     createScriptElement("/scripts/sc_ext.js")
 ]);
-
-chrome.runtime.sendMessage({ 'newIconPath': 'images/icon-128.png' });
