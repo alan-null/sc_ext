@@ -48,6 +48,40 @@ namespace SitecoreExtensions.Modules.DatabaseName {
     }
 }
 
+namespace SitecoreExtensions.Modules.DatabaseColor {
+    import Dictionary = SitecoreExtensions.Types.Dictionary
+    import IDictionary = SitecoreExtensions.Types.IDictionary
+
+    export class DatabaseColorModule extends ModuleBase implements ISitecoreExtensionsModule {
+        coloursMapping: IDictionary;
+
+        constructor(name: string, description: string) {
+            super(name, description);
+            this.coloursMapping = new Dictionary([
+                { key: 'WEB', value: '#DC291E' },
+            ]);
+        }
+
+        changeheaderColor(dbName: string): void {
+            if (this.coloursMapping.containsKey(dbName)) {
+                var header = document.getElementsByClassName('sc-globalHeader-content')[0];
+                header.setAttribute("style", "background-color: " + this.coloursMapping[dbName] + ";")
+            }
+        }
+
+        canExecute(): boolean {
+            return SitecoreExtensions.Context.Database() != null && document.querySelector('.sc-globalHeader-content') != null;
+        }
+
+        initialize(): void {
+            var dbName = SitecoreExtensions.Context.Database();
+            if (dbName != null) {
+                this.changeheaderColor(dbName.toUpperCase());
+            }
+        }
+    }
+}
+
 namespace SitecoreExtensions.Modules.SectionSwitches {
     export class SectionSwitchesModule extends ModuleBase implements ISitecoreExtensionsModule {
         sectionSwitchButtonClassName: string;
@@ -746,10 +780,12 @@ if (SitecoreExtensions.Context.IsValid()) {
     var sectionSwitchesModule = new SitecoreExtensions.Modules.SectionSwitches.SectionSwitchesModule('Section Switches', 'Easily open/close all item sections with just one click');
     var dbNameModule = new SitecoreExtensions.Modules.DatabaseName.DatabaseNameModule('Database Name', 'Displays current database name in the Content Editor header');
     var launcher = new SitecoreExtensions.Modules.Launcher.LauncherModule('Launcher', 'Feel like power user using Sitecore Extensions command launcher.');
+    var databaseColour = new SitecoreExtensions.Modules.DatabaseColor.DatabaseColorModule("Database Colour", 'Change the global header colour depeding on current database.');
 
     scExtManager.addModule(sectionSwitchesModule);
     scExtManager.addModule(dbNameModule);
     scExtManager.addModule(launcher);
+    scExtManager.addModule(databaseColour);
 
     scExtManager.initModules();
 
