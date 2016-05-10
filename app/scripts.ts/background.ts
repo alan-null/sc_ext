@@ -7,7 +7,7 @@ chrome.runtime.onInstalled.addListener(details => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
-  chrome.browserAction.setBadgeText({ text: request.modulesCount, });
+  chrome.browserAction.setBadgeText({tabId: sender.tab.id, text: request.modulesCount, });
   chrome.browserAction.setBadgeBackgroundColor({ color: '#666' });
 
   chrome.browserAction.setIcon({

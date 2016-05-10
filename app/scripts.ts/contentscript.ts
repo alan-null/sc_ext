@@ -1,5 +1,6 @@
 /// <reference path='../../typings/chrome/chrome.d.ts'/>
 'use strict';
+chrome.runtime.sendMessage({ 'modulesCount': 'off' });
 window.addEventListener('message', function (event) {
     if (event.data.sc_ext_enabled) {
         chrome.runtime.sendMessage({

@@ -2,6 +2,7 @@
 /// <reference path='../../app/scripts.ts/sc_ext-common.ts'/>
 'use strict';
 declare var scSitecore: any;
+declare var scContentEditor: any;
 
 namespace SitecoreExtensions.Modules {
     export interface ISitecoreExtensionsModule {
@@ -35,7 +36,7 @@ namespace SitecoreExtensions.Modules.DatabaseName {
         }
 
         canExecute(): boolean {
-            return SitecoreExtensions.Context.Database() != null;
+            return SitecoreExtensions.Context.Database() != null && document.querySelector('.sc-globalHeader-loginInfo') != null;
         }
 
         initialize(): void {
@@ -714,7 +715,7 @@ namespace SitecoreExtensions {
         }
 
         static Location(): Location {
-            if (document.querySelector('body.contentEditor') !== null) {
+            if (typeof scContentEditor != 'undefined') {
                 return Location.ContentEditor;
             }
             if (document.querySelector('.sc-launchpad') !== null) {
