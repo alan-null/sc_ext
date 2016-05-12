@@ -10,9 +10,9 @@ var sass = require('gulp-sass');
 
 const $ = gulpLoadPlugins();
 
-gulp.task('typescript', function() {
+gulp.task('typescript', function () {
     var tsProject = ts.createProject('tsconfig.json');
-    
+
     var tsResult = tsProject.src()
         .pipe(ts(tsProject));
 
@@ -23,9 +23,9 @@ gulp.task('typescript', function() {
 });
 
 gulp.task('sass', function () {
-  return gulp.src('./app/styles.sass/**/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./app/styles'));
+    return gulp.src('./app/styles.sass/**/*.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest('./app/styles'));
 });
 
 gulp.task('extras', () => {
@@ -36,9 +36,9 @@ gulp.task('extras', () => {
         '!app/*.json',
         '!app/*.html',
     ], {
-        base: 'app',
-        dot: true
-    }).pipe(gulp.dest('dist'));
+            base: 'app',
+            dot: true
+        }).pipe(gulp.dest('dist'));
 });
 
 function lint(files, options) {
@@ -58,15 +58,15 @@ gulp.task('lint', lint('app/scripts.babel/**/*.js', {
 gulp.task('images', () => {
     return gulp.src('app/images/**/*')
         .pipe($.if($.if.isFile, $.cache($.imagemin({
-                progressive: true,
-                interlaced: true,
-                // don't remove IDs = require ( SVGs, they are often use)d
-                // as hooks for embedding and styling
-                svgoPlugins: [{
-                    cleanupIDs: false
-                }]
-            }))
-            .on('error', function(err) {
+            progressive: true,
+            interlaced: true,
+            // don't remove IDs = require ( SVGs, they are often use)d
+            // as hooks for embedding and styling
+            svgoPlugins: [{
+                cleanupIDs: false
+            }]
+        }))
+            .on('error', function (err) {
                 console.log(err);
                 this.end();
             })))
@@ -94,7 +94,7 @@ gulp.task('html', () => {
 gulp.task('chromeManifest', () => {
     return gulp.src('app/manifest.json')
         .pipe($.chromeManifest({
-            buildnumber: true,
+            buildnumber: false,
             background: {
                 target: 'scripts/background.js',
                 exclude: [
@@ -113,7 +113,7 @@ gulp.task('chromeManifest', () => {
 
 
 gulp.task('web_accessible_resources', () => {
-    fs.readFile('./app/manifest.json', function(err, _data) {
+    fs.readFile('./app/manifest.json', function (err, _data) {
         if (err) {
             console.log(err);
             return;
@@ -158,7 +158,7 @@ gulp.task('watch', ['lint', 'babel', 'typescript', 'sass', 'html'], () => {
 
     gulp.watch('app/scripts.babel/**/*.js', ['lint', 'babel']);
     gulp.watch('app/scripts.ts/**/*.ts', ['lint', 'typescript']);
-    gulp.watch('app/styles.sass/**/*.scss', ['lint', 'sass']);   
+    gulp.watch('app/styles.sass/**/*.scss', ['lint', 'sass']);
     gulp.watch('bower.json', ['wiredep']);
 });
 
@@ -177,10 +177,10 @@ gulp.task('wiredep', () => {
         .pipe(gulp.dest('app'));
 });
 
-gulp.task('package', function() {
+gulp.task('package', ['clean','build'], function () {
     var manifest = require('./dist/manifest.json');
     return gulp.src('dist/**')
-        .pipe($.zip('sc ext-' + manifest.version + '.zip'))
+        .pipe($.zip('sc-ext-' + manifest.version + '.zip'))
         .pipe(gulp.dest('package'));
 });
 
@@ -191,6 +191,6 @@ gulp.task('build', (cb) => {
         'size', cb);
 });
 
-gulp.task('default', ['clean'], cb => {    
+gulp.task('default', ['clean'], cb => {
     runSequence('build', cb);
 });
