@@ -16,7 +16,7 @@
   * Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
 
 #### Naming 
-* **Commig message**. 
+* **Commit message**. 
   * Please use following commit message scheme: `#ISSUE_NUMBER | ISSUE DESCRIPTION`,  
   * Example:   `#1 | Launcher does not initialize when navigating from desktop`
 

@@ -18,3 +18,8 @@ Sitecore Extensions is a google chrome extension which provides small improvemen
 - Database colour - Change the global header colour depeding on current database,
 - Icon colour - changes colour to red when using Sitecore on current tab, otherwise will be grayed
 
+## Contributing
+If you are interested in fixing issues and contributing directly to the code base, please see the document [How to Contribute](.github/CONTRIBUTING.md)
+
+## License
+[MIT](LICENSE)
