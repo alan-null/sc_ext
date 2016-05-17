@@ -51,13 +51,31 @@ namespace SitecoreExtensions {
                 }, tick);
             }
         }
-        static addProxy(object, functionName, proxyFn) {
-            var proxied = object.prototype[functionName];
-            object.prototype[functionName] = function () {
-                proxyFn();
-                return proxied.apply(this, arguments);
+        static addProxy(operand, functionName, proxyFn) {
+            if (typeof operand == "function") {
+                return this.addProxyToFunction(operand, functionName, proxyFn);
+            } else {
+                return this.addProxyToObject(operand, functionName, proxyFn);
             }
         }
+        private static addProxyToFunction(fn, functionName, proxyFn) {
+            var proxied = fn.prototype[functionName];
+            fn.prototype[functionName] = function () {
+                var result = proxied.apply(this, arguments);
+                proxyFn();
+                return result;
+            }
+        }
+
+        private static addProxyToObject(obj, functionName, proxyFn) {
+            var proxied = obj[functionName];
+            obj[functionName] = function () {
+                var result = proxied.apply(this, arguments);
+                proxyFn();
+                return result;
+            }
+        }
+
         static addFlowConditionToEvent(object, functionName, conditionFn) {
             var proxied = object.prototype[functionName];
             object.prototype[functionName] = function () {

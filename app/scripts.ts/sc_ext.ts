@@ -2,6 +2,7 @@
 /// <reference path='../../app/scripts.ts/sc_ext-common.ts'/>
 'use strict';
 declare var scSitecore: any;
+declare var scForm: any;
 declare var scContentEditor: any;
 
 namespace SitecoreExtensions.Modules {
@@ -147,9 +148,8 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
         initialize(): void {
             window.addEventListener('load', () => this.insertButtons());
             this.addTreeNodeHandlers('scContentTree');
-            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => {
-                setTimeout(() => { this.refreshButtons(); }, 10);
-            });
+            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshButtons(); });
+            HTMLHelpers.addProxy(scForm, 'invoke', () => { this.refreshButtons(); });
         }
     }
 
@@ -684,29 +684,29 @@ namespace SitecoreExtensions.Modules.LastLocation {
     import ICommandsProvider = SitecoreExtensions.Modules.Launcher.Providers.ICommandsProvider;
     import ICommand = SitecoreExtensions.Modules.Launcher.ICommand;
     declare var scForm: any;
-    
+
     class LastLocationStore {
-        private static LocalStorageKey : string = "sc_ext::last_item";
-        
-        public static saveLastItemId(id : string) : void {
+        private static LocalStorageKey: string = "sc_ext::last_item";
+
+        public static saveLastItemId(id: string): void {
             localStorage.setItem(this.LocalStorageKey, id);
         }
-        
-        public static loadLastItemId() : string {
+
+        public static loadLastItemId(): string {
             return localStorage.getItem(this.LocalStorageKey);
         }
     }
-    
+
     export class RestoreLastLocation extends SitecoreExtensions.Modules.ModuleBase implements SitecoreExtensions.Modules.ISitecoreExtensionsModule {
         canExecute(): boolean {
             return SitecoreExtensions.Context.Location() == Location.ContentEditor;
         }
-        
-        updateLastLocation(args : any): void {
+
+        updateLastLocation(args: any): void {
             var id;
-            for (let i=0,l=args.path.length;i<l;i++){
+            for (let i = 0, l = args.path.length; i < l; i++) {
                 let parent = args.path[i];
-                if(parent.tagName && parent.tagName.toLowerCase() === "a"){
+                if (parent.tagName && parent.tagName.toLowerCase() === "a") {
                     id = parent.id;
                     id = id.substring(id.lastIndexOf("_") + 1);
                     LastLocationStore.saveLastItemId(id);
@@ -714,7 +714,7 @@ namespace SitecoreExtensions.Modules.LastLocation {
                 }
             }
         }
-        
+
         addTreeNodeHandlers(className: string): void {
             var nodes = document.getElementsByClassName(className);
             for (var i = 0; i < nodes.length; i++) {
@@ -728,21 +728,21 @@ namespace SitecoreExtensions.Modules.LastLocation {
             this.addTreeNodeHandlers('scContentTree');
         }
     }
-    
+
     export class RestoreLastLocationCommandProvider implements ICommandsProvider {
         getCommands(): ICommand[] {
             var cmd: ICommand = {
-                    id: 0,
-                    name: "Restore Last Opened Item",
-                    description: "Restores last opened item in Content Editor",
-                    execute: () => { 
-                        var lastItem = LastLocationStore.loadLastItemId();
-                        if(lastItem){
-                            scForm.postRequest("", "", "", "LoadItem(\"" + lastItem + "\")");
-                        }
-                     },
-                    canExecute: () => { return SitecoreExtensions.Context.Location() == Location.ContentEditor; }
-                };
+                id: 0,
+                name: "Restore Last Opened Item",
+                description: "Restores last opened item in Content Editor",
+                execute: () => {
+                    var lastItem = LastLocationStore.loadLastItemId();
+                    if (lastItem) {
+                        scForm.postRequest("", "", "", "LoadItem(\"" + lastItem + "\")");
+                    }
+                },
+                canExecute: () => { return SitecoreExtensions.Context.Location() == Location.ContentEditor; }
+            };
             return [
                 cmd
             ];
@@ -851,7 +851,7 @@ if (SitecoreExtensions.Context.IsValid()) {
     var dbNameModule = new SitecoreExtensions.Modules.DatabaseName.DatabaseNameModule('Database Name', 'Displays current database name in the Content Editor header');
     var launcher = new SitecoreExtensions.Modules.Launcher.LauncherModule('Launcher', 'Feel like power user using Sitecore Extensions command launcher.');
     var databaseColour = new SitecoreExtensions.Modules.DatabaseColor.DatabaseColorModule("Database Colour", 'Change the global header colour depeding on current database.');
-    var lastLocation = new SitecoreExtensions.Modules.LastLocation.RestoreLastLocation("Restore Last Location","Restores last opened item in Content Editor");
+    var lastLocation = new SitecoreExtensions.Modules.LastLocation.RestoreLastLocation("Restore Last Location", "Restores last opened item in Content Editor");
 
     scExtManager.addModule(sectionSwitchesModule);
     scExtManager.addModule(dbNameModule);
