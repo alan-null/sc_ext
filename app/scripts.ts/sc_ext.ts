@@ -802,6 +802,19 @@ namespace SitecoreExtensions {
             if (pageMode == Location.Desktop) {
                 return (document.querySelector('.scDatabaseName') as HTMLDivElement).innerText;
             }
+            if (pageMode == Location.ExperienceEditor) {
+                var webEditRibbonIFrame = (document.querySelector('#scWebEditRibbon') as HTMLIFrameElement)
+                if (webEditRibbonIFrame != null) {
+                    var src = webEditRibbonIFrame.src
+                    var start = src.indexOf("database=");
+                    var end = src.indexOf("&", start);
+                    return src.slice(start + 9, end)
+                }
+                var peBar = document.querySelector('[data-sc-id=PageEditBar]');
+                if (peBar != null) {
+                    return peBar.attributes['data-sc-database'].value
+                }
+            }
             else {
                 var contendDb = <HTMLMetaElement>document.querySelector('[data-sc-name=sitecoreContentDatabase]')
                 if (contendDb != null) {
@@ -828,7 +841,7 @@ namespace SitecoreExtensions {
             if (document.querySelector('input#__FRAMENAME') !== null) {
                 return Location.Desktop;
             }
-            if (document.querySelector('#scWebEditRibbon') !== null) {
+            if (document.querySelector('#scWebEditRibbon') !== null || document.querySelector('[data-sc-id=PageEditBar]') != null) {
                 return Location.ExperienceEditor;
             }
             return Location.Unknown;
