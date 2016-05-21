@@ -46,6 +46,10 @@
     },
     "default_popup": ""
   },
+  "options_ui": {
+    "page": "options/options.html",
+    "chrome_style": true
+  },
   "web_accessible_resources": [
     "scripts/sc_ext.js",
     "scripts/popup.js",

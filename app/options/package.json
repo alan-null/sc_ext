@@ -1,0 +1,11 @@
+{
+  "name": "sc_ext_options",
+  "description": "Sitecore Extensions Options",
+  "private": true,
+  "scripts": {
+    "compile": "tsc --sourcemap --out app.js _all.ts"
+  },
+  "dependencies": {
+    "angular": "^1.3.13"
+  }  
+}
