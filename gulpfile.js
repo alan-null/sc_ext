@@ -7,6 +7,8 @@ var fs = require('fs');
 var ts = require('gulp-typescript');
 var merge = require('merge2');
 var sass = require('gulp-sass');
+var concat = require('gulp-concat');
+var sourcemaps = require('gulp-sourcemaps');
 
 const $ = gulpLoadPlugins();
 
@@ -20,6 +22,20 @@ gulp.task('typescript', function () {
         tsResult.dts.pipe(gulp.dest('typings/sc-ext')),
         tsResult.js.pipe(gulp.dest('app/scripts'))
     ]);
+});
+
+gulp.task('typescript-options', function () {
+    var tsResult = gulp.src('app/options/**/*.ts')
+        .pipe(sourcemaps.init())
+        .pipe(ts({
+            sortOutput: true,
+
+        }));
+
+    return tsResult.js
+        .pipe(concat('app.js'))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest('app/options'));
 });
 
 gulp.task('sass', function () {
@@ -74,7 +90,7 @@ gulp.task('images', () => {
 });
 
 gulp.task('html', () => {
-    return gulp.src('app/*.html')
+    return gulp.src('app/**/*.html')
         .pipe($.useref({
             searchPath: ['.tmp', 'app', '.']
         }))
@@ -111,6 +127,14 @@ gulp.task('chromeManifest', () => {
         .pipe(gulp.dest('dist'));
 });
 
+gulp.task('web_accessible_resources-options', () => {
+    return gulp.src(['app/options/**/*.js', 'app/options/**/*.css', 'app/options/img/**/*.png'])
+        .pipe($.if('*.js', gulp.dest("dist/options")))
+        .pipe($.if('*.css', gulp.dest("dist/options")))
+        .pipe($.if('*.png', gulp.dest("dist/options/img")))
+});
+
+
 
 gulp.task('web_accessible_resources', () => {
     fs.readFile('./app/manifest.json', function (err, _data) {
@@ -145,7 +169,7 @@ gulp.task('babel', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('watch', ['lint', 'babel', 'typescript', 'sass', 'html'], () => {
+gulp.task('watch', ['lint', 'babel', 'typescript', "typescript-options", 'sass', 'html'], () => {
     $.livereload.listen();
 
     gulp.watch([
@@ -157,8 +181,9 @@ gulp.task('watch', ['lint', 'babel', 'typescript', 'sass', 'html'], () => {
     ]).on('change', $.livereload.reload);
 
     gulp.watch('app/scripts.babel/**/*.js', ['lint', 'babel']);
-    gulp.watch('app/scripts.ts/**/*.ts', ['lint', 'typescript']);
-    gulp.watch('app/styles.sass/**/*.scss', ['lint', 'sass']);
+    gulp.watch('app/scripts.ts/**/*.ts', ['typescript']);
+    gulp.watch('app/options/**/*.ts', ['typescript-options']);
+    gulp.watch('app/styles.sass/**/*.scss', ['sass']);
     gulp.watch('bower.json', ['wiredep']);
 });
 
@@ -177,7 +202,7 @@ gulp.task('wiredep', () => {
         .pipe(gulp.dest('app'));
 });
 
-gulp.task('package', ['clean','build'], function () {
+gulp.task('package', ['clean', 'build'], function () {
     var manifest = require('./dist/manifest.json');
     return gulp.src('dist/**')
         .pipe($.zip('sc-ext-' + manifest.version + '.zip'))
@@ -186,8 +211,8 @@ gulp.task('package', ['clean','build'], function () {
 
 gulp.task('build', (cb) => {
     runSequence(
-        'lint', 'babel', 'typescript', 'sass', 'chromeManifest', ['html', 'images', 'extras'],
-        'web_accessible_resources',
+        'lint', 'babel', 'typescript', 'typescript-options', 'sass', 'chromeManifest', ['html', 'images', 'extras'],
+        'web_accessible_resources', 'web_accessible_resources-options',
         'size', cb);
 });
 
