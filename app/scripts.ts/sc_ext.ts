@@ -187,6 +187,155 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
     }
 }
 
+namespace SitecoreExtensions.Modules.FieldSearch {
+    export class FieldSearchModule extends ModuleBase implements ISitecoreExtensionsModule {
+
+        searchString: string;
+        canExecute(): boolean {
+            return SitecoreExtensions.Context.Location() == Location.ContentEditor;
+        };
+
+        createTextBox(text: string, callback: { (e: KeyboardEvent): any }): HTMLInputElement {
+            var input = HTMLHelpers.createElement<HTMLInputElement>('input', {
+                id: 'scextFieldSearch',
+                type: 'text',
+                class: 'scSearchInput scIgnoreModified sc-ext-fieldSearch'
+            });
+            //input.onkeypress = callback;
+            input.onkeyup = callback;
+            
+            return input;
+        };
+        
+        /*private toggleSections(hide: boolean): void {
+            var contentSection = document.getElementById("EditorPanel");
+            var sectionsExpanded = contentSection.getElementsByClassName("scEditorSectionCaptionExpanded");
+            var sectionsCollapsed = contentSection.getElementsByClassName("scEditorSectionCaptionCollapsed");
+            var panels = contentSection.getElementsByClassName("scEditorSectionPanel");
+            var sections = Array.prototype.slice.call(sectionsExpanded).concat(Array.prototype.slice.call(sectionsCollapsed)).concat(Array.prototype.slice.call(panels));
+                    
+            sections.forEach(element => {
+                if (hide) {
+                    element.setAttribute("style", "display:none");
+                } else {
+                    element.removeAttribute("style");
+                }
+            });
+        };*/
+        
+        /*getParent(start: Node, cl: string) : Node {
+            var elem = start;
+            for ( ; elem && elem !== document; elem = elem.parentNode ) {
+                if (elem.attributes["class"].contains(cl)) {
+                    return elem;
+                }
+            }
+            return undefined;
+        };*/
+        
+        doSearch(e: KeyboardEvent) {
+            var char = document.getElementById("scextFieldSearch");
+            console.log("Input element: " + char);
+            this.searchString = char.value;
+            console.log("search string: " + this.searchString);
+            
+            if (this.searchString.length > 2) {
+                // this.toggleSections(true);
+                var contentSection = document.getElementById("EditorPanel");
+                var sectionsExpanded = contentSection.getElementsByClassName("scEditorSectionCaptionExpanded");
+                var sectionsCollapsed = contentSection.getElementsByClassName("scEditorSectionCaptionCollapsed");
+                var panels = contentSection.getElementsByClassName("scEditorSectionPanel");
+                var fields = contentSection.getElementsByClassName("scEditorFieldMarker");
+                var sections = Array.prototype.slice.call(sectionsExpanded).concat(Array.prototype.slice.call(sectionsCollapsed)).concat(Array.prototype.slice.call(panels)).concat(Array.prototype.slice.call(fields));
+                        
+                sections.forEach(element => {
+                    element.setAttribute("style", "display:none");
+                });
+                
+                var fieldLabels = Array.prototype.slice.call(document.getElementsByClassName("scEditorFieldLabel"));
+                fieldLabels.forEach(element => {
+                    if (element.innerText.indexOf(this.searchString) > -1) {
+                        console.log("Inner text: " + element.innerText);
+                        //this.getParent(element, "scEditorSectionPanel").attributes["style"] = "display:block";
+                        var elem = element;
+                        for ( ; elem && elem !== document; elem = elem.parentNode ) {
+                            if (elem.attributes["class"] && (elem.attributes["class"].value.indexOf("scEditorSectionPanel") > -1 || elem.attributes["class"].value.indexOf("scEditorFieldMarker") > -1) && elem.hasAttribute("style")) {
+                                console.log("Disco!: " + elem.getAttribute("style"));
+                                Array.prototype.slice.call(elem.attributes).forEach(x => {
+                                    console.log(" + attribute: " + x.name + ":" + x.value);
+                                });
+                                elem.setAttribute("style", "display:table");
+                                
+                                if (elem.attributes["class"].value.indexOf("scEditorSectionPanel") > -1) {
+                                    elem.previousElementSibling.setAttribute("style", "display:block");
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                
+                    // this.toggleSections(false);
+                    var contentSection = document.getElementById("EditorPanel");
+                    var sectionsExpanded = contentSection.getElementsByClassName("scEditorSectionCaptionExpanded");
+                    var sectionsCollapsed = contentSection.getElementsByClassName("scEditorSectionCaptionCollapsed");
+                    var panels = contentSection.getElementsByClassName("scEditorSectionPanel");
+                    var fields = contentSection.getElementsByClassName("scEditorFieldMarker");
+                    var sections = Array.prototype.slice.call(sectionsExpanded).concat(Array.prototype.slice.call(sectionsCollapsed));
+                    var tableSections = Array.prototype.slice.call(panels).concat(Array.prototype.slice.call(fields));
+                            
+                    sections.forEach(element => {
+                        element.setAttribute("style", "display:block");
+                    });
+                    
+                    tableSections.forEach(element => {
+                        element.setAttribute("style", "display:table")
+                    })
+            }
+        };
+
+        addTreeNodeHandlers(className: string): void {
+            var nodes = document.getElementsByClassName(className);
+            for (var i = 0; i < nodes.length; i++) {
+                nodes[i].addEventListener('click', (evt) => {
+                    setTimeout(() => {
+                        this.refreshSearchField();
+                    }, 10);
+                });
+            }
+        }
+        
+        private insertSearchField(): void {
+            var txbSearch = this.createTextBox('Collapse', this.doSearch)
+
+            var controlsTab = document.querySelector('.scEditorTabControlsTab5');
+            controlsTab.insertBefore(txbSearch, controlsTab.firstChild);
+        };
+        
+        private searchFieldExists(): boolean {
+            if (document.getElementById("scextFieldSearch")) {
+                return true;
+            }
+            return false;
+        }
+        
+        private refreshSearchField(): void {
+            if (!this.searchFieldExists()) {
+                this.insertSearchField();
+            }
+        }
+        
+        initialize(): void {
+            this.searchString = "";
+            window.addEventListener('load', () => this.insertSearchField());
+            this.addTreeNodeHandlers('scContentTree');
+            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshSearchField(); });
+            HTMLHelpers.addProxy(scForm, 'invoke', () => { this.refreshSearchField(); });
+        }
+        
+    }
+}
+
 namespace SitecoreExtensions.Modules.Launcher {
     export interface ICommand {
         id: number;
@@ -861,12 +1010,14 @@ namespace SitecoreExtensions {
 if (SitecoreExtensions.Context.IsValid()) {
     var scExtManager = new SitecoreExtensions.ExtensionsManager();
     var sectionSwitchesModule = new SitecoreExtensions.Modules.SectionSwitches.SectionSwitchesModule('Section Switches', 'Easily open/close all item sections with just one click');
+    var fieldSearchModule = new SitecoreExtensions.Modules.FieldSearch.FieldSearchModule('Field Search', 'Allows to search available fields.');
     var dbNameModule = new SitecoreExtensions.Modules.DatabaseName.DatabaseNameModule('Database Name', 'Displays current database name in the Content Editor header');
     var launcher = new SitecoreExtensions.Modules.Launcher.LauncherModule('Launcher', 'Feel like power user using Sitecore Extensions command launcher.');
     var databaseColour = new SitecoreExtensions.Modules.DatabaseColor.DatabaseColorModule("Database Colour", 'Change the global header colour depeding on current database.');
     var lastLocation = new SitecoreExtensions.Modules.LastLocation.RestoreLastLocation("Restore Last Location", "Restores last opened item in Content Editor");
 
     scExtManager.addModule(sectionSwitchesModule);
+    scExtManager.addModule(fieldSearchModule);
     scExtManager.addModule(dbNameModule);
     scExtManager.addModule(launcher);
     scExtManager.addModule(databaseColour);
