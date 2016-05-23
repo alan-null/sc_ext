@@ -191,106 +191,101 @@ namespace SitecoreExtensions.Modules.FieldSearch {
     export class FieldSearchModule extends ModuleBase implements ISitecoreExtensionsModule {
 
         searchString: string;
-        canExecute(): boolean {
+        private canExecute(): boolean {
             return SitecoreExtensions.Context.Location() == Location.ContentEditor;
         };
 
-        createTextBox(text: string, callback: { (e: KeyboardEvent): any }): HTMLInputElement {
+        private createTextBox(text: string, callback: { (e: KeyboardEvent): any }): HTMLInputElement {
             var input = HTMLHelpers.createElement<HTMLInputElement>('input', {
                 id: 'scextFieldSearch',
                 type: 'text',
                 class: 'scSearchInput scIgnoreModified sc-ext-fieldSearch'
             });
             //input.onkeypress = callback;
-            input.onkeyup = callback;
+            var data = this;
+            input.onkeyup = (e: KeyboardEvent) => {
+                data.doSearch(e);
+            };
             
             return input;
         };
         
-        /*private toggleSections(hide: boolean): void {
+        private castToArray(list) : Element[] {
+            return Array.prototype.slice.call(list);
+        }
+        
+        private toggleSections(hide: boolean): void {
             var contentSection = document.getElementById("EditorPanel");
             var sectionsExpanded = contentSection.getElementsByClassName("scEditorSectionCaptionExpanded");
             var sectionsCollapsed = contentSection.getElementsByClassName("scEditorSectionCaptionCollapsed");
             var panels = contentSection.getElementsByClassName("scEditorSectionPanel");
-            var sections = Array.prototype.slice.call(sectionsExpanded).concat(Array.prototype.slice.call(sectionsCollapsed)).concat(Array.prototype.slice.call(panels));
-                    
+            var fields = contentSection.getElementsByClassName("scEditorFieldMarker");
+            var sections = this.castToArray(sectionsExpanded).concat(this.castToArray(sectionsCollapsed));
+            var tableSections = this.castToArray(panels).concat(this.castToArray(fields));
+             
+            var displayTables = "table";
+            var displaySections = "block";
+            if (hide) {
+                displaySections = displayTables = "none";
+            }
+             
             sections.forEach(element => {
-                if (hide) {
-                    element.setAttribute("style", "display:none");
-                } else {
-                    element.removeAttribute("style");
-                }
+                element.setAttribute("style", "display:" + displaySections);
             });
-        };*/
+                    
+            tableSections.forEach(element => {
+                element.setAttribute("style", "display:" + displayTables);
+            })
+        };
         
-        /*getParent(start: Node, cl: string) : Node {
+        private getParent(start: Node, cl: string) : Element[] {
+            var result = []
             var elem = start;
             for ( ; elem && elem !== document; elem = elem.parentNode ) {
-                if (elem.attributes["class"].contains(cl)) {
-                    return elem;
+                if (elem.attributes["class"] && (elem.attributes["class"].value.indexOf("scEditorSectionPanel") > -1 || elem.attributes["class"].value.indexOf("scEditorFieldMarker") > -1) && elem.hasAttribute("style")) {
+                    result.push(elem);
                 }
             }
-            return undefined;
-        };*/
+            return result;
+        };
         
-        doSearch(e: KeyboardEvent) {
-            var char = document.getElementById("scextFieldSearch");
-            console.log("Input element: " + char);
-            this.searchString = char.value;
-            console.log("search string: " + this.searchString);
-            
-            if (this.searchString.length > 2) {
-                // this.toggleSections(true);
-                var contentSection = document.getElementById("EditorPanel");
-                var sectionsExpanded = contentSection.getElementsByClassName("scEditorSectionCaptionExpanded");
-                var sectionsCollapsed = contentSection.getElementsByClassName("scEditorSectionCaptionCollapsed");
-                var panels = contentSection.getElementsByClassName("scEditorSectionPanel");
-                var fields = contentSection.getElementsByClassName("scEditorFieldMarker");
-                var sections = Array.prototype.slice.call(sectionsExpanded).concat(Array.prototype.slice.call(sectionsCollapsed)).concat(Array.prototype.slice.call(panels)).concat(Array.prototype.slice.call(fields));
-                        
-                sections.forEach(element => {
-                    element.setAttribute("style", "display:none");
-                });
-                
-                var fieldLabels = Array.prototype.slice.call(document.getElementsByClassName("scEditorFieldLabel"));
-                fieldLabels.forEach(element => {
-                    if (element.innerText.indexOf(this.searchString) > -1) {
-                        console.log("Inner text: " + element.innerText);
-                        //this.getParent(element, "scEditorSectionPanel").attributes["style"] = "display:block";
-                        var elem = element;
-                        for ( ; elem && elem !== document; elem = elem.parentNode ) {
-                            if (elem.attributes["class"] && (elem.attributes["class"].value.indexOf("scEditorSectionPanel") > -1 || elem.attributes["class"].value.indexOf("scEditorFieldMarker") > -1) && elem.hasAttribute("style")) {
-                                console.log("Disco!: " + elem.getAttribute("style"));
-                                Array.prototype.slice.call(elem.attributes).forEach(x => {
-                                    console.log(" + attribute: " + x.name + ":" + x.value);
-                                });
-                                elem.setAttribute("style", "display:table");
-                                
-                                if (elem.attributes["class"].value.indexOf("scEditorSectionPanel") > -1) {
-                                    elem.previousElementSibling.setAttribute("style", "display:block");
-                                }
-                            }
-                        }
+        private unhideResults(hits : Element[]) : void {
+            hits.forEach(element => {
+                this.getParent(element, "scEditorSectionPanel").forEach(elem => {
+                    elem.setAttribute("style", "display:table");
+                    
+                    if (elem.getAttribute("class").indexOf("scEditorSectionPanel") > -1) {
+                        elem.previousElementSibling.setAttribute("style", "display:block");
                     }
                 });
+            });
+        }
+        
+        private findFields(searchString : string) : Element[] {
+            var fieldLabels = this.castToArray(document.getElementsByClassName("scEditorFieldLabel"));
+            var hits : Element[] = []
+            fieldLabels.forEach(element => {
+                if (element.innerText.indexOf(searchString) > -1) {
+                    hits.push(element);
+                }
+            });
+            return hits;
+        }
+        
+        doSearch(e: KeyboardEvent) : void {
+            // todo: cast to HTMLInputElement
+            var char = document.getElementById("scextFieldSearch");
+            var searchString = char.value;
+            
+            if (searchString.length > 2) {
+                console.log("Hide sections");
+                this.toggleSections(true);
+                console.log("Find fields")
+                var hits : Element[] = this.findFields(searchString);
+                console.log("Unhide results");
+                this.unhideResults(hits);
             } else {
-                
-                    // this.toggleSections(false);
-                    var contentSection = document.getElementById("EditorPanel");
-                    var sectionsExpanded = contentSection.getElementsByClassName("scEditorSectionCaptionExpanded");
-                    var sectionsCollapsed = contentSection.getElementsByClassName("scEditorSectionCaptionCollapsed");
-                    var panels = contentSection.getElementsByClassName("scEditorSectionPanel");
-                    var fields = contentSection.getElementsByClassName("scEditorFieldMarker");
-                    var sections = Array.prototype.slice.call(sectionsExpanded).concat(Array.prototype.slice.call(sectionsCollapsed));
-                    var tableSections = Array.prototype.slice.call(panels).concat(Array.prototype.slice.call(fields));
-                            
-                    sections.forEach(element => {
-                        element.setAttribute("style", "display:block");
-                    });
-                    
-                    tableSections.forEach(element => {
-                        element.setAttribute("style", "display:table")
-                    })
+                this.toggleSections(false);
             }
         };
 
