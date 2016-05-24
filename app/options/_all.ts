@@ -3,7 +3,11 @@
 /// <reference path='typings/angularjs/angular.d.ts' />
 /// <reference path='typings/angular-formly/angular-formly.d.ts' />
 
+// Providers
+/// <reference path='providers/OptionsProvider.ts' />
+
 // Controllers
+/// <reference path='controllers/BaseOptionsController.ts' />
 /// <reference path='controllers/OptionsController.ts' />
 /// <reference path='controllers/LauncherController.ts' />
 /// <reference path='controllers/DatabaseColorController.ts' />

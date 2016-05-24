@@ -2,34 +2,24 @@
 
 module SitecoreExtensions.Options {
     'use strict';
-    export class GeneralOptionsController {
-        model: any;
-        constructor(private $scope: any) {
-            $scope.vm = this;
 
-            $scope.vm.onSubmit = this.saveSettings;
-
+    export class GeneralOptionsController extends BaseOptionsController {
+        constructor($scope: any, formlyVersion: string) {
+            super($scope, formlyVersion, 'General')
             $scope.vm.title = 'Sitecore Extensions general options';
-            $scope.vm.env = {
-                angularVersion: angular.version.full,
-                formlyVersion: "8.2.1"
-            };
-
-            $scope.vm.model = {
-                enabled: true
-            };
-
-            $scope.vm.fields = [{
-                key: 'enabled',
-                type: 'checkbox',
-                templateOptions: {
-                    label: 'Enabled'
-                }
-            }];
         }
 
-        saveSettings() {
-            console.log(this.model);
+        getFields() {
+            return [
+                {
+                    key: 'enabled',
+                    type: 'checkbox',
+                    defaultValue: true,
+                    templateOptions: {
+                        label: 'Enabled'
+                    }
+                },
+            ]
         }
     }
 }

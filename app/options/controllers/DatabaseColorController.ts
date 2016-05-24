@@ -2,34 +2,24 @@
 
 module SitecoreExtensions.Options {
     'use strict';
-    export class DatabaseColorController {
-        model: any;
-        constructor(private $scope: any) {
-            $scope.vm = this;
 
-            $scope.vm.onSubmit = this.saveSettings;
-
+    export class DatabaseColorController extends BaseOptionsController {
+        constructor($scope: any, formlyVersion: string) {
+            super($scope, formlyVersion, 'Database Color')
             $scope.vm.title = 'Database Color module';
-            $scope.vm.env = {
-                angularVersion: angular.version.full,
-                formlyVersion: "8.2.1"
-            };
-
-            $scope.vm.model = {
-                enabled: true
-            };
-
-            $scope.vm.fields = [{
-                key: 'enabled',
-                type: 'checkbox',
-                templateOptions: {
-                    label: 'Enabled'
-                }
-            }];
         }
 
-        saveSettings() {
-            console.log(this.model);
+        getFields() {
+            return [
+                {
+                    key: 'enabled',
+                    type: 'checkbox',
+                    defaultValue: true,
+                    templateOptions: {
+                        label: 'Enabled'
+                    }
+                },
+            ]
         }
     }
 }
