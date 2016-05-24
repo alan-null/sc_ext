@@ -191,7 +191,7 @@ namespace SitecoreExtensions.Modules.FieldSearch {
     export class FieldSearchModule extends ModuleBase implements ISitecoreExtensionsModule {
 
         searchString: string;
-        private canExecute(): boolean {
+        canExecute(): boolean {
             return SitecoreExtensions.Context.Location() == Location.ContentEditor;
         };
 
@@ -278,11 +278,8 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             var searchString = char.value;
             
             if (searchString.length > 2) {
-                console.log("Hide sections");
                 this.toggleSections(true);
-                console.log("Find fields")
                 var hits : Element[] = this.findFields(searchString);
-                console.log("Unhide results");
                 this.unhideResults(hits);
             } else {
                 this.toggleSections(false);
