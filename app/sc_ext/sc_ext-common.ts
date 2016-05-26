@@ -85,8 +85,6 @@ namespace SitecoreExtensions {
             }
         }
     }
-
-    export var Libraries = new Array<any>();
 }
 
 namespace SitecoreExtensions.Types {

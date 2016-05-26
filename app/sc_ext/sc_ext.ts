@@ -1,5 +1,7 @@
 /// <reference path='../../typings/es6-shim/es6-shim.d.ts'/>
-/// <reference path='../../app/scripts.ts/sc_ext-common.ts'/>
+/// <reference path='Fuzzy.ts'/>
+/// <reference path='sc_ext-common.ts'/>
+
 'use strict';
 declare var scSitecore: any;
 declare var scForm: any;
@@ -433,6 +435,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
     }
 
+    import Fuzzy = SitecoreExtensions.Libraries.Fuzzy
     export class LauncherModule extends ModuleBase implements ISitecoreExtensionsModule {
         modalElement: HTMLDivElement;
         searchResultsElement: HTMLUListElement;
@@ -440,6 +443,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         selectedCommand: NodeListOf<HTMLLIElement>;
         launcherOptions: any;
         commands: ICommand[];
+        fuzzy: Fuzzy
 
         constructor(name: string, description: string) {
             super(name, description);
@@ -456,6 +460,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             };
 
             this.registerModuleCommands();
+            this.fuzzy = new SitecoreExtensions.Libraries.Fuzzy();
         }
 
         private registerModuleCommands(): void {
@@ -647,7 +652,7 @@ namespace SitecoreExtensions.Modules.Launcher {
 
             for (i = 0; i < availableCommands.length; i++) {
                 var cmd = availableCommands[i];
-                var f = Libraries['fuzzy'](cmd.name, query);
+                var f = this.fuzzy.getScore(cmd.name, query);
                 results[i] = <SearchResult>{
                     command: cmd,
                     score: f.score,
@@ -655,7 +660,7 @@ namespace SitecoreExtensions.Modules.Launcher {
                     highlightedTerm: f.highlightedTerm,
                 }
             }
-            results.sort(Libraries['fuzzy'].matchComparator);
+            results.sort(this.fuzzy.matchComparator);
             return results.slice(0, this.launcherOptions.searchResultsCount);
         }
 
@@ -674,8 +679,8 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.searchResultsElement = <HTMLUListElement>document.getElementById('sc-ext-searchResults')
             this.selectedCommand = document.getElementsByClassName('selected') as NodeListOf<HTMLLIElement>;
 
-            Libraries['fuzzy'].highlighting.before = "<span class='term'>";
-            Libraries['fuzzy'].highlighting.after = '</span>';
+            this.fuzzy.highlighting.before = "<span class='term'>";
+            this.fuzzy.highlighting.after = '</span>';
         }
     }
 }

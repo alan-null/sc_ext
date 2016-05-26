@@ -9,3 +9,6 @@ package
 app/scripts
 app/styles
 app/definitions/
+*.js
+*.js.map
+!app/options/libs/*

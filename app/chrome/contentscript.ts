@@ -1,11 +1,13 @@
 /// <reference path='../../typings/chrome/chrome.d.ts'/>
+/// <reference path='../../typings/es6-shim/es6-shim.d.ts'/>
+
 'use strict';
 chrome.runtime.sendMessage({ 'modulesCount': 'off' });
 window.addEventListener('message', function (event) {
     if (event.data.sc_ext_enabled) {
         chrome.runtime.sendMessage({
-            'newIconPath': 'images/icon-128.png',
-            'modulesCount': event.data.sc_ext_modules_count
+            newIconPath: 'images/icon-128.png',
+            modulesCount: event.data.sc_ext_modules_count
         });
     }
 });
@@ -35,7 +37,5 @@ function injectScripts(scripts: HTMLScriptElement[]) {
 }
 
 injectScripts([
-    createScriptElement("/scripts/sc_ext-common.js"),
-    createScriptElement("/scripts/fuzzy.min.js"),
-    createScriptElement("/scripts/sc_ext.js")
+    createScriptElement("/sc_ext/sc_ext.js"),
 ]);

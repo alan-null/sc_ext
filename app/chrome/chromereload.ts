@@ -1,4 +1,6 @@
 /// <reference path='../../typings/chrome/chrome.d.ts'/>
+/// <reference path='../../typings/es6-shim/es6-shim.d.ts'/>
+
 'use strict';
 
 // Reload client for Chrome Apps & Extensions.
