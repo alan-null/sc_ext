@@ -1,221 +1,161 @@
 var gulp = require('gulp');
-var gulpLoadPlugins = require('gulp-load-plugins');
-var del = require('del');
-var runSequence = require('run-sequence');
-var wiredep = require('wiredep');
-var fs = require('fs');
+var livereload = require('gulp-livereload');
 var ts = require('gulp-typescript');
-var merge = require('merge2');
+var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
 var concat = require('gulp-concat');
-var sourcemaps = require('gulp-sourcemaps');
+var runSequence = require('run-sequence');
+var del = require('del');
+var _if = require('gulp-if')
+var cleanCss = require('gulp-clean-css')
+var uglify = require('gulp-uglify')
+var htmlmin = require('gulp-htmlmin')
+var zip = require('gulp-zip')
+var size = require('gulp-size')
 
-const $ = gulpLoadPlugins();
-
-gulp.task('typescript', function () {
-    var tsProject = ts.createProject('tsconfig.json');
-
-    var tsResult = tsProject.src()
-        .pipe(ts(tsProject));
-
-    return merge([
-        tsResult.dts.pipe(gulp.dest('typings/sc-ext')),
-        tsResult.js.pipe(gulp.dest('app/scripts'))
-    ]);
-});
-
-gulp.task('typescript-options', function () {
-    var tsResult = gulp.src('app/options/**/*.ts')
+function typescript(src, dest, concatFile) {
+    var tsResult = gulp.src(src)
         .pipe(sourcemaps.init())
-        .pipe(ts({
-            sortOutput: true,
+        .pipe(ts({ sortOutput: true }));
 
-        }));
-
+    if (concatFile == null) concatFile = '$';
     return tsResult.js
-        .pipe(concat('app.js'))
-        .pipe(sourcemaps.write())
-        .pipe(gulp.dest('app/options'));
+        .pipe(_if(concatFile != '$', concat(concatFile)))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(dest));
+}
+
+gulp.task('typescript_sc_ext', () => {
+    return typescript('app/sc_ext/**/*.ts', 'app/sc_ext', 'sc_ext.js');
 });
 
-gulp.task('sass', function () {
-    return gulp.src('./app/styles.sass/**/*.scss')
+gulp.task('typescript_chrome', () => {
+    return typescript('app/chrome/**/*.ts', 'app/chrome', null);
+});
+
+gulp.task('typescript_options', () => {
+    return typescript('app/options/**/*.ts', 'app/options', 'app.js');
+});
+
+gulp.task('typescript_common', () => {
+    return typescript('app/options/providers/OptionsProvider.ts', 'app/common', 'optionsProvider.js')
+});
+
+gulp.task('typescript_all', ['cleanup_dev'], (callback) => {
+    runSequence('typescript_sc_ext', 'typescript_chrome', 'typescript_options', 'typescript_common', callback);
+});
+
+gulp.task('sass_sc_ext', () => {
+    return gulp.src('./app/sc_ext/**/*.scss')
         .pipe(sass().on('error', sass.logError))
-        .pipe(gulp.dest('./app/styles'));
+        .pipe(gulp.dest('./app/sc_ext'));
+});
+
+gulp.task('sass_all', (callback) => {
+    runSequence('sass_sc_ext', callback);
+});
+
+gulp.task('cleanup_dev', () => {
+    del(
+        [
+            'app/chrome/**/*.js', 'app/chrome/**/*.js.map',
+            'app/options/*.js', 'app/options/*.js.map',
+            'app/sc_ext/*.js', 'app/sc_ext/*.js.map'
+        ]
+        , { dryRun: false }).then(paths => {
+            console.log('Files and folders that would be deleted:\n', paths.join('\n'));
+        });
+});
+
+gulp.task('cleanup_release', del.bind(null, ['.tmp', 'dist']));
+
+gulp.task('watch', ['typescript_all', 'sass_all'], () => {
+    livereload.listen();
+
+    gulp.watch('app/sc_ext/**/*.ts', ['typescript_sc_ext']);
+    gulp.watch('app/sc_ext/styles/**/*.scss', ['sass_sc_ext']);
+    gulp.watch('app/chrome/**/*.ts', ['typescript_chrome']);
+    gulp.watch('app/options/**/*.ts', ['typescript_options', 'typescript_common']);
 });
 
 gulp.task('extras', () => {
     return gulp.src([
         'app/*.*',
         'app/_locales/**',
-        '!app/scripts.babel',
-        '!app/*.json',
-        '!app/*.html',
     ], {
             base: 'app',
             dot: true
         }).pipe(gulp.dest('dist'));
 });
 
-function lint(files, options) {
-    return () => {
-        return gulp.src(files)
-            .pipe($.eslint(options))
-            .pipe($.eslint.format());
-    };
-}
-
-gulp.task('lint', lint('app/scripts.babel/**/*.js', {
-    env: {
-        es6: true
-    }
-}));
-
-gulp.task('images', () => {
-    return gulp.src('app/images/**/*')
-        .pipe($.if($.if.isFile, $.cache($.imagemin({
-            progressive: true,
-            interlaced: true,
-            // don't remove IDs = require ( SVGs, they are often use)d
-            // as hooks for embedding and styling
-            svgoPlugins: [{
-                cleanupIDs: false
-            }]
-        }))
-            .on('error', function (err) {
-                console.log(err);
-                this.end();
-            })))
-        .pipe(gulp.dest('dist/images'));
-});
-
-gulp.task('html', () => {
-    return gulp.src('app/**/*.html')
-        .pipe($.useref({
-            searchPath: ['.tmp', 'app', '.']
-        }))
-        .pipe($.sourcemaps.init())
-        .pipe($.if('*.js', $.uglify()))
-        .pipe($.if('*.css', $.cleanCss({
-            compatibility: '*'
-        })))
-        .pipe($.sourcemaps.write())
-        .pipe($.if('*.html', $.htmlmin({
-            removeComments: true,
-            collapseWhitespace: true
-        })))
-        .pipe(gulp.dest('dist'));
-});
-
-gulp.task('chromeManifest', () => {
-    return gulp.src('app/manifest.json')
-        .pipe($.chromeManifest({
-            buildnumber: false,
-            background: {
-                target: 'scripts/background.js',
-                exclude: [
-                    'scripts/chromereload.js'
-                ]
-            }
-        }))
-        .pipe($.if('*.css', $.cleanCss({
-            compatibility: '*'
-        })))
-        .pipe($.if('*.js', $.sourcemaps.init()))
-        .pipe($.if('*.js', $.uglify()))
-        .pipe($.if('*.js', $.sourcemaps.write('.')))
-        .pipe(gulp.dest('dist'));
-});
-
-gulp.task('web_accessible_resources-options', () => {
-    return gulp.src(['app/options/**/*.js', 'app/options/**/*.css', 'app/options/img/**/*.png'])
-        .pipe($.if('*.js', gulp.dest("dist/options")))
-        .pipe($.if('*.css', gulp.dest("dist/options")))
-        .pipe($.if('*.png', gulp.dest("dist/options/img")))
-});
-
-
-
-gulp.task('web_accessible_resources', () => {
-    fs.readFile('./app/manifest.json', function (err, _data) {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        var resources = JSON.parse(_data).web_accessible_resources;
-        for (var index = 0; index < resources.length; index++) {
-            resources[index] = "app/" + resources[index]
-        }
-        return gulp.src(resources)
-            .pipe($.if('*.css', $.cleanCss({
-                compatibility: '*'
-            })))
-            .pipe($.if('*.js', $.sourcemaps.init()))
-            .pipe($.if('*.js', $.uglify()))
-            .pipe($.if('*.js', $.sourcemaps.write('.')))
-            .pipe($.if('*.js', gulp.dest("dist/scripts")))
-            .pipe($.if('*.js.map', gulp.dest("dist/scripts")))
-            .pipe($.if('*.css', gulp.dest("dist/styles")))
-    });
-});
-
-gulp.task('babel', () => {
-    return gulp.src('app/scripts.babel/**/*.js')
-        .pipe($.babel({
-            presets: ['es2015']
-        }))
-        .pipe(gulp.dest('app/scripts'));
-});
-
-gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
-
-gulp.task('watch', ['lint', 'babel', 'typescript', "typescript-options", 'sass', 'html'], () => {
-    $.livereload.listen();
-
-    gulp.watch([
-        'app/*.html',
-        'app/scripts/**/*.js',
-        'app/images/**/*',
-        'app/styles/**/*',
-        'app/_locales/**/*.json'
-    ]).on('change', $.livereload.reload);
-
-    gulp.watch('app/scripts.babel/**/*.js', ['lint', 'babel']);
-    gulp.watch('app/scripts.ts/**/*.ts', ['typescript']);
-    gulp.watch('app/options/**/*.ts', ['typescript-options']);
-    gulp.watch('app/styles.sass/**/*.scss', ['sass']);
-    gulp.watch('bower.json', ['wiredep']);
-});
-
-gulp.task('size', () => {
-    return gulp.src('dist/**/*').pipe($.size({
+gulp.task('get_package_size', () => {
+    return gulp.src('dist/**/*').pipe(size({
         title: 'build',
         gzip: true
     }));
 });
 
-gulp.task('wiredep', () => {
-    gulp.src('app/*.html')
-        .pipe(wiredep({
-            ignorePath: /^(\.\.\/)*\.\./
-        }))
-        .pipe(gulp.dest('app'));
+function publish(src, dest) {
+    return gulp.src(src)
+        .pipe(_if('*.css', cleanCss({
+            compatibility: '*'
+        })))
+        .pipe(_if('*.js', sourcemaps.init()))
+        .pipe(_if('*.js', uglify()))
+        .pipe(_if('*.js', sourcemaps.write('.')))
+        .pipe(_if('*.html', htmlmin({
+            removeComments: true,
+            collapseWhitespace: true
+        })))
+        .pipe(gulp.dest(dest));
+}
+
+gulp.task('publish_sc_ext', () => {
+    return publish([
+        'app/sc_ext/**/*.js',
+        'app/sc_ext/**/*.css',
+        'app/sc_ext/**/*.png',
+        'app/sc_ext/**/*.html'
+    ], './dist/sc_ext')
 });
 
-gulp.task('package', ['clean', 'build'], function () {
+gulp.task('publish_chrome', () => {
+    return publish([
+        'app/chrome/*.js',
+        'app/chrome/**/*.css',
+        'app/chrome/**/*.png',
+        'app/chrome/**/*.html'
+    ], './dist/chrome');
+});
+
+gulp.task('publish_options', () => {
+    return publish([
+        'app/options/**/*.js',
+        'app/options/**/*.css',
+        'app/options/**/*.png',
+        'app/options/**/*.html'
+    ], './dist/options');
+});
+
+gulp.task('publish_all', (callback) => {
+    runSequence('publish_sc_ext', 'publish_chrome', 'publish_options', callback);
+});
+
+gulp.task('build', ['cleanup_release'], (callback) => {
+    runSequence(
+        'typescript_all', 'sass_all',
+        'extras',
+        'publish_all',
+        'get_package_size', callback);
+});
+
+gulp.task('package', ['build'], () => {
     var manifest = require('./dist/manifest.json');
     return gulp.src('dist/**')
-        .pipe($.zip('sc-ext-' + manifest.version + '.zip'))
+        .pipe(zip('sc-ext-' + manifest.version + '.zip'))
         .pipe(gulp.dest('package'));
 });
 
-gulp.task('build', (cb) => {
-    runSequence(
-        'lint', 'babel', 'typescript', 'typescript-options', 'sass', 'chromeManifest', ['html', 'images', 'extras'],
-        'web_accessible_resources', 'web_accessible_resources-options',
-        'size', cb);
-});
-
-gulp.task('default', ['clean'], cb => {
-    runSequence('build', cb);
+gulp.task('default', callback => {
+    runSequence('build', callback);
 });
