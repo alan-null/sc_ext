@@ -191,6 +191,7 @@ namespace SitecoreExtensions.Modules.FieldSearch {
     export class FieldSearchModule extends ModuleBase implements ISitecoreExtensionsModule {
 
         searchString: string;
+        
         canExecute(): boolean {
             return SitecoreExtensions.Context.Location() == Location.ContentEditor;
         };
@@ -201,7 +202,6 @@ namespace SitecoreExtensions.Modules.FieldSearch {
                 type: 'text',
                 class: 'scSearchInput scIgnoreModified sc-ext-fieldSearch'
             });
-            //input.onkeypress = callback;
             var data = this;
             input.onkeyup = (e: KeyboardEvent) => {
                 data.doSearch(e);
@@ -265,7 +265,7 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             var fieldLabels = this.castToArray(document.getElementsByClassName("scEditorFieldLabel"));
             var hits : Element[] = []
             fieldLabels.forEach(element => {
-                if (element.innerText.indexOf(searchString) > -1) {
+                if (element.innerText.toLowerCase().indexOf(searchString.toLowerCase()) > -1) {
                     hits.push(element);
                 }
             });
