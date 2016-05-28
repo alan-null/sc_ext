@@ -242,7 +242,7 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             var result = []
             var elem = start;
             for ( ; elem && elem !== document; elem = elem.parentNode ) {
-                if (elem.attributes["class"] && (elem.attributes["class"].value.indexOf("scEditorSectionPanel") > -1 || elem.attributes["class"].value.indexOf("scEditorFieldMarker") > -1) && elem.hasAttribute("style")) {
+                if (elem.attributes["class"] && (elem.attributes["class"].value.indexOf("scEditorSectionPanel") > -1 || elem.attributes["class"].value.indexOf("scEditorFieldMarker") > -1) && (<Element>elem).hasAttribute("style")) {
                     result.push(elem);
                 }
             }
@@ -265,7 +265,7 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             var fieldLabels = this.castToArray(document.getElementsByClassName("scEditorFieldLabel"));
             var hits : Element[] = []
             fieldLabels.forEach(element => {
-                if (element.innerText.toLowerCase().indexOf(searchString.toLowerCase()) > -1) {
+                if ((<HTMLElement>element).innerText.toLowerCase().indexOf(searchString.toLowerCase()) > -1) {
                     hits.push(element);
                 }
             });
@@ -275,7 +275,7 @@ namespace SitecoreExtensions.Modules.FieldSearch {
         doSearch(e: KeyboardEvent) : void {
             // todo: cast to HTMLInputElement
             var char = document.getElementById("scextFieldSearch");
-            var searchString = char.value;
+            var searchString = (<HTMLInputElement>char).value;
             
             if (searchString.length > 2) {
                 this.toggleSections(true);
