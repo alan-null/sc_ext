@@ -273,7 +273,6 @@ namespace SitecoreExtensions.Modules.FieldSearch {
         }
         
         doSearch(e: KeyboardEvent) : void {
-            // todo: cast to HTMLInputElement
             var char = document.getElementById("scextFieldSearch");
             var searchString = (<HTMLInputElement>char).value;
             
