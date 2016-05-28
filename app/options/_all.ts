@@ -7,6 +7,7 @@
 /// <reference path='providers/OptionsProvider.ts' />
 
 // Controllers
+/// <reference path='controllers/BaseController.ts' />
 /// <reference path='controllers/BaseOptionsController.ts' />
 /// <reference path='controllers/OptionsController.ts' />
 /// <reference path='controllers/LauncherController.ts' />

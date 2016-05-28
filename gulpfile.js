@@ -18,9 +18,9 @@ function typescript(src, dest, concatFile) {
         .pipe(sourcemaps.init())
         .pipe(ts({ sortOutput: true }));
 
-    if (concatFile == null) concatFile = '$';
+    concatFile = (concatFile || '|');
     return tsResult.js
-        .pipe(_if(concatFile != '$', concat(concatFile)))
+        .pipe(_if(concatFile != '|', concat(concatFile)))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(dest));
 }

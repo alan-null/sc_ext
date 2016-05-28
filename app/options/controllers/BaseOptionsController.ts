@@ -3,11 +3,12 @@
 module SitecoreExtensions.Options {
     'use strict';
 
-    export abstract class BaseOptionsController {
+    export abstract class BaseOptionsController extends BaseController  {
         name: string;
         model: any;
         optionsProvider: OptionsProvider;
         constructor(private $scope: any, formlyVersion: string, name: string) {
+            super();
             this.name = name;
             this.optionsProvider = new OptionsProvider();
             $scope.vm = this;
