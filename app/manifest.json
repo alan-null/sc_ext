@@ -51,8 +51,6 @@
         "chrome_style": true
     },
     "web_accessible_resources": [
-        "sc_ext/sc_ext.js",
-        "chrome/popup.js",
-        "styles/main.css"
+        "sc_ext/sc_ext.js"
     ]
 }

@@ -7,7 +7,7 @@
   "devDependencies": {
     "del": "^2.2.0",
     "gulp": "^3.9.1",
-    "gulp-chrome-manifest": "0.0.13",
+    "gulp-json-editor": "2.2.1",
     "gulp-clean-css": "^2.0.3",
     "gulp-if": "^2.0.0",
     "gulp-livereload": "^3.8.1",

@@ -12,6 +12,8 @@ var uglify = require('gulp-uglify')
 var htmlmin = require('gulp-htmlmin')
 var zip = require('gulp-zip')
 var size = require('gulp-size')
+var jsonEditor = require('gulp-json-editor')
+
 
 function typescript(src, dest, concatFile) {
     var tsResult = gulp.src(src)
@@ -51,8 +53,14 @@ gulp.task('sass_sc_ext', () => {
         .pipe(gulp.dest('./app/sc_ext'));
 });
 
+gulp.task('sass_popup', () => {
+    return gulp.src('./app/chrome/popup/**/*.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest('./app/chrome/popup'));
+});
+
 gulp.task('sass_all', (callback) => {
-    runSequence('sass_sc_ext', callback);
+    runSequence('sass_sc_ext','sass_popup', callback);
 });
 
 gulp.task('cleanup_dev', () => {
@@ -82,10 +90,22 @@ gulp.task('extras', () => {
     return gulp.src([
         'app/*.*',
         'app/_locales/**',
+        '!app/*.json',
     ], {
             base: 'app',
             dot: true
         }).pipe(gulp.dest('dist'));
+});
+
+gulp.task('chromeManifest', () => {
+    gulp.src("app/manifest.json")
+        .pipe(jsonEditor(function (json) {
+            var bgJS = json.background.scripts;
+            var index = bgJS.indexOf('chrome/chromereload.js');
+            bgJS.splice(index, 1);
+            return json;
+        }))
+        .pipe(gulp.dest("dist"));
 });
 
 gulp.task('get_package_size', () => {
@@ -122,6 +142,7 @@ gulp.task('publish_sc_ext', () => {
 gulp.task('publish_chrome', () => {
     return publish([
         'app/chrome/*.js',
+        '!app/chrome/chromereload.js',
         'app/chrome/**/*.css',
         'app/chrome/**/*.png',
         'app/chrome/**/*.html'
@@ -144,7 +165,7 @@ gulp.task('publish_all', (callback) => {
 gulp.task('build', ['cleanup_release'], (callback) => {
     runSequence(
         'typescript_all', 'sass_all',
-        'extras',
+        'extras', 'chromeManifest',
         'publish_all',
         'get_package_size', callback);
 });

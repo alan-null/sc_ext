@@ -19,6 +19,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   chrome.browserAction.setPopup({
     tabId: sender.tab.id,
-    popup: 'chrome/popup.html'
+    popup: 'chrome/popup/popup.html'
   });
 });
