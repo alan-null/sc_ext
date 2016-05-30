@@ -196,7 +196,7 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             return SitecoreExtensions.Context.Location() == Location.ContentEditor;
         };
 
-        private createTextBox(text: string, callback: { (e: KeyboardEvent): any }): HTMLInputElement {
+        private createTextBox(text: string): HTMLInputElement {
             var input = HTMLHelpers.createElement<HTMLInputElement>('input', {
                 id: 'scextFieldSearch',
                 type: 'text',
@@ -208,6 +208,20 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             };
             
             return input;
+        };
+
+        private createClearButton(text: string): HTMLSpanElement {
+            // var iconUrl = chrome.extension.getURL("images/myimage.png");
+            var closeButton = HTMLHelpers.createElement<HTMLSpanElement>('span', {
+                class: 'sc-ext-fieldSearchClear',
+                // style: "url('" + iconUrl + "')  0 -690px;"
+            });
+            var data = this;
+            closeButton.onclick = (e: MouseEvent) => {
+                data.clearSearch(e);
+            };
+            
+            return closeButton;
         };
         
         private castToArray(list) : Element[] {
@@ -284,6 +298,10 @@ namespace SitecoreExtensions.Modules.FieldSearch {
                 this.toggleSections(false);
             }
         };
+        
+        clearSearch(e: MouseEvent) : void {
+            
+        }
 
         addTreeNodeHandlers(className: string): void {
             var nodes = document.getElementsByClassName(className);
@@ -297,10 +315,18 @@ namespace SitecoreExtensions.Modules.FieldSearch {
         }
         
         private insertSearchField(): void {
-            var txbSearch = this.createTextBox('Collapse', this.doSearch)
+            var txbSearch = this.createTextBox('Collapse')
+            var spanClear = this.createClearButton('XXX');
+            
+            var span = HTMLHelpers.createElement<HTMLSpanElement>('span', {
+                class: 'sc-ext-searchFieldContainer'
+            });
+            
+            span.appendChild(txbSearch);
+            span.appendChild(spanClear);
 
             var controlsTab = document.querySelector('.scEditorTabControlsTab5');
-            controlsTab.insertBefore(txbSearch, controlsTab.firstChild);
+            controlsTab.insertBefore(span, controlsTab.firstChild);
         };
         
         private searchFieldExists(): boolean {

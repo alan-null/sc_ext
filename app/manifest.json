@@ -52,6 +52,7 @@
     "scripts/popup.js",
     "styles/main.css",
     "scripts/sc_ext-common.js",
-    "scripts/fuzzy.min.js"
+    "scripts/fuzzy.min.js",
+    "images/ic_close_black_24dp_1x.png"
   ]
 }

@@ -8,3 +8,23 @@
     }
 }
 
+
+span.sc-ext-searchFieldContainer {
+    position: relative;
+    
+    span.sc-ext-fieldSearchClear {
+        position: absolute;
+        display: block;
+        top: 0px;
+        right: 20px;
+        width: 16px;
+        height: 16px;
+        // background-image:url('chrome-extension://__MSG_@@extension_id__/images/ic_close_black_24dp_1x.png') 0 -690px;
+        background: url('chrome-extension://__MSG_@@extension_id__/images/ic_close_black_24dp_1x.png') -5px -5px;
+        cursor: pointer;
+    }
+    
+    input {
+        padding-right: 16px;
+    }
+} 
