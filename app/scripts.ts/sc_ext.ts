@@ -211,10 +211,8 @@ namespace SitecoreExtensions.Modules.FieldSearch {
         };
 
         private createClearButton(text: string): HTMLSpanElement {
-            // var iconUrl = chrome.extension.getURL("images/myimage.png");
             var closeButton = HTMLHelpers.createElement<HTMLSpanElement>('span', {
-                class: 'sc-ext-fieldSearchClear',
-                // style: "url('" + iconUrl + "')  0 -690px;"
+                class: 'sc-ext-fieldSearchClear'
             });
             var data = this;
             closeButton.onclick = (e: MouseEvent) => {
@@ -300,7 +298,9 @@ namespace SitecoreExtensions.Modules.FieldSearch {
         };
         
         clearSearch(e: MouseEvent) : void {
-            
+            var char = document.getElementById("scextFieldSearch");
+            (<HTMLInputElement>char).value = "";
+            this.toggleSections(false);
         }
 
         addTreeNodeHandlers(className: string): void {

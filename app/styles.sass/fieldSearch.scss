@@ -15,12 +15,14 @@ span.sc-ext-searchFieldContainer {
     span.sc-ext-fieldSearchClear {
         position: absolute;
         display: block;
-        top: 0px;
-        right: 20px;
-        width: 16px;
-        height: 16px;
-        // background-image:url('chrome-extension://__MSG_@@extension_id__/images/ic_close_black_24dp_1x.png') 0 -690px;
-        background: url('chrome-extension://__MSG_@@extension_id__/images/ic_close_black_24dp_1x.png') -5px -5px;
+        border-top: 6px solid white;
+        border-bottom: 6px solid white;
+        border-right: 6px solid white;
+        top: -4px;
+        right: 11px;
+        width: 10px;
+        height: 10px;
+        background: url('chrome-extension://__MSG_@@extension_id__/images/ic_close_black_24dp_1x-b.png') 17px 17px;
         cursor: pointer;
     }
     
