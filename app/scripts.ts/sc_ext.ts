@@ -200,7 +200,8 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             var input = HTMLHelpers.createElement<HTMLInputElement>('input', {
                 id: 'scextFieldSearch',
                 type: 'text',
-                class: 'scSearchInput scIgnoreModified sc-ext-fieldSearch'
+                class: 'scSearchInput scIgnoreModified sc-ext-fieldSearch',
+                placeholder: 'Search for fields'
             });
             var data = this;
             input.onkeyup = (e: KeyboardEvent) => {
