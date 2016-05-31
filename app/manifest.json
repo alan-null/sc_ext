@@ -32,6 +32,7 @@
         "scripts/contentscript.js"
       ],
       "css": [
+        "styles/fieldSearch.css",
         "styles/launcher.css",
         "styles/databaseName.css"
       ],
@@ -51,6 +52,7 @@
     "scripts/popup.js",
     "styles/main.css",
     "scripts/sc_ext-common.js",
-    "scripts/fuzzy.min.js"
+    "scripts/fuzzy.min.js",
+    "images/ic_close_black_24dp_1x-b.png"
   ]
 }
