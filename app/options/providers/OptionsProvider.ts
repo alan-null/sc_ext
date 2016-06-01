@@ -26,7 +26,9 @@ module SitecoreExtensions.Options {
         }
 
         getModuleOptions(moduleName: string): IModuleOptions {
-            return this.options.find(m => { return m.name == moduleName });
+            if (this.options != null) {
+                return this.options.find(m => { return m.name == moduleName });
+            }
         }
 
         setModuleOptions(options: IModuleOptions): void {

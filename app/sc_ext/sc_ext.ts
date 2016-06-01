@@ -1,11 +1,68 @@
 /// <reference path='../../typings/es6-shim/es6-shim.d.ts'/>
 /// <reference path='Fuzzy.ts'/>
 /// <reference path='sc_ext-common.ts'/>
+/// <reference path='../options/providers/OptionsProvider.ts'/>
+
 
 'use strict';
 declare var scSitecore: any;
 declare var scForm: any;
 declare var scContentEditor: any;
+
+import ModuleOptionsBase = SitecoreExtensions.Options.ModuleOptionsBase
+
+
+namespace SitecoreExtensions.Options {
+    export class OptionsRepository {
+        options: OptionsWrapper;
+        constructor(getOptionsCallback: any) {
+            window.addEventListener('message', function (event) {
+                if (event.data.sc_ext_enabled) {
+                    if (event.data.sc_ext_options_response) {
+                        var optionsWrapper = null;
+                        if (event.data.payload) {
+                            optionsWrapper = OptionsWrapper.create(event.data.payload);
+                        } else {
+                            optionsWrapper = new OptionsWrapper(null);
+                        }
+                        this.options = optionsWrapper;
+                        getOptionsCallback(optionsWrapper)
+                    }
+                }
+            });
+        }
+
+        loadOptions() {
+            window.postMessage({
+                sc_ext_enabled: true,
+                sc_ext_options_request: true
+            }, '*');
+        }
+    }
+
+    export interface IOptionsMapper {
+        mapOptions<T>(rawOptions: ModuleOptionsBase, otpions: T): T;
+    }
+
+    export class OptionsAutoMapper implements IOptionsMapper {
+        mapOptions<T>(rawOptions: ModuleOptionsBase, options: T): T {
+            for (var f in rawOptions.model) {
+                if (options.hasOwnProperty(f)) {
+                    options[f] = rawOptions.model[f];
+                }
+            }
+            return options;
+        }
+    }
+
+    export class ModuleOptions {
+        enabled: boolean;
+        constructor() {
+            this.enabled = true;
+        }
+    }
+}
+
 
 namespace SitecoreExtensions.Modules {
     export interface ISitecoreExtensionsModule {
@@ -16,20 +73,37 @@ namespace SitecoreExtensions.Modules {
         initialize(): void;
     }
 
+    import ModuleOptions = SitecoreExtensions.Options.ModuleOptions;
     export class ModuleBase {
         moduleName: string;
         description: string;
-        constructor(name: string, description: string) {
+        options: ModuleOptions;
+        optionsMapper: SitecoreExtensions.Options.IOptionsMapper;
+        constructor(name: string, description: string, rawOptions?: ModuleOptionsBase) {
             this.moduleName = name;
             this.description = description;
+            this.options = new ModuleOptions();
+            if (rawOptions != null) {
+                this.mapOptions<ModuleOptions>(rawOptions);
+            }
+        }
+
+        getOptionsMapper(): SitecoreExtensions.Options.IOptionsMapper {
+            return new SitecoreExtensions.Options.OptionsAutoMapper();
+        }
+
+        mapOptions<T>(rawOptions: ModuleOptionsBase) {
+            if (rawOptions != null) {
+                this.options = this.getOptionsMapper().mapOptions(rawOptions, this.options);
+            }
         }
     }
 }
 
 namespace SitecoreExtensions.Modules.DatabaseName {
     export class DatabaseNameModule extends ModuleBase implements ISitecoreExtensionsModule {
-        constructor(name: string, description: string) {
-            super(name, description);
+        constructor(name: string, description: string, rawOptions: ModuleOptionsBase) {
+            super(name, description, rawOptions);
         }
 
         adDbNameToHeader(dbName: string): void {
@@ -39,7 +113,7 @@ namespace SitecoreExtensions.Modules.DatabaseName {
         }
 
         canExecute(): boolean {
-            return SitecoreExtensions.Context.Database() != null && document.querySelector('.sc-globalHeader-loginInfo') != null;
+            return this.options.enabled && SitecoreExtensions.Context.Database() != null && document.querySelector('.sc-globalHeader-loginInfo') != null;
         }
 
         initialize(): void {
@@ -54,12 +128,22 @@ namespace SitecoreExtensions.Modules.DatabaseName {
 namespace SitecoreExtensions.Modules.DatabaseColor {
     import Dictionary = SitecoreExtensions.Types.Dictionary
     import IDictionary = SitecoreExtensions.Types.IDictionary
+    import ModuleOptions = SitecoreExtensions.Options.ModuleOptions
+
+    class DatabaseColorOptions extends ModuleOptions {
+        constructor() {
+            super();
+        }
+    }
 
     export class DatabaseColorModule extends ModuleBase implements ISitecoreExtensionsModule {
         coloursMapping: IDictionary;
+        options: DatabaseColorOptions;
 
-        constructor(name: string, description: string) {
+        constructor(name: string, description: string, rawOptions: ModuleOptionsBase) {
             super(name, description);
+            this.options = new DatabaseColorOptions();
+            this.mapOptions<DatabaseColorOptions>(rawOptions)
             this.coloursMapping = new Dictionary([
                 { key: 'WEB', value: '#DC291E' },
             ]);
@@ -73,7 +157,7 @@ namespace SitecoreExtensions.Modules.DatabaseColor {
         }
 
         canExecute(): boolean {
-            return SitecoreExtensions.Context.Database() != null && document.querySelector('.sc-globalHeader-content') != null;
+            return this.options.enabled && SitecoreExtensions.Context.Database() != null && document.querySelector('.sc-globalHeader-content') != null;
         }
 
         initialize(): void {
@@ -445,8 +529,8 @@ namespace SitecoreExtensions.Modules.Launcher {
         commands: ICommand[];
         fuzzy: Fuzzy
 
-        constructor(name: string, description: string) {
-            super(name, description);
+        constructor(name: string, description: string, rawOptions: ModuleOptionsBase) {
+            super(name, description, rawOptions);
             this.commands = new Array<ICommand>();
             this.launcherOptions = {
                 searchResultsCount: 8,
@@ -665,7 +749,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         canExecute(): boolean {
-            return true;
+            return true && this.options.enabled;
         }
 
         initialize(): void {
@@ -757,8 +841,12 @@ namespace SitecoreExtensions.Modules.LastLocation {
 
 namespace SitecoreExtensions {
     import ISitecoreExtensionsModule = SitecoreExtensions.Modules.ISitecoreExtensionsModule;
+    import OptionsWrapper = SitecoreExtensions.Options.OptionsWrapper;
+    import IModuleOptions = SitecoreExtensions.Options.IModuleOptions;
+    import OptionsRepository = SitecoreExtensions.Options.OptionsRepository;
     export class ExtensionsManager {
         modules: ISitecoreExtensionsModule[];
+        modulesOptions: IModuleOptions[];
         constructor() {
             this.modules = new Array<ISitecoreExtensionsModule>();
         }
@@ -767,10 +855,19 @@ namespace SitecoreExtensions {
             this.modules.push(module);
         }
 
+        private initModule(m: ISitecoreExtensionsModule) {
+            try {
+                m.initialize();
+            } catch (e) {
+                console.log('Cannot initialize module: ' + m.moduleName);
+                console.log(e);
+            }
+        }
+
         initModules(): void {
             this.modules
                 .filter(m => { return m.canExecute(); })
-                .forEach(m => { m.initialize(); });
+                .forEach(m => { this.initModule(m) });
         }
 
         getModule(type: any): ISitecoreExtensionsModule {
@@ -862,29 +959,41 @@ namespace SitecoreExtensions {
     }
 }
 
+import Options = SitecoreExtensions.Options
+import Modules = SitecoreExtensions.Modules
+
+function disabled(scExtOptions: Options.IModuleOptions) {
+    return scExtOptions != null && scExtOptions.model.enabled == false;
+}
 
 if (SitecoreExtensions.Context.IsValid()) {
-    var scExtManager = new SitecoreExtensions.ExtensionsManager();
-    var sectionSwitchesModule = new SitecoreExtensions.Modules.SectionSwitches.SectionSwitchesModule('Section Switches', 'Easily open/close all item sections with just one click');
-    var dbNameModule = new SitecoreExtensions.Modules.DatabaseName.DatabaseNameModule('Database Name', 'Displays current database name in the Content Editor header');
-    var launcher = new SitecoreExtensions.Modules.Launcher.LauncherModule('Launcher', 'Feel like power user using Sitecore Extensions command launcher.');
-    var databaseColour = new SitecoreExtensions.Modules.DatabaseColor.DatabaseColorModule("Database Colour", 'Change the global header colour depeding on current database.');
-    var lastLocation = new SitecoreExtensions.Modules.LastLocation.RestoreLastLocation("Restore Last Location", "Restores last opened item in Content Editor");
+    var scExtManager;
+    var optionsRepository = new Options.OptionsRepository((wrapper: Options.OptionsWrapper) => {
+        if (disabled(wrapper.getModuleOptions('General'))) return;
 
-    scExtManager.addModule(sectionSwitchesModule);
-    scExtManager.addModule(dbNameModule);
-    scExtManager.addModule(launcher);
-    scExtManager.addModule(databaseColour);
-    scExtManager.addModule(lastLocation);
+        scExtManager = new SitecoreExtensions.ExtensionsManager();
+        scExtManager.modulesOptions = wrapper.options;
+        var sectionSwitchesModule = new Modules.SectionSwitches.SectionSwitchesModule('Section Switches', 'Easily open/close all item sections with just one click');
+        var dbNameModule = new Modules.DatabaseName.DatabaseNameModule('Database Name', 'Displays current database name in the Content Editor header', wrapper.getModuleOptions('Database Name'));
+        var launcher = new Modules.Launcher.LauncherModule('Launcher', 'Feel like power user using Sitecore Extensions command launcher.', wrapper.getModuleOptions('Launcher'));
+        var databaseColour = new Modules.DatabaseColor.DatabaseColorModule("Database Colour", 'Change the global header colour depeding on current database.', wrapper.getModuleOptions('Database Colour'));
+        var lastLocation = new Modules.LastLocation.RestoreLastLocation("Restore Last Location", "Restores last opened item in Content Editor");
 
-    scExtManager.initModules();
+        scExtManager.addModule(sectionSwitchesModule);
+        scExtManager.addModule(dbNameModule);
+        scExtManager.addModule(launcher);
+        scExtManager.addModule(databaseColour);
+        scExtManager.addModule(lastLocation);
+
+        scExtManager.initModules();
 
 
-    launcher.registerProviderCommands(new SitecoreExtensions.Modules.SectionSwitches.SectionSwitchesCommandsProvider());
-    launcher.registerProviderCommands(new SitecoreExtensions.Modules.LastLocation.RestoreLastLocationCommandProvider());
+        launcher.registerProviderCommands(new Modules.SectionSwitches.SectionSwitchesCommandsProvider());
+        launcher.registerProviderCommands(new Modules.LastLocation.RestoreLastLocationCommandProvider());
 
-    window.postMessage({
-        sc_ext_enabled: true,
-        sc_ext_modules_count: scExtManager.modules.filter(m => { return m.canExecute(); }).length.toString()
-    }, '*');
+        window.postMessage({
+            sc_ext_enabled: true,
+            sc_ext_modules_count: scExtManager.modules.filter(m => { return m.canExecute() }).length.toString()
+        }, '*');
+    }).loadOptions();
 }

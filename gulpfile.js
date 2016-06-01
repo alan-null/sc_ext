@@ -82,6 +82,7 @@ gulp.task('watch', ['typescript_all', 'sass_all'], () => {
 
     gulp.watch('app/sc_ext/**/*.ts', ['typescript_sc_ext']);
     gulp.watch('app/sc_ext/styles/**/*.scss', ['sass_sc_ext']);
+    gulp.watch('app/chrome/popup/**/*.scss', ['sass_popup']);
     gulp.watch('app/chrome/**/*.ts', ['typescript_chrome']);
     gulp.watch('app/options/**/*.ts', ['typescript_options', 'typescript_common']);
 });

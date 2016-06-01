@@ -1,14 +1,30 @@
 /// <reference path='../../typings/chrome/chrome.d.ts'/>
 /// <reference path='../../typings/es6-shim/es6-shim.d.ts'/>
+/// <reference path='../options/providers/OptionsProvider.ts'/>
+
 
 'use strict';
 chrome.runtime.sendMessage({ 'modulesCount': 'off' });
 window.addEventListener('message', function (event) {
     if (event.data.sc_ext_enabled) {
-        chrome.runtime.sendMessage({
-            newIconPath: 'chrome/images/icon-128.png',
-            modulesCount: event.data.sc_ext_modules_count
-        });
+        if (event.data.sc_ext_modules_count) {
+            chrome.runtime.sendMessage({
+                newIconPath: 'chrome/images/icon-128.png',
+                modulesCount: event.data.sc_ext_modules_count
+            });
+        }
+
+        if (event.data.sc_ext_options_request) {
+            var provider = new SitecoreExtensions.Options.OptionsProvider();
+            provider.getOptions((optionsWrapper) => {
+                window.postMessage({
+                    sc_ext_enabled: true,
+                    sc_ext_options_response: true,
+                    payload: optionsWrapper,
+                }, '*');
+            })
+        }
+
     }
 });
 
@@ -37,5 +53,6 @@ function injectScripts(scripts: HTMLScriptElement[]) {
 }
 
 injectScripts([
+    createScriptElement("/common/optionsProvider.js"),
     createScriptElement("/sc_ext/sc_ext.js"),
 ]);

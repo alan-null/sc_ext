@@ -3,7 +3,7 @@
 module SitecoreExtensions.Options {
     'use strict';
 
-    export abstract class BaseOptionsController extends BaseController  {
+    export abstract class BaseOptionsController extends BaseController {
         name: string;
         model: any;
         optionsProvider: OptionsProvider;
@@ -39,7 +39,6 @@ module SitecoreExtensions.Options {
         saveSettings() {
             var moduleOptions = this.buildModuleOptions()
             this.optionsProvider.setModuleOptions(moduleOptions);
-            console.log(this.model);
         }
     }
 }

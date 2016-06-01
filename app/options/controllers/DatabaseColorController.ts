@@ -5,7 +5,7 @@ module SitecoreExtensions.Options {
 
     export class DatabaseColorController extends BaseOptionsController {
         constructor($scope: any, formlyVersion: string) {
-            super($scope, formlyVersion, 'Database Color')
+            super($scope, formlyVersion, 'Database Colour')
             $scope.vm.title = 'Database Color module';
         }
 

@@ -29,7 +29,8 @@
                 "https://*/*"
             ],
             "js": [
-                "chrome/contentscript.js"
+                "chrome/contentscript.js",
+                "common/optionsProvider.js"
             ],
             "css": [
                 "sc_ext/styles/launcher.css",
@@ -44,13 +45,14 @@
             "19": "chrome/images/icon-disabled-128.png",
             "38": "chrome/images/icon-disabled-128.png"
         },
-        "default_popup": ""
+        "default_popup": "chrome/popup/popup.html"
     },
     "options_ui": {
         "page": "options/options.html",
         "chrome_style": true
     },
     "web_accessible_resources": [
+        "common/optionsProvider.js",
         "sc_ext/sc_ext.js"
     ]
 }
