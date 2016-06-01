@@ -1,0 +1,13 @@
+{
+  "name": "sc_ext_options",
+  "description": "Sitecore Extensions Options Libraries",
+  "dependencies": {
+    "angular": "1.4.7",
+    "angular-formly": "8.2.1",
+    "angular-formly-templates-bootstrap": "latest",
+    "api-check": "7.5.5",
+    "bootstrap": "3.3.5",
+    "jquery": "1.11.2"
+  },
+  "private": true
+}

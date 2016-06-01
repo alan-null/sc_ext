@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="img/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+
+    <title>Sitecore Extensions Options</title>
+    <link href="libs/bootstrap.min.css" rel="stylesheet">
+    <script src="libs/api-check.min.js"></script>
+    <script src="libs/angular.min.js"></script>
+    <script src="libs/formly.min.js"></script>
+    <script src="libs/angular-formly-templates-bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="libs/materia.css" type="text/css">
+    <script src="libs/jquery.min.js"></script>
+    <script src="libs/bootstrap.min.js"></script>
+    <style>
+        body {
+            padding-top: 70px;
+        }
+    </style>
+
+</head>
+
+
+<body ng-app="sc_ext">
+    <div ng-controller="OptionsController as vm">
+        <navigation></navigation>
+        <div class="container-fluid">
+            <ng-include src="vm.content"> </ng-include>
+            <script src="app.js"></script>
+</body>
+
+</html>
