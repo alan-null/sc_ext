@@ -28,7 +28,7 @@ function typescript(src, dest, concatFile) {
 }
 
 gulp.task('typescript_sc_ext', () => {
-    return typescript('app/sc_ext/**/*.ts', 'app/sc_ext', 'sc_ext.js');
+    return typescript('app/sc_ext/**/*.ts', 'app/sc_ext', 'Application.js');
 });
 
 gulp.task('typescript_chrome', () => {
@@ -159,8 +159,15 @@ gulp.task('publish_options', () => {
     ], './dist/options');
 });
 
+gulp.task('publish_common', () => {
+    return publish([
+        'app/common/**/*.js',
+    ], './dist/common');
+});
+
+
 gulp.task('publish_all', (callback) => {
-    runSequence('publish_sc_ext', 'publish_chrome', 'publish_options', callback);
+    runSequence('publish_sc_ext', 'publish_chrome', 'publish_options','publish_common', callback);
 });
 
 gulp.task('build', ['cleanup_release'], (callback) => {

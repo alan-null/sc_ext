@@ -54,5 +54,5 @@ function injectScripts(scripts: HTMLScriptElement[]) {
 
 injectScripts([
     createScriptElement("/common/optionsProvider.js"),
-    createScriptElement("/sc_ext/sc_ext.js"),
+    createScriptElement("/sc_ext/Application.js"),
 ]);
