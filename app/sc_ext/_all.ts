@@ -1,6 +1,17 @@
 //typings
 /// <reference path='typings/sitecore.d.ts'/>
 
+//Pipelines
+/// <reference path='pipelines/ProcessorBase.ts'/>
+/// <reference path='pipelines/Pipeline.ts'/>
+/// <reference path='pipelines/IProcessor.ts'/>
+/// <reference path='pipelines/IPipelineArgs.ts'/>
+
+/// <reference path='pipelines/getModules/GetModulesArgs.ts'/>
+/// <reference path='pipelines/getModules/GetModulesProcessor.ts'/>
+/// <reference path='pipelines/CorePipeline.ts'/>
+
+
 // Options Page
 /// <reference path='../options/providers/OptionsProvider.ts'/>
 
@@ -23,26 +34,11 @@
 // Modules
 /// <reference path='modules/ModuleBase.ts'/>
 /// <reference path='modules/ISitecoreExtensionsModule.ts'/>
-// DatabaseColor
-/// <reference path='modules/DatabaseColor/DatabaseColorModule.ts'/>
-/// <reference path='modules/DatabaseColor/DatabaseColorOptions.ts'/>
-// Launcher
-/// <reference path='modules/Launcher/LauncherModule.ts'/>
-/// <reference path='modules/Launcher/ICommand.ts'/>
-/// <reference path='modules/Launcher/models/SearchResult.ts'/>
-/// <reference path='modules/Launcher/providers/ICommandsProvider.ts'/>
-/// <reference path='modules/Launcher/providers/ContentEditorRibbonCommandsProvider.ts'/>
-/// <reference path='modules/Launcher/providers/AdminShortcutsCommandsProvider.ts'/>
-// SectionSwitches
-/// <reference path='modules/SectionSwitches/SectionSwitchesCommandsProvider.ts'/>
-/// <reference path='modules/SectionSwitches/SectionSwitchesModule.ts'/>
-// DatabaseName
-/// <reference path='modules/DatabaseName/DatabaseNameModule.ts'/>
-// FieldSearch
-/// <reference path='modules/FieldSearch/FieldSearchModule.ts'/>
-// LastLocation
-/// <reference path='modules/LastLocation/RestoreLastLocation.ts'/>
-/// <reference path='modules/LastLocation/LastLocationStore.ts'/>
-/// <reference path='modules/LastLocation/RestoreLastLocationCommandProvider.ts'/>
+/// <reference path='modules/Launcher/_all.ts'/>
+/// <reference path='modules/FieldSearch/_all.ts'/>
+/// <reference path='modules/DatabaseName/_all.ts'/>
+/// <reference path='modules/LastLocation/_all.ts'/>
+/// <reference path='modules/DatabaseColor/_all.ts'/>
+/// <reference path='modules/SectionSwitches/_all.ts'/>
 
-
+/// <reference path='Configuration.ts'/>

@@ -1,4 +1,4 @@
-/// <reference path='../../_all.ts'/>
+/// <reference path='_all.ts'/>
 
 namespace SitecoreExtensions.Modules.LastLocation {
     export class RestoreLastLocation extends ModuleBase implements ISitecoreExtensionsModule {

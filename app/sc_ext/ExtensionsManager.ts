@@ -2,12 +2,17 @@
 
 namespace SitecoreExtensions {
     import ISitecoreExtensionsModule = Modules.ISitecoreExtensionsModule;
+    import GetModulesArgs = Pipelines.GetModules.GetModulesArgs
 
     export class ExtensionsManager {
         modules: ISitecoreExtensionsModule[];
-        modulesOptions:  Options.IModuleOptions[];
-        constructor() {
-            this.modules = new Array<ISitecoreExtensionsModule>();
+        modulesOptions: Options.IModuleOptions[];
+        private wrapper:any;
+        
+        constructor(wrapper) {
+            this.modules = new Array <ISitecoreExtensionsModule> ();
+            this.modulesOptions = wrapper.options;
+            this.wrapper = wrapper; 
         }
 
         addModule(module: ISitecoreExtensionsModule): void {
@@ -23,10 +28,19 @@ namespace SitecoreExtensions {
             }
         }
 
+
         initModules(): void {
-            this.modules
-                .filter(m => { return m.canExecute(); })
-                .forEach(m => { this.initModule(m) });
+            var args = new GetModulesArgs(this.wrapper);
+            Pipelines.CorePipeline.Run('getModules', args, (args: GetModulesArgs) => {
+                this.modules = args.modules;
+                args.modules
+                    .filter(m => {
+                        return m.canExecute();
+                    })
+                    .forEach(m => {
+                        this.initModule(m)
+                    });
+            })
         }
 
         getModule(type: any): ISitecoreExtensionsModule {

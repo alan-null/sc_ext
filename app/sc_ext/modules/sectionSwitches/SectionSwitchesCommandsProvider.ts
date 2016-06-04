@@ -1,4 +1,4 @@
-/// <reference path='../../_all.ts'/>
+/// <reference path='_all.ts'/>
 
 namespace SitecoreExtensions.Modules.SectionSwitches {
     import ICommand = SitecoreExtensions.Modules.Launcher.ICommand;
