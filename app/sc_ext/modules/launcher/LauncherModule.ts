@@ -2,6 +2,7 @@
 
 namespace SitecoreExtensions.Modules.Launcher {
     import SearchResult = Launcher.Models.SearchResult
+    import GetCommandsArgs = Pipelines.GetCommands.GetCommandsArgs;
 
     export class LauncherModule extends ModuleBase implements ISitecoreExtensionsModule {
         modalElement: HTMLDivElement;
@@ -31,21 +32,10 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         private registerModuleCommands(): void {
-            this.registerProviderCommands(new Launcher.Providers.ContentEditorRibbonCommandsProvider());
-            this.registerProviderCommands(new Launcher.Providers.AdminShortcutsCommandsProvider());
-        }
-
-        registerProviderCommands(provider: Providers.ICommandsProvider): void {
-            this.registerCommands(provider.getCommands());
-        }
-
-        registerCommands(commands: ICommand[]): void {
-            commands.forEach(cmd => { this.registerCommand(cmd); });
-        }
-
-        registerCommand(command: ICommand): void {
-            command.id = this.commands.length + 1;
-            this.commands.push(command);
+            var args = new Pipelines.GetCommands.GetCommandsArgs();
+            SitecoreExtensions.Pipelines.CorePipeline.Run('getCommands', args, (args: GetCommandsArgs) => {
+                this.commands = args.commands;
+            });
         }
 
         showLauncher(): void {

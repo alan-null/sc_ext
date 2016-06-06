@@ -9,3 +9,7 @@
 
 /// <reference path='pipelines/getModules/RegisterLauncher.ts'/>
 
+/// <reference path='pipelines/getCommands/GetCommandsProcessor.ts'/>
+/// <reference path='pipelines/getCommands/GetCommandsArgs.ts'/>
+/// <reference path='pipelines/getCommands/GetAdminShortcutsCommands.ts'/>
+/// <reference path='pipelines/getCommands/GetContentEditorRibbonCommands.ts'/>

@@ -5,3 +5,4 @@
 /// <reference path='RestoreLastLocationCommandProvider.ts'/>
 /// <reference path='pipelines/getModules/RegisterRestoreLastLocation.ts'/>
 
+/// <reference path='pipelines/getCommands/GetLastLocationCommands.ts'/>

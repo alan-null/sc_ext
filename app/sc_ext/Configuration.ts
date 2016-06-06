@@ -1,8 +1,14 @@
 /// <reference path='_all.ts'/>
 
 namespace SitecoreExtensions {
-    var configuration = {
+    const configuration: any = {
         pipelines: {
+            getCommands: [
+                new SitecoreExtensions.Modules.Launcher.Pipelines.GetCommands.GetAdminShortcutsCommands(),
+                new SitecoreExtensions.Modules.Launcher.Pipelines.GetCommands.GetContentEditorRibbonCommands(),
+                new SitecoreExtensions.Modules.LastLocation.Pipelines.GetCommands.GetLastLocationCommands(),
+                new SitecoreExtensions.Modules.SectionSwitches.Pipelines.GetCommands.GetSectionSwitchesCommands(),
+            ],
             getModules: [
                 new SitecoreExtensions.Modules.SectionSwitches.Pipelines.GetModules.RegisterSectionSwitches(),
                 new SitecoreExtensions.Modules.DatabaseName.Pipelines.GetModules.RegisterDatabaseName(),
@@ -15,6 +21,6 @@ namespace SitecoreExtensions {
     };
 
     export class Configuration {
-        static Get() { return configuration; }
+        public static Get(): any { return configuration; }
     }
 }
