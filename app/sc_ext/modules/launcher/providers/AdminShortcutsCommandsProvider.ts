@@ -15,8 +15,8 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
         }
 
         navigate(aspx: string): void {
-            var location = window.location.origin + '/sitecore/admin/' + aspx + '.aspx'
-            document.location.href = location;
+            var location = window.top.location.origin + '/sitecore/admin/' + aspx + '.aspx'
+            window.top.document.location.href = location;
         }
 
         canExecute(): boolean {
