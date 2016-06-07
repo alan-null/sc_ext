@@ -8,6 +8,13 @@
     }
 }
 
+.sc-ext-hiddenElement {
+    display: none;
+}
+
+.sc-ext-forceExpandedElement {
+    display: table !important;
+}
 
 span.sc-ext-searchFieldContainer {
     position: relative;

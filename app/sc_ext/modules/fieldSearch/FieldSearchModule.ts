@@ -45,30 +45,28 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             var sectionsCollapsed = contentSection.getElementsByClassName("scEditorSectionCaptionCollapsed");
             var panels = contentSection.getElementsByClassName("scEditorSectionPanel");
             var fields = contentSection.getElementsByClassName("scEditorFieldMarker");
-            var sections = this.castToArray(sectionsExpanded).concat(this.castToArray(sectionsCollapsed));
-            var tableSections = this.castToArray(panels).concat(this.castToArray(fields));
+            var sections = this.castToArray(sectionsExpanded).concat(this.castToArray(sectionsCollapsed)).concat(this.castToArray(panels)).concat(this.castToArray(fields));
 
-            var displayTables = "table";
-            var displaySections = "block";
-            if (hide) {
-                displaySections = displayTables = "none";
-            }
-
+            
             sections.forEach(element => {
-                element.setAttribute("style", "display:" + displaySections);
+                if (hide) {
+                    if (!element.classList.contains("sc-ext-hiddenElement")) {
+                        element.classList.add("sc-ext-hiddenElement");
+                    }
+                } else {
+                    element.classList.remove("sc-ext-hiddenElement");
+                    element.classList.remove("sc-ext-forceExpandedElement");
+                }
             });
-
-            tableSections.forEach(element => {
-                element.setAttribute("style", "display:" + displayTables);
-            })
         };
 
         private getParent(start: Node, cl: string): Element[] {
             var result = []
             var elem = start;
             for (; elem && elem !== document; elem = elem.parentNode) {
-                if (elem.attributes["class"] && (elem.attributes["class"].value.indexOf("scEditorSectionPanel") > -1 || elem.attributes["class"].value.indexOf("scEditorFieldMarker") > -1) && (<Element>elem).hasAttribute("style")) {
-                    result.push(elem);
+                var element = <Element>elem;
+                if (element.classList.contains("scEditorSectionPanel") || element.classList.contains("scEditorFieldMarker")) {
+                    result.push(element);
                 }
             }
             return result;
@@ -77,10 +75,15 @@ namespace SitecoreExtensions.Modules.FieldSearch {
         private unhideResults(hits: Element[]): void {
             hits.forEach(element => {
                 this.getParent(element, "scEditorSectionPanel").forEach(elem => {
-                    elem.setAttribute("style", "display:table");
+                    elem.classList.remove("sc-ext-hiddenElement");
+                    
 
-                    if (elem.getAttribute("class").indexOf("scEditorSectionPanel") > -1) {
-                        elem.previousElementSibling.setAttribute("style", "display:block");
+                    if (elem.classList.contains("scEditorSectionPanel")) {
+                        elem.previousElementSibling.classList.remove("sc-ext-hiddenElement");
+                        
+                        if (elem.previousElementSibling.classList.contains("scEditorSectionCaptionCollapsed")) {
+                            elem.classList.add("sc-ext-forceExpandedElement");
+                        }
                     }
                 });
             });
