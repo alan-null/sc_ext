@@ -1,4 +1,5 @@
 /// <reference path='../../_all.ts'/>
+/// <reference path='ConfigurableDataStore.ts'/>
 
 namespace SitecoreExtensions.Modules.FieldSearch {
     export class FieldSearchModule extends ModuleBase implements ISitecoreExtensionsModule {
@@ -15,6 +16,8 @@ namespace SitecoreExtensions.Modules.FieldSearch {
                 class: 'scSearchInput scIgnoreModified sc-ext-fieldSearch',
                 placeholder: 'Search for fields'
             });
+            input.value = ConfigurableDataStore.getInputValue();
+            
             var data = this;
             input.onkeyup = (e: KeyboardEvent) => {
                 data.doSearch(e);
@@ -102,15 +105,18 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             var searchString = (<HTMLInputElement>char).value;
 
             if (searchString.length > 2) {
+                ConfigurableDataStore.storeInputValue(searchString);
                 this.toggleSections(true);
                 var hits: Element[] = this.findFields(searchString);
                 this.unhideResults(hits);
             } else {
+                ConfigurableDataStore.clear();
                 this.toggleSections(false);
             }
         };
 
         clearSearch(e: MouseEvent): void {
+            ConfigurableDataStore.clear();
             var char = document.getElementById("scextFieldSearch");
             (<HTMLInputElement>char).value = "";
             this.toggleSections(false);
@@ -140,6 +146,8 @@ namespace SitecoreExtensions.Modules.FieldSearch {
 
             var controlsTab = document.querySelector('.scEditorTabControlsTab5');
             controlsTab.insertBefore(span, controlsTab.firstChild);
+            
+            this.doSearch(null);
         };
 
         private searchFieldExists(): boolean {
