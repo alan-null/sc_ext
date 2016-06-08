@@ -48,6 +48,7 @@
 /// <reference path='modules/DatabaseName/DatabaseNameModule.ts'/>
 /// <reference path='modules/TreelistField/TreelistFieldModule.ts'/>
 // FieldSearch
+/// <reference path='modules/FieldSearch/FieldSearchStore.ts'/>
 /// <reference path='modules/FieldSearch/FieldSearchModule.ts'/>
 // LastLocation
 /// <reference path='modules/LastLocation/RestoreLastLocation.ts'/>
