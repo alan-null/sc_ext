@@ -33,6 +33,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         private registerModuleCommands(): void {
             this.registerProviderCommands(new Launcher.Providers.ContentEditorRibbonCommandsProvider());
             this.registerProviderCommands(new Launcher.Providers.AdminShortcutsCommandsProvider());
+            this.registerProviderCommands(new Launcher.Providers.LaunchpadCommandsProvider());
         }
 
         registerProviderCommands(provider: Providers.ICommandsProvider): void {

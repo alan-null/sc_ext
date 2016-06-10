@@ -33,6 +33,7 @@
 /// <reference path='modules/Launcher/providers/ICommandsProvider.ts'/>
 /// <reference path='modules/Launcher/providers/ContentEditorRibbonCommandsProvider.ts'/>
 /// <reference path='modules/Launcher/providers/AdminShortcutsCommandsProvider.ts'/>
+/// <reference path='modules/Launcher/providers/LaunchpadCommandsProvider.ts'/>
 // SectionSwitches
 /// <reference path='modules/SectionSwitches/SectionSwitchesCommandsProvider.ts'/>
 /// <reference path='modules/SectionSwitches/SectionSwitchesModule.ts'/>

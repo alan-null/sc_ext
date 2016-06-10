@@ -57,7 +57,9 @@ namespace SitecoreExtensions {
 
         static Location(): Location {
             if (typeof scContentEditor != 'undefined') {
-                return Location.ContentEditor;
+                if (document.querySelector('#__FRAMENAME') != undefined) {
+                    return Location.ContentEditor;
+                }
             }
             if (document.querySelector('.sc-launchpad') !== null) {
                 return Location.Launchpad;
