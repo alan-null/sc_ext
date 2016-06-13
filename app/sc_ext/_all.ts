@@ -17,6 +17,10 @@
 /// <reference path='types/Dictionary.ts'/>
 /// <reference path='types/IDictionary.ts'/>
 
+// Http
+/// <reference path='http/Method.ts'/>
+/// <reference path='http/HttpRequest.ts'/>
+
 // Libraries
 /// <reference path='libraries/Fuzzy.ts'/>
 
@@ -45,5 +49,9 @@
 /// <reference path='modules/LastLocation/RestoreLastLocation.ts'/>
 /// <reference path='modules/LastLocation/LastLocationStore.ts'/>
 /// <reference path='modules/LastLocation/RestoreLastLocationCommandProvider.ts'/>
-
-
+// ShortcutsRunner
+/// <reference path='modules/ShortcutsRunner/Token.ts'/>
+/// <reference path='modules/ShortcutsRunner/TokenService.ts'/>
+/// <reference path='modules/ShortcutsRunner/ShortcutRunner.ts'/>
+/// <reference path='modules/ShortcutsRunner/Providers/AppShortcutCommand.ts'/>
+/// <reference path='modules/ShortcutsRunner/Providers/SitecoreApplicationsCommandsProvider.ts'/>

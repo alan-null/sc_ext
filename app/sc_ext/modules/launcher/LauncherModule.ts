@@ -45,8 +45,14 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         registerCommand(command: ICommand): void {
-            command.id = this.commands.length + 1;
-            this.commands.push(command);
+            if (this.isUnique(command)) {
+                command.id = this.commands.length + 1;
+                this.commands.push(command);
+            }
+        }
+
+        private isUnique(command: ICommand): boolean {
+            return this.commands.filter(c => c.name == command.name && c.canExecute() == command.canExecute()).length == 0
         }
 
         showLauncher(): void {

@@ -57,14 +57,15 @@ namespace SitecoreExtensions {
 
         static Location(): Location {
             if (typeof scContentEditor != 'undefined') {
-                if (document.querySelector('#__FRAMENAME') != undefined) {
+                if (document.querySelector('#__CurrentItem') != undefined) {
                     return Location.ContentEditor;
                 }
             }
             if (document.querySelector('.sc-launchpad') !== null) {
                 return Location.Launchpad;
             }
-            if (document.querySelector('input#__FRAMENAME') !== null) {
+            let frameName = document.querySelector('input#__FRAMENAME') as HTMLInputElement
+            if (frameName !== null && frameName.value == "Shell") {
                 return Location.Desktop;
             }
             if (document.querySelector('#scWebEditRibbon') !== null || document.querySelector('[data-sc-id=PageEditBar]') != null) {

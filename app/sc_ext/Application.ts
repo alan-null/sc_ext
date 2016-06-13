@@ -35,6 +35,7 @@ if (SitecoreExtensions.Context.IsValid()) {
 
         launcher.registerProviderCommands(new Modules.SectionSwitches.SectionSwitchesCommandsProvider());
         launcher.registerProviderCommands(new Modules.LastLocation.RestoreLastLocationCommandProvider());
+        launcher.registerProviderCommands(new Modules.ShortcutsRunner.Providers.SitecoreApplicationsCommandsProvider());
 
         window.postMessage({
             sc_ext_enabled: true,
