@@ -1,17 +1,17 @@
 /// <reference path='_all.ts'/>
 'use strict';
 
-import Options = SitecoreExtensions.Options
-import Modules = SitecoreExtensions.Modules
+import Options = SitecoreExtensions.Options;
+import Modules = SitecoreExtensions.Modules;
+import Status = SitecoreExtensions.Status;
+import StatusType = SitecoreExtensions.Status.StatusType;
 
-function disabled(scExtOptions: Options.IModuleOptions) {
-    return scExtOptions != null && scExtOptions.model.enabled == false;
-}
 
 if (SitecoreExtensions.Context.IsValid()) {
     var scExtManager;
     var optionsRepository = new Options.OptionsRepository((wrapper: Options.OptionsWrapper) => {
-        if (disabled(wrapper.getModuleOptions('General'))) return;
+        var scExtOptions = new Options.ExtensionsOptions(wrapper.getModuleOptions('General'));
+        if (!scExtOptions.enabled) return;
 
         scExtManager = new SitecoreExtensions.ExtensionsManager();
         scExtManager.modulesOptions = wrapper.options;
@@ -37,9 +37,32 @@ if (SitecoreExtensions.Context.IsValid()) {
         launcher.registerProviderCommands(new Modules.LastLocation.RestoreLastLocationCommandProvider());
         launcher.registerProviderCommands(new Modules.ShortcutsRunner.Providers.SitecoreApplicationsCommandsProvider());
 
-        window.postMessage({
-            sc_ext_enabled: true,
-            sc_ext_modules_count: scExtManager.modules.filter(m => { return m.canExecute() }).length.toString()
-        }, '*');
+
+        if (scExtOptions.badge.enabled) {
+            var statusProvider = getStatusProvider(scExtOptions.badge.statusType);
+            var status = statusProvider.getStatus();
+            window.onfocus = () => { updateExtensionIcon(status); };
+            if (window.frameElement == null || SitecoreExtensions.Context.Location() == SitecoreExtensions.Enums.Location.ExperienceEditor) {
+                updateExtensionIcon(status);
+            }
+        } else {
+            updateExtensionIcon("");
+        }
     }).loadOptions();
+}
+
+function getStatusProvider(type: StatusType): Status.IStatusProvider {
+    switch (type) {
+        case StatusType.AvailableCommandsCount:
+            return new Status.CommandsStatusProvider();
+    }
+    return new Status.ModulesStatusProvider();
+}
+
+function updateExtensionIcon(text: string) {
+    window.postMessage({
+        sc_ext_enabled: true,
+        sc_ext_seticon_request: true,
+        sc_ext_badgetext: text
+    }, '*');
 }

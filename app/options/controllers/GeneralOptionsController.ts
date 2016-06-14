@@ -11,14 +11,43 @@ module SitecoreExtensions.Options {
 
         getFields() {
             return [
+                { template: '<h3>General</h3>', noFormControl: true },
                 {
                     key: 'enabled',
                     type: 'checkbox',
                     defaultValue: true,
                     templateOptions: {
                         label: 'Enabled'
-                    }
+                    },
                 },
+                { template: '<h3>Extension status icon</h3>', noFormControl: true },
+                {
+                    key: 'badge.enabled',
+                    type: 'checkbox',
+                    defaultValue: true,
+                    templateOptions: {
+                        label: 'Enabled'
+                    },
+                },
+                {
+                    key: "badge.statusType",
+                    type: "radio",
+                    defaultValue: "ModulesCount",
+                    templateOptions: {
+                        label: "Status type:",
+                        options: [
+                            {
+                                name: "Modules Count",
+                                value: "ModulesCount"
+                            },
+                            {
+                                name: "Available Commands Count",
+                                value: "AvailableCommandsCount"
+                            },
+                        ]
+                    },
+                    hideExpression: '!model.badge.enabled'
+                }
             ]
         }
     }

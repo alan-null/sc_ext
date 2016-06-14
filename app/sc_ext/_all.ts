@@ -8,6 +8,7 @@
 /// <reference path='options/OptionsAutoMapper.ts'/>
 /// <reference path='options/ModuleOptions.ts'/>
 /// <reference path='options/OptionsRepository.ts'/>
+/// <reference path='options/ExtensionsOptions.ts'/>
 
 // Other
 /// <reference path='enums/Location.ts'/>
@@ -20,7 +21,6 @@
 // Http
 /// <reference path='http/Method.ts'/>
 /// <reference path='http/HttpRequest.ts'/>
-
 // Libraries
 /// <reference path='libraries/Fuzzy.ts'/>
 
@@ -55,3 +55,9 @@
 /// <reference path='modules/ShortcutsRunner/ShortcutRunner.ts'/>
 /// <reference path='modules/ShortcutsRunner/Providers/AppShortcutCommand.ts'/>
 /// <reference path='modules/ShortcutsRunner/Providers/SitecoreApplicationsCommandsProvider.ts'/>
+
+// Status
+/// <reference path='status/StatusType.ts'/>
+/// <reference path='status/CommandsStatusProvider.ts'/>
+/// <reference path='status/ModulesStatusProvider.ts'/>
+/// <reference path='status/IStatusProvider.ts'/>

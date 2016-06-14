@@ -18,7 +18,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner.Providers {
 
         private createCommands() {
             this.addCommand("About", "License Details", "{70EEF2F0-4A17-427B-99A1-5069658EAE7A}");
-                this.addCommand("Access Viewer", "Get an overview of the access rights assigned to each account for each item in the content tree", "{D2D8EF5D-ABA7-485B-ACA6-CEDCD495AB5D}");
+            this.addCommand("Access Viewer", "Get an overview of the access rights assigned to each account for each item in the content tree", "{D2D8EF5D-ABA7-485B-ACA6-CEDCD495AB5D}");
             this.addCommand("Archive", "See archived items", "{ABF5E348-B8C1-4796-8100-8F012AE4713E}");
             this.addCommand("Content Editor", "Manage your website content.", "{E28353A0-FB68-455B-9B2E-99AD280EF64E}");
             this.addCommand("Developer Center", "Create new functionality.", "{6041C6E9-4054-4116-95C0-7967DB8A0583}");
@@ -36,7 +36,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner.Providers {
             this.addCommand("Role Manager", "Create and manage the roles that you want to assign the users of your system", "{18156152-715C-4E3F-969A-94BE59A049E9}");
             this.addCommand("Run", "Enter the name of the application, folder, document, or internet resource that you want to open.", "{8CC6D3B6-9081-4E04-84E3-F051A3194CB4}");
             this.addCommand("Scan for Broken Links", "Scan for Broken Links", "{92BFFD39-D745-4B42-A356-1CD24540CD53}");
-                this.addCommand("Search", "Sitecore search application", "{0490EE27-D17D-46F6-A4DF-C0864EE9DD52}");
+            this.addCommand("Search", "Sitecore search application", "{0490EE27-D17D-46F6-A4DF-C0864EE9DD52}");
             this.addCommand("Security Editor", "Manage the access rights that roles and users have to the items in Sitecore", "{0EF5CACF-4C67-46F5-8DEA-DA93700B52F7}");
             this.addCommand("Template Manager", "Create new templates.", "{B3702304-16E6-4EA0-ADDA-5390B56A4164}");
             this.addCommand("User manager", "Create and manage the users that have access to the system", "{E89F2A3C-8F3E-491E-AB81-695FBDE3479E}");

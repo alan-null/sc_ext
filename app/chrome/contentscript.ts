@@ -4,13 +4,12 @@
 
 
 'use strict';
-chrome.runtime.sendMessage({ 'modulesCount': 'off' });
 window.addEventListener('message', function (event) {
     if (event.data.sc_ext_enabled) {
-        if (event.data.sc_ext_modules_count) {
+        if (event.data.sc_ext_seticon_request) {
             chrome.runtime.sendMessage({
                 newIconPath: 'chrome/images/icon-128.png',
-                modulesCount: event.data.sc_ext_modules_count
+                modulesCount: event.data.sc_ext_badgetext
             });
         }
 

@@ -38,5 +38,15 @@ namespace SitecoreExtensions {
             }
             return null;
         }
+
+        getModuleByName(name: string): ISitecoreExtensionsModule {
+            for (var index = 0; index < this.modules.length; index++) {
+                var m = this.modules[index];
+                if (m.moduleName === name) {
+                    return m;
+                }
+            }
+            return null;
+        }
     }
 }
