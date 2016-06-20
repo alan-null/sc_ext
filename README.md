@@ -21,5 +21,36 @@ Sitecore Extensions is a google chrome extension which provides small improvemen
 ## Contributing
 If you are interested in fixing issues and contributing directly to the code base, please see the document [How to Contribute](.github/CONTRIBUTING.md)
 
+## Development 
+Follow steps below if you want to start coding.
+#### Prerequisites
+Install **nodejs**
+```
+https://nodejs.org/en/download/
+```
+Install **gulp**
+```
+npm install -g gulp
+```
+
+#### Environment setup
+Clone repository
+```
+git clone https://github.com/alan-null/sc_ext.git
+```
+Install node modules
+```
+npm install
+```
+Build project
+```
+gulp build
+```
+Run watch task if you want dynamic code rebuild in the background 
+```
+gulp watch
+```
+
+
 ## License
 [MIT](LICENSE)
