@@ -1,30 +1,9 @@
 /// <reference path='../../../_all.ts'/>
 
 namespace SitecoreExtensions.Modules.Launcher.Providers {
-    class LaunchpadShortcutCommand implements ICommand {
-        id: number;
-        name: string;
-        description: string;
-        url: string;
-
-        constructor(name, description, url) {
-            this.id = 0;
-            this.url = url;
-            this.name = name;
-            this.description = description;
-        }
-
-        public canExecute(): boolean {
-            return true;
-        }
-
-        public execute(): void {
-            this.navigate(this.url)
-        }
-
-        private navigate(url: string): void {
-            let location: string = window.top.location.origin + url;
-            window.top.document.location.href = location;
+    class LaunchpadShortcutCommand extends NavigationCommand implements ICommand {
+        constructor(name: string, description: string, url: string) {
+            super(name, description, url)
         }
     }
 

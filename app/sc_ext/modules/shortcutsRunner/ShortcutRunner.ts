@@ -15,24 +15,25 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
             this.token = this.tokenService.getToken();
         }
 
-        public runShortcutCommand(shortcutId: string): void {
+        public runShortcutCommand(shortcutId: string, evt?: KeyboardEvent): void {
             this.getShortcutUrl((e) => {
                 if (e.currentTarget.status == 500) {
                     this.handleErrorAndRetry(shortcutId);
                 } else {
                     var data = JSON.parse(e.currentTarget.responseText);
-                    this.invokeCommand(data);
+                    this.invokeCommand(data, evt);
                 }
             }, shortcutId)
         }
 
-        private invokeCommand(data): void {
+        private invokeCommand(data, evt?: KeyboardEvent): void {
             var lastCommandIndex = data.commands.length - 1;
             var iFrame = data.commands[lastCommandIndex].value;
             var urls = iFrame.match(/\/sitecore\/shell(.)*png/)
             if (urls) {
-                var url = urls[0]
-                window.top.document.location.href = window.top.location.origin + url;
+                var url = window.top.location.origin + urls[0]
+                var command = new Launcher.Providers.NavigationCommand(null, null, url)
+                command.execute(evt);
             }
         }
 

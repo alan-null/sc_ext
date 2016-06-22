@@ -1,30 +1,9 @@
 /// <reference path='../../../_all.ts'/>
 
 namespace SitecoreExtensions.Modules.Launcher.Providers {
-    class ShortcutCommand implements ICommand {
-        id: number;
-        name: string;
-        description: string;
-        aspx: string;
-
-        constructor(name, description, aspx) {
-            this.id = 0;
-            this.aspx = aspx;
-            this.name = name;
-            this.description = description;
-        }
-
-        navigate(aspx: string): void {
-            var location = window.top.location.origin + '/sitecore/admin/' + aspx + '.aspx'
-            window.top.document.location.href = location;
-        }
-
-        canExecute(): boolean {
-            return true;
-        }
-
-        execute(): void {
-            this.navigate(this.aspx)
+    class ShortcutCommand extends NavigationCommand implements ICommand {
+        constructor(name: string, description: string, aspx: string) {
+            super(name, description, window.top.location.origin + '/sitecore/admin/' + aspx + '.aspx')
         }
     }
     export class AdminShortcutsCommandsProvider implements ICommandsProvider {

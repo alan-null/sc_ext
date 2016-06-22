@@ -10,7 +10,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner.Providers {
         runner: ShortcutRunner;
         shortcutID: string;
 
-        constructor(name, description, runner, shortcutID) {
+        constructor(name: string, description: string, runner: ShortcutRunner, shortcutID: string) {
             this.id = 0;
             this.runner = runner;
             this.name = name;
@@ -22,8 +22,8 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner.Providers {
             return true;
         }
 
-        public execute(): void {
-            this.runner.runShortcutCommand(this.shortcutID);
+        public execute(evt?: KeyboardEvent): void {
+            this.runner.runShortcutCommand(this.shortcutID, evt);
         }
     }
 }

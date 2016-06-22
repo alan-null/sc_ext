@@ -151,18 +151,18 @@ namespace SitecoreExtensions.Modules.Launcher {
             });
         }
 
-        executeSelectedCommand(): void {
+        executeSelectedCommand(evt?: KeyboardEvent): void {
             var command = <ICommand>this.commands.find((cmd: ICommand) => {
                 var selectedComandId = parseInt((<HTMLLIElement>this.selectedCommand[0]).dataset['id'])
                 return cmd.id == selectedComandId
             });
-            command.execute();
+            command.execute(evt);
             this.hideLauncher()
         }
 
         inputKeyUpEvent(evt: KeyboardEvent): void {
             if (evt.keyCode == this.launcherOptions.shortcuts.executeCommand && this.selectedCommand[0]) {
-                this.executeSelectedCommand();
+                this.executeSelectedCommand(evt);
                 return;
             }
             if (evt.keyCode == this.launcherOptions.shortcuts.selectPrevResult || evt.keyCode == this.launcherOptions.shortcuts.selectNextResult) {

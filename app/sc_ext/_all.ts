@@ -35,6 +35,7 @@
 /// <reference path='modules/Launcher/ICommand.ts'/>
 /// <reference path='modules/Launcher/models/SearchResult.ts'/>
 /// <reference path='modules/Launcher/providers/ICommandsProvider.ts'/>
+/// <reference path='modules/Launcher/providers/NavigationCommand.ts'/>
 /// <reference path='modules/Launcher/providers/ContentEditorRibbonCommandsProvider.ts'/>
 /// <reference path='modules/Launcher/providers/AdminShortcutsCommandsProvider.ts'/>
 /// <reference path='modules/Launcher/providers/LaunchpadCommandsProvider.ts'/>
