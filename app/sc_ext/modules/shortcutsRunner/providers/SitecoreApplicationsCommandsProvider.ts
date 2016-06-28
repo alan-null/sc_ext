@@ -39,7 +39,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner.Providers {
             this.addCommand("Search", "Sitecore search application", "{0490EE27-D17D-46F6-A4DF-C0864EE9DD52}");
             this.addCommand("Security Editor", "Manage the access rights that roles and users have to the items in Sitecore", "{0EF5CACF-4C67-46F5-8DEA-DA93700B52F7}");
             this.addCommand("Template Manager", "Create new templates.", "{B3702304-16E6-4EA0-ADDA-5390B56A4164}");
-            this.addCommand("User manager", "Create and manage the users that have access to the system", "{E89F2A3C-8F3E-491E-AB81-695FBDE3479E}");
+            this.addCommand("User Manager", "Create and manage the users that have access to the system", "{E89F2A3C-8F3E-491E-AB81-695FBDE3479E}");
             this.addCommand("Workbox", "Displays information about the items in a workflow such as editing history or the number of items that you can find in each workflow state", "{5AB73C5D-6B10-464D-B7B7-12CDB9DA5931}");
         }
 

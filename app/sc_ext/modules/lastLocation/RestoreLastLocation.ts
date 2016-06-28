@@ -2,8 +2,13 @@
 
 namespace SitecoreExtensions.Modules.LastLocation {
     export class RestoreLastLocation extends ModuleBase implements ISitecoreExtensionsModule {
+
+        constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
+            super(name, description, rawOptions);
+        }
+
         canExecute(): boolean {
-            return Context.Location() == Enums.Location.ContentEditor;
+            return this.options.enabled && Context.Location() == Enums.Location.ContentEditor;
         }
 
         updateLastLocation(args: any): void {

@@ -9,5 +9,8 @@ module SitecoreExtensions.Options {
         .controller('LauncherController', LauncherController)
         .controller('DatabaseColorController', DatabaseColorController)
         .controller('DatabaseNameController', DatabaseNameController)
+        .controller('SectionSwitchesController', SectionSwitchesController)
+        .controller('FieldSearchController', FieldSearchController)
+        .controller('RestoreLastLocationController', RestoreLastLocationController)
         .directive('navigation', NavigationDirective)
 }

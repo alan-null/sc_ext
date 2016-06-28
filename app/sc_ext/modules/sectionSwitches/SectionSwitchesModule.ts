@@ -3,8 +3,9 @@
 namespace SitecoreExtensions.Modules.SectionSwitches {
     export class SectionSwitchesModule extends ModuleBase implements ISitecoreExtensionsModule {
         sectionSwitchButtonClassName: string;
-        constructor(name: string, description: string) {
-            super(name, description);
+
+        constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
+            super(name, description, rawOptions);
             this.sectionSwitchButtonClassName = 'scEButton';
         }
 
@@ -59,7 +60,7 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
         }
 
         canExecute(): boolean {
-            return Context.Location() == Enums.Location.ContentEditor;
+            return this.options.enabled && Context.Location() == Enums.Location.ContentEditor;
         }
 
         initialize(): void {

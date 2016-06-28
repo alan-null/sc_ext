@@ -16,12 +16,12 @@ if (SitecoreExtensions.Context.IsValid()) {
         scExtManager = new SitecoreExtensions.ExtensionsManager();
         scExtManager.modulesOptions = wrapper.options;
 
-        var sectionSwitchesModule = new Modules.SectionSwitches.SectionSwitchesModule('Section Switches', 'Easily open/close all item sections with just one click');
+        var sectionSwitchesModule = new Modules.SectionSwitches.SectionSwitchesModule('Section Switches', 'Easily open/close all item sections with just one click', wrapper.getModuleOptions('Section Switches'));
         var dbNameModule = new Modules.DatabaseName.DatabaseNameModule('Database Name', 'Displays current database name in the Content Editor header', wrapper.getModuleOptions('Database Name'));
         var launcher = new Modules.Launcher.LauncherModule('Launcher', 'Feel like power user using Sitecore Extensions command launcher.', wrapper.getModuleOptions('Launcher'));
         var databaseColour = new Modules.DatabaseColor.DatabaseColorModule("Database Colour", 'Change the global header colour depeding on current database.', wrapper.getModuleOptions('Database Colour'));
-        var lastLocation = new Modules.LastLocation.RestoreLastLocation("Restore Last Location", "Restores last opened item in Content Editor");
-        var fieldSearchModule = new Modules.FieldSearch.FieldSearchModule('Field Search', 'Allows to search available fields.');
+        var lastLocation = new Modules.LastLocation.RestoreLastLocation("Restore Last Location", "Restores last opened item in Content Editor", wrapper.getModuleOptions('Restore Last Location'));
+        var fieldSearchModule = new Modules.FieldSearch.FieldSearchModule('Field Search', 'Allows to search available fields.', wrapper.getModuleOptions('Field Search'));
 
         scExtManager.addModule(sectionSwitchesModule);
         scExtManager.addModule(dbNameModule);

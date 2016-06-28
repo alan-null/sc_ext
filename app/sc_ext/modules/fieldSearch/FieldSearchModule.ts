@@ -4,8 +4,12 @@ namespace SitecoreExtensions.Modules.FieldSearch {
     export class FieldSearchModule extends ModuleBase implements ISitecoreExtensionsModule {
         searchString: string;
 
+        constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
+            super(name, description, rawOptions);
+        }
+
         canExecute(): boolean {
-            return Context.Location() == Enums.Location.ContentEditor;
+            return this.options.enabled && Context.Location() == Enums.Location.ContentEditor;
         };
 
         private createTextBox(text: string): HTMLInputElement {
@@ -47,7 +51,7 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             var fields = contentSection.getElementsByClassName("scEditorFieldMarker");
             var sections = this.castToArray(sectionsExpanded).concat(this.castToArray(sectionsCollapsed)).concat(this.castToArray(panels)).concat(this.castToArray(fields));
 
-            
+
             sections.forEach(element => {
                 if (hide) {
                     if (!element.classList.contains("sc-ext-hiddenElement")) {
@@ -76,11 +80,11 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             hits.forEach(element => {
                 this.getParent(element, "scEditorSectionPanel").forEach(elem => {
                     elem.classList.remove("sc-ext-hiddenElement");
-                    
+
 
                     if (elem.classList.contains("scEditorSectionPanel")) {
                         elem.previousElementSibling.classList.remove("sc-ext-hiddenElement");
-                        
+
                         if (elem.previousElementSibling.classList.contains("scEditorSectionCaptionCollapsed")) {
                             elem.classList.add("sc-ext-forceExpandedElement");
                         }

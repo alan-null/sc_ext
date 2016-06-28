@@ -13,6 +13,9 @@
 /// <reference path='controllers/LauncherController.ts' />
 /// <reference path='controllers/DatabaseColorController.ts' />
 /// <reference path='controllers/DatabaseNameController.ts' />
+/// <reference path='controllers/SectionSwitchesController.ts' />
+/// <reference path='controllers/RestoreLastLocationController.ts' />
+/// <reference path='controllers/FieldSearchController.ts' />
 /// <reference path='controllers/AboutController.ts' />
 /// <reference path='controllers/GeneralOptionsController.ts' />
 
