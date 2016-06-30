@@ -142,7 +142,7 @@ gulp.task('publish_sc_ext', () => {
 
 gulp.task('publish_chrome', () => {
     return publish([
-        'app/chrome/*.js',
+        'app/chrome/**/*.js',
         '!app/chrome/chromereload.js',
         'app/chrome/**/*.css',
         'app/chrome/**/*.png',

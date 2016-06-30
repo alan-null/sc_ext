@@ -54,3 +54,4 @@ gulp watch
 
 ## License
 [MIT](LICENSE)
+[![Analytics](https://ga-beacon.appspot.com/UA-74179201-4/sc_ext?pixel)](https://github.com/igrigorik/ga-beacon)
