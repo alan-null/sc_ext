@@ -1,0 +1,17 @@
+init:
+  - git config --global core.autocrlf true
+environment:
+  matrix:
+    - nodejs_version: "5"
+install:  
+  - npm install -g npm
+  - npm install -g gulp
+  - npm install
+test_script:
+  - node --version && npm --version
+  - cmd: gulp build
+build: off
+matrix:
+  fast_finish: true
+cache:
+  - node_modules -> package.json

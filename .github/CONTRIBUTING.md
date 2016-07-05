@@ -32,3 +32,4 @@ Thanks for contributing!
 
 [issues]: //github.com/alan-null/sc-ext/issues
 [new-issue]: //github.com/alan-null/sc-ext/issues/new
+[![Analytics](https://ga-beacon.appspot.com/UA-74179201-4/sc_ext/CONTRIBUTING.md?pixel)](https://github.com/igrigorik/ga-beacon)

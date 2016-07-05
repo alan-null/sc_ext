@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/4nag8qas7dk96nme/branch/master?svg=true)](https://ci.appveyor.com/project/alannull/sc-ext/branch/master)
+
 # Sitecore Extensions
  
 Sitecore Extensions is a google chrome extension which provides small improvements for Sitecore CMS. 

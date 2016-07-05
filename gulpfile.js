@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var livereload = require('gulp-livereload');
 var ts = require('gulp-typescript');
 var sourcemaps = require('gulp-sourcemaps');
-var sass = require('gulp-sass');
+var _sass = require('gulp-sass');
 var concat = require('gulp-concat');
 var runSequence = require('run-sequence');
 var del = require('del');
@@ -14,6 +14,34 @@ var zip = require('gulp-zip')
 var size = require('gulp-size')
 var jsonEditor = require('gulp-json-editor')
 
+var mode = "build"
+
+var originalSrc = gulp.src;
+gulp.src = function () {
+    return fixPipe(originalSrc.apply(this, arguments));
+};
+
+function fixPipe(stream) {
+    var origPipe = stream.pipe;
+    stream.pipe = function (dest) {
+        arguments[0] = dest.on('error', function (error) {
+            var state = dest._readableState,
+                pipesCount = state.pipesCount,
+                pipes = state.pipes;
+            if (pipesCount === 1) {
+                pipes.emit('error', error);
+            } else if (pipesCount > 1) {
+                pipes.forEach(function (pipe) {
+                    pipe.emit('error', error);
+                });
+            } else if (dest.listeners('error').length === 1) {
+                throw error;
+            }
+        });
+        return fixPipe(origPipe.apply(this, arguments));
+    };
+    return stream;
+}
 
 function typescript(src, dest, concatFile) {
     var tsResult = gulp.src(src)
@@ -24,7 +52,27 @@ function typescript(src, dest, concatFile) {
     return tsResult.js
         .pipe(_if(concatFile != '|', concat(concatFile)))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(dest));
+        .pipe(gulp.dest(dest))
+        .on('error', function (error) {
+            console.log("An error has occurred");
+            console.error('' + error);
+            if (mode == "build") {
+                process.exit(1);
+            }
+        });
+}
+
+function sass(src, dst) {
+    return gulp.src(src)
+        .pipe(_sass().on('error', _sass.logError))
+        .pipe(gulp.dest(dst))
+        .on('error', function (error) {
+            console.log("An error has occurred");
+            console.error('' + error);
+            if (mode == "build") {
+                process.exit(1);
+            }
+        });
 }
 
 gulp.task('typescript_sc_ext', () => {
@@ -48,19 +96,15 @@ gulp.task('typescript_all', ['cleanup_dev'], (callback) => {
 });
 
 gulp.task('sass_sc_ext', () => {
-    return gulp.src('./app/sc_ext/**/*.scss')
-        .pipe(sass().on('error', sass.logError))
-        .pipe(gulp.dest('./app/sc_ext'));
+    return sass('./app/sc_ext/**/*.scss', './app/sc_ext')
 });
 
 gulp.task('sass_popup', () => {
-    return gulp.src('./app/chrome/popup/**/*.scss')
-        .pipe(sass().on('error', sass.logError))
-        .pipe(gulp.dest('./app/chrome/popup'));
+    return sass('./app/chrome/popup/**/*.scss', './app/chrome/popup')
 });
 
 gulp.task('sass_all', (callback) => {
-    runSequence('sass_sc_ext','sass_popup', callback);
+    runSequence('sass_sc_ext', 'sass_popup', callback);
 });
 
 gulp.task('cleanup_dev', () => {
@@ -77,7 +121,11 @@ gulp.task('cleanup_dev', () => {
 
 gulp.task('cleanup_release', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('watch', ['typescript_all', 'sass_all'], () => {
+gulp.task('set_mode', () => {
+    mode = "watch";
+});
+
+gulp.task('watch', ['set_mode', 'typescript_all', 'sass_all'], () => {
     livereload.listen();
 
     gulp.watch('app/sc_ext/**/*.ts', ['typescript_sc_ext']);
@@ -167,7 +215,7 @@ gulp.task('publish_common', () => {
 
 
 gulp.task('publish_all', (callback) => {
-    runSequence('publish_sc_ext', 'publish_chrome', 'publish_options','publish_common', callback);
+    runSequence('publish_sc_ext', 'publish_chrome', 'publish_options', 'publish_common', callback);
 });
 
 gulp.task('build', ['cleanup_release'], (callback) => {
