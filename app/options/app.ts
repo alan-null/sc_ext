@@ -12,5 +12,6 @@ module SitecoreExtensions.Options {
         .controller('SectionSwitchesController', SectionSwitchesController)
         .controller('FieldSearchController', FieldSearchController)
         .controller('RestoreLastLocationController', RestoreLastLocationController)
+        .controller('TreelistFieldController', TreelistFieldController)
         .directive('navigation', NavigationDirective)
 }

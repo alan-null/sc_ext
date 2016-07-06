@@ -14,6 +14,7 @@
 /// <reference path='controllers/DatabaseColorController.ts' />
 /// <reference path='controllers/DatabaseNameController.ts' />
 /// <reference path='controllers/SectionSwitchesController.ts' />
+/// <reference path='controllers/TreelistFieldController.ts' />
 /// <reference path='controllers/RestoreLastLocationController.ts' />
 /// <reference path='controllers/FieldSearchController.ts' />
 /// <reference path='controllers/AboutController.ts' />

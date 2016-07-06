@@ -84,6 +84,21 @@ namespace SitecoreExtensions {
                 }
             }
         }
+
+        static selectNodeContent(node: Node): void {
+            var range, selection;
+            if (window.getSelection && document.createRange) {
+                selection = window.getSelection();
+                range = document.createRange() as Range;
+                range.selectNodeContents(node);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } else if ((document as any).selection && (document.body as any).createTextRange) {
+                range = (document.body as any).createTextRange();
+                range.moveToElementText(this);
+                range.select();
+            }
+        }
     }
 }
 

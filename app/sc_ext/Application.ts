@@ -22,6 +22,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         var databaseColour = new Modules.DatabaseColor.DatabaseColorModule("Database Colour", 'Change the global header colour depeding on current database.', wrapper.getModuleOptions('Database Colour'));
         var lastLocation = new Modules.LastLocation.RestoreLastLocation("Restore Last Location", "Restores last opened item in Content Editor", wrapper.getModuleOptions('Restore Last Location'));
         var fieldSearchModule = new Modules.FieldSearch.FieldSearchModule('Field Search', 'Allows to search available fields.', wrapper.getModuleOptions('Field Search'));
+        var treelistField = new Modules.TreelistField.TreelistFieldModule('Treelist Field', 'Adds path inside treelist field', wrapper.getModuleOptions('Treelist Field'));
 
         scExtManager.addModule(sectionSwitchesModule);
         scExtManager.addModule(dbNameModule);
@@ -29,6 +30,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         scExtManager.addModule(databaseColour);
         scExtManager.addModule(lastLocation);
         scExtManager.addModule(fieldSearchModule);
+        scExtManager.addModule(treelistField);
 
         scExtManager.initModules();
 

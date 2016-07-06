@@ -1,0 +1,13 @@
+.scContentControl.scTreelistEx.sc-ext-treelist {
+    .sc-ext-treelist-path {
+        margin-left: 5px;
+        color: #808080;
+
+    }
+    .sc-ext-treelist-path:after {
+        content: "]"
+    }
+    .sc-ext-treelist-path:before {
+        content: "["
+    }
+}

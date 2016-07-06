@@ -44,6 +44,7 @@
 /// <reference path='modules/SectionSwitches/SectionSwitchesModule.ts'/>
 // DatabaseName
 /// <reference path='modules/DatabaseName/DatabaseNameModule.ts'/>
+/// <reference path='modules/TreelistField/TreelistFieldModule.ts'/>
 // FieldSearch
 /// <reference path='modules/FieldSearch/FieldSearchModule.ts'/>
 // LastLocation

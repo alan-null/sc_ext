@@ -35,7 +35,8 @@
             "css": [
                 "sc_ext/styles/launcher.css",
                 "sc_ext/styles/databaseName.css",
-                "sc_ext/styles/fieldSearch.css"
+                "sc_ext/styles/fieldSearch.css",
+                "sc_ext/styles/treelistField.css"
             ],
             "run_at": "document_end",
             "all_frames": true
