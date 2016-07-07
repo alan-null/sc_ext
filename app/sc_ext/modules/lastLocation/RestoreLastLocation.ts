@@ -13,14 +13,15 @@ namespace SitecoreExtensions.Modules.LastLocation {
 
         updateLastLocation(args: any): void {
             var id;
-            for (let i = 0, l = args.path.length; i < l; i++) {
-                let parent = args.path[i];
+            var parent = args.element();
+            while (parent && parent.tagName && parent.tagName != "BODY") {
                 if (parent.tagName && parent.tagName.toLowerCase() === "a") {
                     id = parent.id;
                     id = id.substring(id.lastIndexOf("_") + 1);
                     LastLocationStore.saveLastItemId(id);
-                    break;
+                    return ;
                 }
+                parent = parent.parentElement
             }
         }
 

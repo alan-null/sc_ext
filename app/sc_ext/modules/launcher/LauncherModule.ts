@@ -133,7 +133,7 @@ namespace SitecoreExtensions.Modules.Launcher {
                         return;
                     }
                     case this.launcherOptions.shortcuts.hide: {
-                        if (event.target == this.searchBoxElement) {
+                        if (evt.target == this.searchBoxElement) {
                             this.hideLauncher();
                         }
                         break;
@@ -147,7 +147,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         addFlowConditionForKeyDownEvent(): void {
             HTMLHelpers.addFlowConditionToEvent(scSitecore, 'onKeyDown', (evt: KeyboardEvent) => {
                 evt = (evt != null ? evt : <KeyboardEvent>window.event);
-                return evt.srcElement.id != 'sc-ext-searchBox';
+                return (evt as any).element().id != 'sc-ext-searchBox';
             });
         }
 

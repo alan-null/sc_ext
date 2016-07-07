@@ -14,16 +14,23 @@ window.addEventListener('message', function (event) {
         }
 
         if (event.data.sc_ext_options_request) {
-            var provider = new SitecoreExtensions.Options.OptionsProvider();
-            provider.getOptions((optionsWrapper) => {
+            if (chrome.storage) {
+                var provider = new SitecoreExtensions.Options.OptionsProvider();
+                provider.getOptions((optionsWrapper) => {
+                    window.postMessage({
+                        sc_ext_enabled: true,
+                        sc_ext_options_response: true,
+                        payload: optionsWrapper,
+                    }, '*');
+                })
+            } else {
                 window.postMessage({
                     sc_ext_enabled: true,
                     sc_ext_options_response: true,
-                    payload: optionsWrapper,
+                    payload: null,
                 }, '*');
-            })
+            }
         }
-
     }
 });
 

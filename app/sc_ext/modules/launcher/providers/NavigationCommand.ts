@@ -19,11 +19,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
         }
 
         private openInNewTab(): void {
-            var virtualLink = HTMLHelpers.createElement("a", {
-                target: "_blank",
-                href: this.url
-            }) as HTMLLinkElement;
-            virtualLink.click();
+            window.open(this.url,'_newtab');
         }
 
         canExecute(): boolean {
