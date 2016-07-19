@@ -2,6 +2,7 @@
 
 namespace SitecoreExtensions.Modules.Launcher {
     import SearchResult = Launcher.Models.SearchResult
+    import SitecoreSearchResults = Launcher.Models.SitecoreSearchResults
 
     export class LauncherModule extends ModuleBase implements ISitecoreExtensionsModule {
         modalElement: HTMLDivElement;
@@ -10,7 +11,10 @@ namespace SitecoreExtensions.Modules.Launcher {
         selectedCommand: NodeListOf<HTMLLIElement>;
         launcherOptions: any;
         commands: ICommand[];
-        fuzzy: Libraries.Fuzzy
+        fuzzy: Libraries.Fuzzy;
+        idPattern: string = "{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}"
+        delayedSearch: any;
+        resultsDelay: number = 300;
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
@@ -97,7 +101,31 @@ namespace SitecoreExtensions.Modules.Launcher {
 
             li.onclick = (e) => {
                 var element = <Element>e.srcElement;
-                if (element.tagName != 'LI') {
+                while (element.tagName != 'LI') {
+                    element = <Element>element.parentNode;
+                }
+                this.changeSelectedCommand(element);
+                this.searchBoxElement.focus();
+            };
+            li.ondblclick = _ => this.executeSelectedCommand();
+            return li;
+        }
+
+        private buildItemHtml(sr: SitecoreSearchResults): HTMLLIElement {
+            var li = HTMLHelpers.createElement<HTMLLIElement>('li', null, { id: sr.id });
+            var spanName = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-name' });
+            spanName.innerHTML = sr.title;
+            var spanDescription = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-description' });
+            spanDescription.innerText = sr.path;
+
+            var img = HTMLHelpers.createElement<HTMLImageElement>('img', { src: sr.img, class: 'command-img' });
+            li.appendChild(img);
+            li.appendChild(spanName);
+            li.appendChild(spanDescription);
+
+            li.onclick = (e) => {
+                var element = <Element>e.srcElement;
+                while (element.tagName != 'LI') {
                     element = <Element>element.parentNode;
                 }
                 this.changeSelectedCommand(element);
@@ -152,11 +180,22 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         executeSelectedCommand(evt?: KeyboardEvent): void {
-            var command = <ICommand>this.commands.find((cmd: ICommand) => {
-                var selectedComandId = parseInt((<HTMLLIElement>this.selectedCommand[0]).dataset['id'])
-                return cmd.id == selectedComandId
-            });
-            command.execute(evt);
+            var id = (<HTMLLIElement>this.selectedCommand[0]).dataset['id'];
+            if (id.match(this.idPattern)) {
+                console.log("Navigate to item:" + id);
+                if (Context.Location() == Enums.Location.ContentEditor) {
+                    scForm.postRequest("", "", "", "LoadItem(\"" + id + "\")");
+                } else {
+                    new Providers.LaunchpadShortcutCommand("", "", "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + id).execute(evt);
+                }
+
+            } else {
+                var selectedComandId = parseInt(id)
+                var command = <ICommand>this.commands.find((cmd: ICommand) => {
+                    return cmd.id == selectedComandId
+                });
+                command.execute(evt);
+            }
             this.hideLauncher()
         }
 
@@ -168,12 +207,30 @@ namespace SitecoreExtensions.Modules.Launcher {
             if (evt.keyCode == this.launcherOptions.shortcuts.selectPrevResult || evt.keyCode == this.launcherOptions.shortcuts.selectNextResult) {
                 this.commandSelectionEvent(evt);
             } else {
-                var results = this.search(this.searchBoxElement.value);
-                this.appendResults(results);
-
-                if (this.searchResultsElement.children.length > 0) {
-                    (<HTMLLIElement>this.searchResultsElement.firstChild).setAttribute('class', 'selected');
+                let phrase = this.searchBoxElement.value;
+                if (phrase.startsWith("#") && phrase.length >= 1) {
+                    phrase = phrase.substring(phrase.indexOf("#") + 1);
+                    if (phrase.match("^ *$") == null) {
+                        this.searchItems(phrase);
+                    }
+                } else {
+                    var results = this.searchCommands(phrase);
+                    this.appendResults(results);
+                    this.selectFirstResult();
                 }
+            }
+        }
+
+        private selectFirstResult(): void {
+            if (this.searchResultsElement.children.length > 0) {
+                (<HTMLLIElement>this.searchResultsElement.firstChild).setAttribute('class', 'selected');
+            }
+        }
+
+        private extractID(params: string) {
+            var results = params.match(this.idPattern);
+            if (results != null && results.length > 0) {
+                return results[0];
             }
         }
 
@@ -214,7 +271,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             return command.canExecute();
         }
 
-        private search(query: string): SearchResult[] {
+        private searchCommands(query: string): SearchResult[] {
             var results = new Array<SearchResult>();
             var i;
 
@@ -236,6 +293,54 @@ namespace SitecoreExtensions.Modules.Launcher {
             }
             results.sort(this.fuzzy.matchComparator);
             return results.slice(0, this.launcherOptions.searchResultsCount);
+        }
+
+        private searchItems(phrase: string) {
+            var searchEndpointUrl = window.top.location.origin + "/sitecore/shell/applications/search/instant/instantsearch.aspx";
+            var request = new Http.HttpRequest(searchEndpointUrl + "?q=" + phrase + "&v=1", Http.Method.POST, (e) => {
+                var data = e.currentTarget.responseText;
+                var parser = new DOMParser()
+                var doc = parser.parseFromString(data, "text/html");
+
+                var categories = doc.querySelectorAll(".scSearchResultsTable td");
+                var currentCategoryName = "Uncategorized"
+                var results = new Array<SitecoreSearchResults>();
+                for (var index = 0; index < categories.length; index++) {
+                    var td = categories[index] as HTMLTableDataCellElement;
+                    if (td.attributes['rowspan'] != undefined) {
+                        currentCategoryName = td.innerText;
+                    } else {
+                        var link = td.querySelector("a") as HTMLAnchorElement;
+                        var result = new SitecoreSearchResults();
+                        result.category = currentCategoryName;
+                        result.path = link.title;
+                        result.id = this.extractID(link.attributes['href'].nodeValue);
+                        result.title = link.innerText;
+                        result.img = (link.querySelector("img") as HTMLImageElement).attributes['src'].nodeValue;
+                        if (result.id) {
+                            results.push(result);
+                        }
+                    }
+                }
+
+                if (results.length > 0) {
+                    for (var i = 0; i < results.length && i < this.launcherOptions.searchResultsCount; i++) {
+                        var li = this.buildItemHtml(results[i]);
+                        this.searchResultsElement.appendChild(li);
+                    }
+
+                    if (this.searchResultsElement.className !== 'term-list') {
+                        this.searchResultsElement.className = 'term-list';
+                    }
+                    this.selectFirstResult();
+                }
+            });
+
+            clearTimeout(this.delayedSearch);
+            this.delayedSearch = setTimeout(() => {
+                this.clearResults();
+                request.execute()
+            }, this.resultsDelay);
         }
 
         canExecute(): boolean {

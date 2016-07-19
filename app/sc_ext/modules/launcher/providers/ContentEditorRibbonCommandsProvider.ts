@@ -65,7 +65,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addCommand('Publish Now', 'Publish the item in all languages to all publishing targets.', () => { scForm.invoke('item:publishnow(related=1,subitems=0,smart=1)'); }, canExecute)
             this.addCommand('Publish Item', 'Publish item', () => { scForm.postEvent(this, 'click', 'item:publish(id=)'); }, canExecute)
             this.addCommand('Publish Site', 'Publish site', () => { scForm.postEvent(this, 'click', 'system:publish'); }, canExecute)
-            this.addCommand('Experience Editor', 'Start the Experience Editor.', () => { scForm.postEvent(this, 'click', 'webedit:openexperienceeditor'); }, canExecute)
+            this.addCommand('Open in Experience Editor', 'Start the Experience Editor.', () => { scForm.postEvent(this, 'click', 'webedit:openexperienceeditor'); }, canExecute)
             this.addCommand('Preview', 'Start the Preview mode.', () => { scForm.postEvent(this, 'click', 'item:preview'); }, canExecute)
             this.addCommand('Publishing viewer', 'View the publishing dates of each version.', () => { scForm.postEvent(this, 'click', 'item:publishingviewer(id=)'); }, canExecute)
             this.addCommand('Messages', 'Create, edit, and post a message on a target ntwork.', () => { scForm.invoke('social:dialog:show', 'click'); }, canExecute)

@@ -1,7 +1,7 @@
 /// <reference path='../../../_all.ts'/>
 
 namespace SitecoreExtensions.Modules.Launcher.Providers {
-    class LaunchpadShortcutCommand extends NavigationCommand implements ICommand {
+    export class LaunchpadShortcutCommand extends NavigationCommand implements ICommand {
         constructor(name: string, description: string, url: string) {
             super(name, description, url)
         }

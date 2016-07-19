@@ -31,6 +31,7 @@
 /// <reference path='modules/DatabaseColor/DatabaseColorModule.ts'/>
 /// <reference path='modules/DatabaseColor/DatabaseColorOptions.ts'/>
 // Launcher
+/// <reference path='modules/Launcher/models/SitecoreSearchResults.ts'/>
 /// <reference path='modules/Launcher/LauncherModule.ts'/>
 /// <reference path='modules/Launcher/ICommand.ts'/>
 /// <reference path='modules/Launcher/models/SearchResult.ts'/>
