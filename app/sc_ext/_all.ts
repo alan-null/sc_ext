@@ -31,10 +31,11 @@
 /// <reference path='modules/DatabaseColor/DatabaseColorModule.ts'/>
 /// <reference path='modules/DatabaseColor/DatabaseColorOptions.ts'/>
 // Launcher
+/// <reference path='modules/Launcher/models/SearchResult.ts'/>
 /// <reference path='modules/Launcher/models/SitecoreSearchResults.ts'/>
+/// <reference path='modules/Launcher/RecentCommandsStore.ts'/>
 /// <reference path='modules/Launcher/LauncherModule.ts'/>
 /// <reference path='modules/Launcher/ICommand.ts'/>
-/// <reference path='modules/Launcher/models/SearchResult.ts'/>
 /// <reference path='modules/Launcher/providers/ICommandsProvider.ts'/>
 /// <reference path='modules/Launcher/providers/NavigationCommand.ts'/>
 /// <reference path='modules/Launcher/providers/ContentEditorRibbonCommandsProvider.ts'/>

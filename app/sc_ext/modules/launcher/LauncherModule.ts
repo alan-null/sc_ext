@@ -15,6 +15,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         idPattern: string = "{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}"
         delayedSearch: any;
         resultsDelay: number = 300;
+        recentCommandsStore: RecentCommandsStore;
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
@@ -32,6 +33,7 @@ namespace SitecoreExtensions.Modules.Launcher {
 
             this.registerModuleCommands();
             this.fuzzy = new Libraries.Fuzzy();
+            this.recentCommandsStore = new RecentCommandsStore(this.launcherOptions.searchResultsCount);
         }
 
         private registerModuleCommands(): void {
@@ -195,6 +197,7 @@ namespace SitecoreExtensions.Modules.Launcher {
                     return cmd.id == selectedComandId
                 });
                 command.execute(evt);
+                this.recentCommandsStore.add(command);
             }
             this.hideLauncher()
         }
@@ -208,15 +211,23 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.commandSelectionEvent(evt);
             } else {
                 let phrase = this.searchBoxElement.value;
-                if (phrase.startsWith("#") && phrase.length >= 1) {
-                    phrase = phrase.substring(phrase.indexOf("#") + 1);
-                    if (phrase.match("^ *$") == null) {
-                        this.searchItems(phrase);
-                    }
-                } else {
-                    var results = this.searchCommands(phrase);
-                    this.appendResults(results);
+                if (phrase.length == 0) {
+                    var recentResults = new Array<SearchResult>();
+                    var recentCommands = this.recentCommandsStore.getRecentCommands(this.commands);
+                    recentCommands.forEach(cmd => { recentResults.push(SearchResult.Cast(cmd)) });
+                    this.appendResults(recentResults)
                     this.selectFirstResult();
+                } else {
+                    if (phrase.startsWith("#") && phrase.length >= 1) {
+                        phrase = phrase.substring(phrase.indexOf("#") + 1);
+                        if (phrase.match("^ *$") == null) {
+                            this.searchItems(phrase);
+                        }
+                    } else {
+                        var results = this.searchCommands(phrase);
+                        this.appendResults(results);
+                        this.selectFirstResult();
+                    }
                 }
             }
         }
