@@ -3,23 +3,28 @@
 namespace SitecoreExtensions.Modules.FieldSearch {
     export class FieldSearchModule extends ModuleBase implements ISitecoreExtensionsModule {
         searchString: string;
+        options: FieldSearchOptions;
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
+            this.mapOptions<FieldSearchOptions>(rawOptions)
+            this.options = new FieldSearchOptions(rawOptions);
         }
 
         canExecute(): boolean {
             return this.options.enabled && Context.Location() == Enums.Location.ContentEditor;
         };
 
-        private createTextBox(text: string): HTMLInputElement {
+        private createTextBox(): HTMLInputElement {
             var input = HTMLHelpers.createElement<HTMLInputElement>('input', {
                 id: 'scextFieldSearch',
                 type: 'text',
                 class: 'scSearchInput scIgnoreModified sc-ext-fieldSearch',
                 placeholder: 'Search for fields'
             });
-            input.value = FieldSearchStore.getInputValue();
+            if (this.options.inputbox.rememberValue ) {
+                input.value = FieldSearchStore.getInputValue();
+            }
             var data = this;
             input.onkeyup = (e: KeyboardEvent) => {
                 data.doSearch(e);
@@ -28,13 +33,13 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             return input;
         };
 
-        private createClearButton(text: string): HTMLSpanElement {
+        private createClearButton(): HTMLSpanElement {
             var closeButton = HTMLHelpers.createElement<HTMLSpanElement>('span', {
                 class: 'sc-ext-fieldSearchClear'
             });
             var data = this;
             closeButton.onclick = (e: MouseEvent) => {
-                data.clearSearch(e);
+                data.clearSearch();
             };
 
             return closeButton;
@@ -109,18 +114,23 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             var char = document.getElementById("scextFieldSearch");
             var searchString = (<HTMLInputElement>char).value;
 
-            if (searchString.length > 2) {
-                FieldSearchStore.storeInputValue(searchString);
-                this.toggleSections(true);
-                var hits: Element[] = this.findFields(searchString);
-                this.unhideResults(hits);
+            if (e && e.keyCode == 27) {
+                searchString = ""
+                this.clearSearch();
             } else {
-                FieldSearchStore.clear();
-                this.toggleSections(false);
+                if (searchString.length > 2) {
+                    FieldSearchStore.storeInputValue(searchString);
+                    this.toggleSections(true);
+                    var hits: Element[] = this.findFields(searchString);
+                    this.unhideResults(hits);
+                } else {
+                    FieldSearchStore.clear();
+                    this.toggleSections(false);
+                }
             }
         };
 
-        clearSearch(e: MouseEvent): void {
+        clearSearch(): void {
             FieldSearchStore.clear();
             var char = document.getElementById("scextFieldSearch");
             (<HTMLInputElement>char).value = "";
@@ -139,8 +149,8 @@ namespace SitecoreExtensions.Modules.FieldSearch {
         }
 
         private insertSearchField(): void {
-            var txbSearch = this.createTextBox('Collapse')
-            var spanClear = this.createClearButton('XXX');
+            var txbSearch = this.createTextBox()
+            var spanClear = this.createClearButton();
 
             var span = HTMLHelpers.createElement<HTMLSpanElement>('span', {
                 class: 'sc-ext-searchFieldContainer'

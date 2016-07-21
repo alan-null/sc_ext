@@ -19,6 +19,25 @@ module SitecoreExtensions.Options {
                         label: 'Enabled'
                     }
                 },
+                { template: '<h3>Input box behaviour</h3>', noFormControl: true },
+                {
+                    key: "inputbox.rememberValue",
+                    type: "radio",
+                    defaultValue: "remmeber",
+                    templateOptions: {
+                        label: "When changing item or refreshing a page:",
+                        options: [
+                            {
+                                name: "Remember input box value",
+                                value: "remmeber"
+                            },
+                            {
+                                name: "Clear input box value",
+                                value: "clear"
+                            },
+                        ]
+                    }
+                }
             ]
         }
     }
