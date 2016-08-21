@@ -1,0 +1,12 @@
+<div class="row">
+    <div class="col-lg-8 col-md-offset-2">
+        <div ng-controller="SettingsController as vm">
+            <h1>{{::vm.title}}</h1>
+
+            <h3>Reset settings to default:</h3>
+            <span class="text-danger">After you click reset button, all your personal settings will be changed to default.</span>
+            <br/> <br/>
+            <button ng-click="vm.reset()" class="btn  btn-danger">Reset</button>
+        </div>
+    </div>
+</div>
