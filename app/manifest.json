@@ -38,7 +38,8 @@
                 "sc_ext/styles/fieldSearch.css",
                 "sc_ext/styles/treelistField.css",
                 "sc_ext/styles/fieldInspector.css",
-                "sc_ext/styles/toggleRibbon.css"
+                "sc_ext/styles/toggleRibbon.css",
+                "sc_ext/styles/treeScope.css"
             ],
             "run_at": "document_end",
             "all_frames": true

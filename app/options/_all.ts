@@ -20,6 +20,7 @@
 /// <reference path='controllers/AboutController.ts' />
 /// <reference path='controllers/GeneralOptionsController.ts' />
 /// <reference path='controllers/SettingsController.ts' />
+/// <reference path='controllers/TreeScopeController.ts' />
 
 // Directives
 /// <reference path='directives/NavigationDirective.ts' />

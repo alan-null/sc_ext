@@ -14,5 +14,6 @@ module SitecoreExtensions.Options {
         .controller('RestoreLastLocationController', RestoreLastLocationController)
         .controller('TreelistFieldController', TreelistFieldController)
         .controller('SettingsController', SettingsController)
+        .controller('TreeScopeController', TreeScopeController)
         .directive('navigation', NavigationDirective);
 }

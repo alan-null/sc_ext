@@ -107,7 +107,7 @@ namespace SitecoreExtensions {
             var proxied = fn.prototype[functionName];
             fn.prototype[functionName] = function () {
                 var result = proxied.apply(this, arguments);
-                proxyFn();
+                proxyFn(arguments);
                 return result;
             };
         }
@@ -116,7 +116,7 @@ namespace SitecoreExtensions {
             var proxied = obj[functionName];
             obj[functionName] = function () {
                 var result = proxied.apply(this, arguments);
-                proxyFn();
+                proxyFn(arguments);
                 return result;
             };
         }

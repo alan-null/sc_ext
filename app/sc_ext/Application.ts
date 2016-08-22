@@ -23,6 +23,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         var lastLocation = new Modules.LastLocation.RestoreLastLocation("Restore Last Location", "Restores last opened item in Content Editor", wrapper.getModuleOptions('Restore Last Location'));
         var fieldSearchModule = new Modules.FieldSearch.FieldSearchModule('Field Search', 'Allows to search available fields.', wrapper.getModuleOptions('Field Search'));
         var treelistField = new Modules.TreelistField.TreelistFieldModule('Treelist Field', 'Adds path inside treelist field', wrapper.getModuleOptions('Treelist Field'));
+        var treeScope = new Modules.TreeScope.TreeScopeModule('Tree Scope', 'Adds additional button to the context menu which scopes the tree to the current item', wrapper.getModuleOptions('Tree Scope'));
         var fieldInspector = new Modules.FieldInspector.FieldInspectorModule('Field Inspector', 'Get real field name value or navigate to field item.', wrapper.getModuleOptions('Field Inspector'));
         var toggleRibbon = new Modules.ToggleRibbon.ToggleRibbonModule('Toggle Ribbon', 'Toggle Ribbon in Experience Editor', wrapper.getModuleOptions('Toggle Ribbon'));
         var databaseSelector = new Modules.DatabaseSelector.DatabaseSelectorModule('Database Selector', 'Change your context database', wrapper.getModuleOptions('Database Selector'));
@@ -36,6 +37,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         scExtManager.addModule(lastLocation);
         scExtManager.addModule(fieldSearchModule);
         scExtManager.addModule(treelistField);
+        scExtManager.addModule(treeScope);
         scExtManager.addModule(fieldInspector);
         scExtManager.addModule(toggleRibbon);
         scExtManager.addModule(databaseSelector);

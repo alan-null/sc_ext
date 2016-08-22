@@ -41,6 +41,7 @@
 /// <reference path='modules/sectionSwitches/_all.ts'/>
 /// <reference path='modules/toggleRibbon/_all.ts'/>
 /// <reference path='modules/treelistField/_all.ts'/>
+/// <reference path='modules/treeScope/_all.ts'/>
 
 
 // Status
