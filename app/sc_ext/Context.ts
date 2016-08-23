@@ -50,6 +50,44 @@ namespace SitecoreExtensions {
             return null;
         }
 
+        static getQueryStringValue(queryString, key) {
+            key = key.replace(/[*+?^$.\[\]{}()|\\\/]/g, "\\$&");
+            var match = queryString.match(new RegExp("[?&]" + key + "=([^&]+)(&|$)"));
+            return match && decodeURIComponent(match[1].replace(/\+/g, " "));
+        }
+
+        static Language(): string {
+            var pageMode = this.Location();
+            if (pageMode == Location.ContentEditor) {
+                return this.getQueryStringValue(this.GetCurrentItem(), "lang");
+            }
+            if (pageMode == Location.Desktop) {
+                return document.querySelector("[lang]").attributes['lang'].value
+            }
+            if (pageMode == Location.ExperienceEditor) {
+                var webEditRibbonIFrame = (document.querySelector('#scWebEditRibbon') as HTMLIFrameElement)
+                if (webEditRibbonIFrame != null) {
+                    var src = webEditRibbonIFrame.src
+                    var start = src.indexOf("lang");
+                    var end = src.indexOf("&", start);
+                    return src.slice(start + 5, end)
+                }
+                var peBar = document.querySelector('[data-sc-id=PageEditBar]');
+                if (peBar != null) {
+                    return peBar.attributes['data-sc-content'].value
+                }
+            }
+            else {
+                var contendDb = <HTMLMetaElement>document.querySelector('[data-sc-name=sitecoreLanguage]')
+                if (contendDb != null) {
+                    if (contendDb.attributes['data-sc-content'] != undefined) {
+                        return contendDb.attributes['data-sc-content'].value
+                    }
+                }
+            }
+            return null;
+        }
+
         static ItemID(): string {
             var value = this.GetCurrentItem();
             return value.match(/{.*}/)[0];
