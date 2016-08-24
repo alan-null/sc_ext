@@ -15,6 +15,7 @@
 /// <reference path='Context.ts'/>
 /// <reference path='ExtensionsManager.ts'/>
 /// <reference path='HtmlHelpers.ts'/>
+/// <reference path='IdParser.ts'/>
 /// <reference path='types/Dictionary.ts'/>
 /// <reference path='types/IDictionary.ts'/>
 
@@ -47,6 +48,8 @@
 // DatabaseName
 /// <reference path='modules/DatabaseName/DatabaseNameModule.ts'/>
 /// <reference path='modules/TreelistField/TreelistFieldModule.ts'/>
+// FieldInspector
+/// <reference path='modules/fieldInspector/FieldInspectorModule.ts'/>
 // FieldSearch
 /// <reference path='modules/FieldSearch/FieldSearchOptions.ts'/>
 /// <reference path='modules/FieldSearch/FieldSearchStore.ts'/>

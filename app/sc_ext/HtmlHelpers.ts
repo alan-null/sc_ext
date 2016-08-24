@@ -99,6 +99,13 @@ namespace SitecoreExtensions {
                 range.select();
             }
         }
+
+        static getElement(node: any, predicate: any): any {
+            while (node && node.tagName && !predicate(node)) {
+                node = node.parentElement
+            }
+            return node;
+        }
     }
 }
 

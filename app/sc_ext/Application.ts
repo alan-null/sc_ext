@@ -23,6 +23,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         var lastLocation = new Modules.LastLocation.RestoreLastLocation("Restore Last Location", "Restores last opened item in Content Editor", wrapper.getModuleOptions('Restore Last Location'));
         var fieldSearchModule = new Modules.FieldSearch.FieldSearchModule('Field Search', 'Allows to search available fields.', wrapper.getModuleOptions('Field Search'));
         var treelistField = new Modules.TreelistField.TreelistFieldModule('Treelist Field', 'Adds path inside treelist field', wrapper.getModuleOptions('Treelist Field'));
+        var fieldInspector = new Modules.FieldInspector.FieldInspectorModule('Field Inspector', 'Get real field name value or navigate to field item.', wrapper.getModuleOptions('Field Inspector'));
 
         scExtManager.addModule(sectionSwitchesModule);
         scExtManager.addModule(dbNameModule);
@@ -31,9 +32,9 @@ if (SitecoreExtensions.Context.IsValid()) {
         scExtManager.addModule(lastLocation);
         scExtManager.addModule(fieldSearchModule);
         scExtManager.addModule(treelistField);
+        scExtManager.addModule(fieldInspector);
 
         scExtManager.initModules();
-
 
         launcher.registerProviderCommands(new Modules.SectionSwitches.SectionSwitchesCommandsProvider());
         launcher.registerProviderCommands(new Modules.LastLocation.RestoreLastLocationCommandProvider());

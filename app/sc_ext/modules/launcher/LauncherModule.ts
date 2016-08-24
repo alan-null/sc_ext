@@ -12,10 +12,10 @@ namespace SitecoreExtensions.Modules.Launcher {
         launcherOptions: any;
         commands: ICommand[];
         fuzzy: Libraries.Fuzzy;
-        idPattern: string = "{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}"
         delayedSearch: any;
         resultsDelay: number = 300;
         recentCommandsStore: RecentCommandsStore;
+        idParser: IdParser
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
@@ -183,7 +183,7 @@ namespace SitecoreExtensions.Modules.Launcher {
 
         executeSelectedCommand(evt?: KeyboardEvent): void {
             var id = (<HTMLLIElement>this.selectedCommand[0]).dataset['id'];
-            if (id.match(this.idPattern)) {
+            if (this.idParser.match(id)) {
                 console.log("Navigate to item:" + id);
                 if (Context.Location() == Enums.Location.ContentEditor) {
                     scForm.postRequest("", "", "", "LoadItem(\"" + id + "\")");
@@ -235,13 +235,6 @@ namespace SitecoreExtensions.Modules.Launcher {
         private selectFirstResult(): void {
             if (this.searchResultsElement.children.length > 0) {
                 (<HTMLLIElement>this.searchResultsElement.firstChild).setAttribute('class', 'selected');
-            }
-        }
-
-        private extractID(params: string) {
-            var results = params.match(this.idPattern);
-            if (results != null && results.length > 0) {
-                return results[0];
             }
         }
 
@@ -325,7 +318,7 @@ namespace SitecoreExtensions.Modules.Launcher {
                         var result = new SitecoreSearchResults();
                         result.category = currentCategoryName;
                         result.path = link.title;
-                        result.id = this.extractID(link.attributes['href'].nodeValue);
+                        result.id = this.idParser.extractID(link.attributes['href'].nodeValue);
                         result.title = link.innerText;
                         result.img = (link.querySelector("img") as HTMLImageElement).attributes['src'].nodeValue;
                         if (result.id) {
@@ -371,6 +364,7 @@ namespace SitecoreExtensions.Modules.Launcher {
 
             this.fuzzy.highlighting.before = "<span class='term'>";
             this.fuzzy.highlighting.after = '</span>';
+            this.idParser = new IdParser();
         }
     }
 }

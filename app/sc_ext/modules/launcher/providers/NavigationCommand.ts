@@ -1,6 +1,11 @@
 /// <reference path='../../../_all.ts'/>
 
 namespace SitecoreExtensions.Modules.Launcher.Providers {
+    interface UserActionEvent {
+        altKey: boolean;
+        ctrlKey: boolean;
+    }
+
     export class NavigationCommand implements ICommand {
         id: number;
         name: string;
@@ -30,7 +35,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             return true;
         }
 
-        execute(evt: KeyboardEvent): void {
+        execute(evt: UserActionEvent): void {
             if (evt && evt.ctrlKey) {
                 this.openInNewTab();
             } else {
