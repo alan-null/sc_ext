@@ -106,6 +106,18 @@ namespace SitecoreExtensions {
             }
             return node;
         }
+
+        static postponeAction(predicate: any, action: any, delay: number, ticks: number) {
+            if (ticks > 0) {
+                if (predicate()) {
+                    action()
+                } else {
+                    setTimeout(() => {
+                        this.postponeAction(predicate, action, delay, --ticks)
+                    }, delay);
+                }
+            }
+        }
     }
 }
 

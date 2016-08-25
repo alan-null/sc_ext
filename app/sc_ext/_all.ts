@@ -50,6 +50,10 @@
 /// <reference path='modules/TreelistField/TreelistFieldModule.ts'/>
 // FieldInspector
 /// <reference path='modules/fieldInspector/FieldInspectorModule.ts'/>
+// ToggleRibbon
+/// <reference path='modules/toggleRibbon/ToggleRibbonModule.ts'/>
+/// <reference path='modules/toggleRibbon/Ribbon.ts'/>
+/// <reference path='modules/toggleRibbon/ToggleButton.ts'/>
 // FieldSearch
 /// <reference path='modules/FieldSearch/FieldSearchOptions.ts'/>
 /// <reference path='modules/FieldSearch/FieldSearchStore.ts'/>

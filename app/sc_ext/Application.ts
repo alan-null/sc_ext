@@ -24,6 +24,8 @@ if (SitecoreExtensions.Context.IsValid()) {
         var fieldSearchModule = new Modules.FieldSearch.FieldSearchModule('Field Search', 'Allows to search available fields.', wrapper.getModuleOptions('Field Search'));
         var treelistField = new Modules.TreelistField.TreelistFieldModule('Treelist Field', 'Adds path inside treelist field', wrapper.getModuleOptions('Treelist Field'));
         var fieldInspector = new Modules.FieldInspector.FieldInspectorModule('Field Inspector', 'Get real field name value or navigate to field item.', wrapper.getModuleOptions('Field Inspector'));
+        var toggleRibbon = new Modules.ToggleRibbon.ToggleRibbonModule('Toggle Ribbon', 'Toggle Ribbon in Experience Editor', wrapper.getModuleOptions('Toggle Ribbon'));
+        
 
         scExtManager.addModule(sectionSwitchesModule);
         scExtManager.addModule(dbNameModule);
@@ -33,6 +35,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         scExtManager.addModule(fieldSearchModule);
         scExtManager.addModule(treelistField);
         scExtManager.addModule(fieldInspector);
+        scExtManager.addModule(toggleRibbon);
 
         scExtManager.initModules();
 

@@ -1,0 +1,14 @@
+
+.sc-ext-toggleRibon-hidden {
+     display: none !important;
+}
+
+#sc-ext-toggleRibon-button {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    background: url('/sitecore/shell/Themes/Standard/images/hamburgermenu_default.png');
+    width: 63px;
+    height: 31px;
+}
