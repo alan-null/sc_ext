@@ -68,6 +68,9 @@
 /// <reference path='modules/ShortcutsRunner/ShortcutRunner.ts'/>
 /// <reference path='modules/ShortcutsRunner/Providers/AppShortcutCommand.ts'/>
 /// <reference path='modules/ShortcutsRunner/Providers/SitecoreApplicationsCommandsProvider.ts'/>
+// DatabaseSelector
+/// <reference path='modules/databaseSelector/DatabaseSwitcherModule.ts'/>
+/// <reference path='modules/databaseSelector/DatabaseSwitcherCommandsProvider.ts'/>
 
 // Status
 /// <reference path='status/StatusType.ts'/>

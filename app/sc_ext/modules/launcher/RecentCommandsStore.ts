@@ -29,7 +29,9 @@ namespace SitecoreExtensions.Modules.Launcher {
         getRecentCommands(commands: ICommand[]) {
             if (this.array.length == 0) {
                 var recentCommands = localStorage.getItem(this.recentCommandsKey);
-                this.array = recentCommands.split('|').filter((x) => { return x.length > 0 });
+                if (recentCommands) {
+                    this.array = recentCommands.split('|').filter((x) => { return x.length > 0 });
+                }
             }
 
             let result = new Array<ICommand>();
