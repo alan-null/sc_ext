@@ -26,6 +26,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         var fieldInspector = new Modules.FieldInspector.FieldInspectorModule('Field Inspector', 'Get real field name value or navigate to field item.', wrapper.getModuleOptions('Field Inspector'));
         var toggleRibbon = new Modules.ToggleRibbon.ToggleRibbonModule('Toggle Ribbon', 'Toggle Ribbon in Experience Editor', wrapper.getModuleOptions('Toggle Ribbon'));
         var databaseSwitcher = new Modules.DatabaseSwitcher.DatabaseSwitcherModule('Database Switcher', 'Change your context database', wrapper.getModuleOptions('Database Switcher'));
+        var goToDatasource = new Modules.GoToDatasource.GoToDatasourceModule('Go To Datasource', 'Navigate to a datasource item.', wrapper.getModuleOptions('Go To Datasource'));
         
 
         scExtManager.addModule(sectionSwitchesModule);
@@ -38,6 +39,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         scExtManager.addModule(fieldInspector);
         scExtManager.addModule(toggleRibbon);
         scExtManager.addModule(databaseSwitcher);
+        scExtManager.addModule(goToDatasource);
 
         scExtManager.initModules();
 

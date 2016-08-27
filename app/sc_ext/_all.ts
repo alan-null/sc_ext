@@ -71,6 +71,15 @@
 // DatabaseSelector
 /// <reference path='modules/databaseSelector/DatabaseSwitcherModule.ts'/>
 /// <reference path='modules/databaseSelector/DatabaseSwitcherCommandsProvider.ts'/>
+// GoToDatasource
+/// <reference path='modules/goToDatasource/GoToDatasourceModule.ts'/>
+/// <reference path='modules/goToDatasource/fields/DatasourceField.ts'/>
+/// <reference path='modules/goToDatasource/fields/NameLookupValueList.ts'/>
+/// <reference path='modules/goToDatasource/fields/ListField.ts'/>
+/// <reference path='modules/goToDatasource/fields/DropLink.ts'/>
+/// <reference path='modules/goToDatasource/fields/FieldInitializer.ts'/>
+/// <reference path='modules/goToDatasource/fields/IDatasourceField.ts'/>
+
 
 // Status
 /// <reference path='status/StatusType.ts'/>
