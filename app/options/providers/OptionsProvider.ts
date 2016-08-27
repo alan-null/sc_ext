@@ -50,7 +50,7 @@ module SitecoreExtensions.Options {
 
     export class OptionsProvider {
         getOptions(done: GetOptionsCallback): void {
-            chrome.storage.sync.get({
+            chrome.storage.local.get({
                 sc_ext_options: null,
             }, function (items: any) {
                 done(items.sc_ext_options)
@@ -58,7 +58,7 @@ module SitecoreExtensions.Options {
         }
 
         setOptions(moduleOptions: IModuleOptions[], done: any): void {
-            chrome.storage.sync.set({
+            chrome.storage.local.set({
                 sc_ext_options: new OptionsWrapper(moduleOptions),
             }, done);
         }
@@ -80,7 +80,7 @@ module SitecoreExtensions.Options {
                     array.push(options)
                     optionsWrapper = new OptionsWrapper(array);
                 }
-                chrome.storage.sync.set({ sc_ext_options: optionsWrapper });
+                chrome.storage.local.set({ sc_ext_options: optionsWrapper });
             })
         }
     }

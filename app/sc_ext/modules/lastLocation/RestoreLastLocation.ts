@@ -12,16 +12,14 @@ namespace SitecoreExtensions.Modules.LastLocation {
         }
 
         updateLastLocation(args: any): void {
-            var id;
-            for (let i = 0, l = args.path.length; i < l; i++) {
-                let parent = args.path[i];
-                if (parent.tagName && parent.tagName.toLowerCase() === "a") {
-                    id = parent.id;
-                    id = id.substring(id.lastIndexOf("_") + 1);
-                    LastLocationStore.saveLastItemId(id);
-                    break;
-                }
-            }
+            var parent = args.element();
+            parent = HTMLHelpers.getElement(parent, (n) => {
+                return n.tagName.toLowerCase() === "a";
+            });
+
+            let id = parent.id;
+            id = id.substring(id.lastIndexOf("_") + 1);
+            LastLocationStore.saveLastItemId(id);
         }
 
         addTreeNodeHandlers(className: string): void {

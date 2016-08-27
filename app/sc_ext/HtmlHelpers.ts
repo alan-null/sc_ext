@@ -101,7 +101,7 @@ namespace SitecoreExtensions {
         }
 
         static getElement(node: any, predicate: any): any {
-            while (node && node.tagName && !predicate(node)) {
+            while (node && node.tagName && node.tagName != "BODY" && !predicate(node)) {
                 node = node.parentElement
             }
             return node;
