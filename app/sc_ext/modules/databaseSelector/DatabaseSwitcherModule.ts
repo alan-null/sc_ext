@@ -1,6 +1,6 @@
 /// <reference path='../../_all.ts'/>
 
-namespace SitecoreExtensions.Modules.DatabaseSwitcher {
+namespace SitecoreExtensions.Modules.DatabaseSelector {
     import HttpRequest = Http.HttpRequest;
     import Method = Http.Method;
     import TokenService = SitecoreExtensions.Modules.ShortcutsRunner.TokenService;

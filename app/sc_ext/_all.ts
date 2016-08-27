@@ -28,57 +28,19 @@
 // Modules
 /// <reference path='modules/ModuleBase.ts'/>
 /// <reference path='modules/ISitecoreExtensionsModule.ts'/>
-// DatabaseColor
-/// <reference path='modules/DatabaseColor/DatabaseColorModule.ts'/>
-/// <reference path='modules/DatabaseColor/DatabaseColorOptions.ts'/>
-// Launcher
-/// <reference path='modules/Launcher/models/SearchResult.ts'/>
-/// <reference path='modules/Launcher/models/SitecoreSearchResults.ts'/>
-/// <reference path='modules/Launcher/RecentCommandsStore.ts'/>
-/// <reference path='modules/Launcher/LauncherModule.ts'/>
-/// <reference path='modules/Launcher/ICommand.ts'/>
-/// <reference path='modules/Launcher/providers/ICommandsProvider.ts'/>
-/// <reference path='modules/Launcher/providers/NavigationCommand.ts'/>
-/// <reference path='modules/Launcher/providers/ContentEditorRibbonCommandsProvider.ts'/>
-/// <reference path='modules/Launcher/providers/AdminShortcutsCommandsProvider.ts'/>
-/// <reference path='modules/Launcher/providers/LaunchpadCommandsProvider.ts'/>
-// SectionSwitches
-/// <reference path='modules/SectionSwitches/SectionSwitchesCommandsProvider.ts'/>
-/// <reference path='modules/SectionSwitches/SectionSwitchesModule.ts'/>
-// DatabaseName
-/// <reference path='modules/DatabaseName/DatabaseNameModule.ts'/>
-/// <reference path='modules/TreelistField/TreelistFieldModule.ts'/>
-// FieldInspector
-/// <reference path='modules/fieldInspector/FieldInspectorModule.ts'/>
-// ToggleRibbon
-/// <reference path='modules/toggleRibbon/ToggleRibbonModule.ts'/>
-/// <reference path='modules/toggleRibbon/Ribbon.ts'/>
-/// <reference path='modules/toggleRibbon/ToggleButton.ts'/>
-// FieldSearch
-/// <reference path='modules/FieldSearch/FieldSearchOptions.ts'/>
-/// <reference path='modules/FieldSearch/FieldSearchStore.ts'/>
-/// <reference path='modules/FieldSearch/FieldSearchModule.ts'/>
-// LastLocation
-/// <reference path='modules/LastLocation/RestoreLastLocation.ts'/>
-/// <reference path='modules/LastLocation/LastLocationStore.ts'/>
-/// <reference path='modules/LastLocation/RestoreLastLocationCommandProvider.ts'/>
-// ShortcutsRunner
-/// <reference path='modules/ShortcutsRunner/Token.ts'/>
-/// <reference path='modules/ShortcutsRunner/TokenService.ts'/>
-/// <reference path='modules/ShortcutsRunner/ShortcutRunner.ts'/>
-/// <reference path='modules/ShortcutsRunner/Providers/AppShortcutCommand.ts'/>
-/// <reference path='modules/ShortcutsRunner/Providers/SitecoreApplicationsCommandsProvider.ts'/>
-// DatabaseSelector
-/// <reference path='modules/databaseSelector/DatabaseSwitcherModule.ts'/>
-/// <reference path='modules/databaseSelector/DatabaseSwitcherCommandsProvider.ts'/>
-// GoToDatasource
-/// <reference path='modules/goToDatasource/GoToDatasourceModule.ts'/>
-/// <reference path='modules/goToDatasource/fields/DatasourceField.ts'/>
-/// <reference path='modules/goToDatasource/fields/NameLookupValueList.ts'/>
-/// <reference path='modules/goToDatasource/fields/ListField.ts'/>
-/// <reference path='modules/goToDatasource/fields/DropLink.ts'/>
-/// <reference path='modules/goToDatasource/fields/FieldInitializer.ts'/>
-/// <reference path='modules/goToDatasource/fields/IDatasourceField.ts'/>
+
+/// <reference path='modules/shortcutsRunner/_all.ts'/>
+/// <reference path='modules/databaseColor/_all.ts'/>
+/// <reference path='modules/databaseName/_all.ts'/>
+/// <reference path='modules/databaseSelector/_all.ts'/>
+/// <reference path='modules/fieldInspector/_all.ts'/>
+/// <reference path='modules/fieldSearch/_all.ts'/>
+/// <reference path='modules/goToDatasource/_all.ts'/>
+/// <reference path='modules/lastLocation/_all.ts'/>
+/// <reference path='modules/launcher/_all.ts'/>
+/// <reference path='modules/sectionSwitches/_all.ts'/>
+/// <reference path='modules/toggleRibbon/_all.ts'/>
+/// <reference path='modules/treelistField/_all.ts'/>
 
 
 // Status

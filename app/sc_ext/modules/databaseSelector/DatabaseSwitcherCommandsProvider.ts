@@ -1,6 +1,6 @@
 /// <reference path='../../_all.ts'/>
 
-namespace SitecoreExtensions.Modules.DatabaseSwitcher {
+namespace SitecoreExtensions.Modules.DatabaseSelector {
     import ICommand = Launcher.ICommand
 
     export class DatabaseNamesStore {

@@ -25,7 +25,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         var treelistField = new Modules.TreelistField.TreelistFieldModule('Treelist Field', 'Adds path inside treelist field', wrapper.getModuleOptions('Treelist Field'));
         var fieldInspector = new Modules.FieldInspector.FieldInspectorModule('Field Inspector', 'Get real field name value or navigate to field item.', wrapper.getModuleOptions('Field Inspector'));
         var toggleRibbon = new Modules.ToggleRibbon.ToggleRibbonModule('Toggle Ribbon', 'Toggle Ribbon in Experience Editor', wrapper.getModuleOptions('Toggle Ribbon'));
-        var databaseSwitcher = new Modules.DatabaseSwitcher.DatabaseSwitcherModule('Database Switcher', 'Change your context database', wrapper.getModuleOptions('Database Switcher'));
+        var databaseSwitcher = new Modules.DatabaseSelector.DatabaseSwitcherModule('Database Selector', 'Change your context database', wrapper.getModuleOptions('Database Selector'));
         var goToDatasource = new Modules.GoToDatasource.GoToDatasourceModule('Go To Datasource', 'Navigate to a datasource item.', wrapper.getModuleOptions('Go To Datasource'));
         
 
@@ -46,7 +46,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         launcher.registerProviderCommands(new Modules.SectionSwitches.SectionSwitchesCommandsProvider());
         launcher.registerProviderCommands(new Modules.LastLocation.RestoreLastLocationCommandProvider());
         launcher.registerProviderCommands(new Modules.ShortcutsRunner.Providers.SitecoreApplicationsCommandsProvider());
-        launcher.registerProviderCommands(new Modules.DatabaseSwitcher.DatabaseSelectorCommandsProvider);
+        launcher.registerProviderCommands(new Modules.DatabaseSelector.DatabaseSelectorCommandsProvider);
 
 
         if (scExtOptions.badge.enabled) {
