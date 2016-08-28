@@ -169,13 +169,16 @@ function publish(src, dest) {
         .pipe(_if('*.css', cleanCss({
             compatibility: '*'
         })))
-        .pipe(_if('*.js', sourcemaps.init()))
         .pipe(_if('*.js', uglify()))
-        .pipe(_if('*.js', sourcemaps.write('.')))
         .pipe(_if('*.html', htmlmin({
             removeComments: true,
             collapseWhitespace: true
         })))
+        .pipe(gulp.dest(dest));
+}
+
+function copy(src, dest) {
+    return gulp.src(src)
         .pipe(gulp.dest(dest));
 }
 
@@ -201,11 +204,21 @@ gulp.task('publish_chrome', () => {
 gulp.task('publish_options', () => {
     return publish([
         'app/options/**/*.js',
+        '!app/options/libs/*.js',
         'app/options/**/*.css',
+        '!app/options/libs/*.css',
         'app/options/**/*.png',
         'app/options/**/*.html'
     ], './dist/options');
 });
+
+gulp.task('publish_options_libs', () => {
+    return copy([
+        'app/options/libs/*.js',
+        'app/options/libs/*.css',
+    ], './dist/options/libs');
+});
+
 
 gulp.task('publish_common', () => {
     return publish([
@@ -215,7 +228,7 @@ gulp.task('publish_common', () => {
 
 
 gulp.task('publish_all', (callback) => {
-    runSequence('publish_sc_ext', 'publish_chrome', 'publish_options', 'publish_common', callback);
+    runSequence('publish_sc_ext', 'publish_chrome', 'publish_options', 'publish_options_libs', 'publish_common', callback);
 });
 
 gulp.task('build', ['cleanup_release'], (callback) => {
