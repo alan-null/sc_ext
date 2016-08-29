@@ -1,7 +1,7 @@
 /// <reference path='../../../_all.ts'/>
 
 namespace SitecoreExtensions.Modules.Launcher.Providers {
-    interface UserActionEvent {
+    export interface UserActionEvent {
         altKey: boolean;
         ctrlKey: boolean;
     }

@@ -1,8 +1,9 @@
 /// <reference path='../../_all.ts'/>
 
 namespace SitecoreExtensions.Modules.Launcher {
-    import SearchResult = Launcher.Models.SearchResult
-    import SitecoreSearchResults = Launcher.Models.SitecoreSearchResults
+    import SearchResult = Launcher.Models.SearchResult;
+    import SitecoreSearchResults = Launcher.Models.SitecoreSearchResults;
+    import UserActionEvent = Providers.UserActionEvent;
 
     export class LauncherModule extends ModuleBase implements ISitecoreExtensionsModule {
         modalElement: HTMLDivElement;
@@ -109,7 +110,9 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.changeSelectedCommand(element);
                 this.searchBoxElement.focus();
             };
-            li.ondblclick = _ => this.executeSelectedCommand();
+            li.ondblclick = (e: UserActionEvent) => {
+                this.executeSelectedCommand(e);
+            };
             return li;
         }
 
@@ -133,7 +136,9 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.changeSelectedCommand(element);
                 this.searchBoxElement.focus();
             };
-            li.ondblclick = _ => this.executeSelectedCommand();
+            li.ondblclick = (e: UserActionEvent) => {
+                this.executeSelectedCommand(e);
+            }
             return li;
         }
 
@@ -181,7 +186,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             });
         }
 
-        executeSelectedCommand(evt?: KeyboardEvent): void {
+        executeSelectedCommand(evt?: UserActionEvent): void {
             var id = (<HTMLLIElement>this.selectedCommand[0]).dataset['id'];
             if (this.idParser.match(id)) {
                 console.log("Navigate to item:" + id);
