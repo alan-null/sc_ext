@@ -37,7 +37,7 @@ module SitecoreExtensions.Options {
         }
 
         saveSettings() {
-            var moduleOptions = this.buildModuleOptions()
+            var moduleOptions = this.buildModuleOptions();
             this.optionsProvider.setModuleOptions(moduleOptions);
         }
     }

@@ -8,10 +8,10 @@ namespace SitecoreExtensions.Modules.GoToDatasource.Fields {
         }
 
         public initialize() {
-            this.innerElement.classList.add(this.className)
+            this.innerElement.classList.add(this.className);
             this.innerElement.addEventListener("change", (e) => {
                 this.refreshButton();
-            })
+            });
             this.refreshButton();
         }
     }

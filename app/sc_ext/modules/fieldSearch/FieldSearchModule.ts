@@ -7,13 +7,59 @@ namespace SitecoreExtensions.Modules.FieldSearch {
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
-            this.mapOptions<FieldSearchOptions>(rawOptions)
+            this.mapOptions<FieldSearchOptions>(rawOptions);
             this.options = new FieldSearchOptions(rawOptions);
         }
 
         canExecute(): boolean {
             return this.options.enabled && Context.Location() == Enums.Location.ContentEditor;
         };
+
+        initialize(): void {
+            this.searchString = "";
+            window.addEventListener('load', () => this.insertSearchField());
+            this.addTreeNodeHandlers('scContentTree');
+            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshSearchField(); });
+            HTMLHelpers.addProxy(scForm, 'invoke', () => { this.refreshSearchField(); });
+        }
+
+        doSearch(e: KeyboardEvent): void {
+            var char = document.getElementById("scextFieldSearch");
+            var searchString = (<HTMLInputElement> char).value;
+
+            if (e && e.keyCode == 27) {
+                searchString = "";
+                this.clearSearch();
+            } else {
+                if (searchString.length > 2) {
+                    FieldSearchStore.storeInputValue(searchString);
+                    this.toggleSections(true);
+                    var hits: Element[] = this.findFields(searchString);
+                    this.unhideResults(hits);
+                } else {
+                    FieldSearchStore.clear();
+                    this.toggleSections(false);
+                }
+            }
+        };
+
+        clearSearch(): void {
+            FieldSearchStore.clear();
+            var char = document.getElementById("scextFieldSearch");
+            (<HTMLInputElement> char).value = "";
+            this.toggleSections(false);
+        }
+
+        addTreeNodeHandlers(className: string): void {
+            var nodes = document.getElementsByClassName(className);
+            for (var i = 0; i < nodes.length; i++) {
+                nodes[i].addEventListener('click', (evt) => {
+                    setTimeout(() => {
+                        this.refreshSearchField();
+                    }, 10);
+                });
+            }
+        }
 
         private createTextBox(): HTMLInputElement {
             var input = HTMLHelpers.createElement<HTMLInputElement>('input', {
@@ -22,7 +68,7 @@ namespace SitecoreExtensions.Modules.FieldSearch {
                 class: 'scSearchInput scIgnoreModified sc-ext-fieldSearch',
                 placeholder: 'Search for fields'
             });
-            if (this.options.inputbox.rememberValue ) {
+            if (this.options.inputbox.rememberValue) {
                 input.value = FieldSearchStore.getInputValue();
             }
             var data = this;
@@ -71,10 +117,10 @@ namespace SitecoreExtensions.Modules.FieldSearch {
         };
 
         private getParent(start: Node, cl: string): Element[] {
-            var result = []
+            var result = [];
             var elem = start;
             for (; elem && elem !== document; elem = elem.parentNode) {
-                var element = <Element>elem;
+                var element = <Element> elem;
                 if (element.classList.contains("scEditorSectionPanel") || element.classList.contains("scEditorFieldMarker")) {
                     result.push(element);
                 }
@@ -101,55 +147,17 @@ namespace SitecoreExtensions.Modules.FieldSearch {
 
         private findFields(searchString: string): Element[] {
             var fieldLabels = this.castToArray(document.getElementsByClassName("scEditorFieldLabel"));
-            var hits: Element[] = []
+            var hits: Element[] = [];
             fieldLabels.forEach(element => {
-                if ((<HTMLElement>element).innerText.toLowerCase().indexOf(searchString.toLowerCase()) > -1) {
+                if ((<HTMLElement> element).innerText.toLowerCase().indexOf(searchString.toLowerCase()) > -1) {
                     hits.push(element);
                 }
             });
             return hits;
         }
 
-        doSearch(e: KeyboardEvent): void {
-            var char = document.getElementById("scextFieldSearch");
-            var searchString = (<HTMLInputElement>char).value;
-
-            if (e && e.keyCode == 27) {
-                searchString = ""
-                this.clearSearch();
-            } else {
-                if (searchString.length > 2) {
-                    FieldSearchStore.storeInputValue(searchString);
-                    this.toggleSections(true);
-                    var hits: Element[] = this.findFields(searchString);
-                    this.unhideResults(hits);
-                } else {
-                    FieldSearchStore.clear();
-                    this.toggleSections(false);
-                }
-            }
-        };
-
-        clearSearch(): void {
-            FieldSearchStore.clear();
-            var char = document.getElementById("scextFieldSearch");
-            (<HTMLInputElement>char).value = "";
-            this.toggleSections(false);
-        }
-
-        addTreeNodeHandlers(className: string): void {
-            var nodes = document.getElementsByClassName(className);
-            for (var i = 0; i < nodes.length; i++) {
-                nodes[i].addEventListener('click', (evt) => {
-                    setTimeout(() => {
-                        this.refreshSearchField();
-                    }, 10);
-                });
-            }
-        }
-
         private insertSearchField(): void {
-            var txbSearch = this.createTextBox()
+            var txbSearch = this.createTextBox();
             var spanClear = this.createClearButton();
 
             var span = HTMLHelpers.createElement<HTMLSpanElement>('span', {
@@ -176,14 +184,6 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             if (!this.searchFieldExists()) {
                 this.insertSearchField();
             }
-        }
-
-        initialize(): void {
-            this.searchString = "";
-            window.addEventListener('load', () => this.insertSearchField());
-            this.addTreeNodeHandlers('scContentTree');
-            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshSearchField(); });
-            HTMLHelpers.addProxy(scForm, 'invoke', () => { this.refreshSearchField(); });
         }
     }
 }

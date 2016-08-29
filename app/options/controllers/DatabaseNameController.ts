@@ -4,7 +4,7 @@ module SitecoreExtensions.Options {
     'use strict';
     export class DatabaseNameController extends BaseOptionsController {
         constructor($scope: any, formlyVersion: string) {
-            super($scope, formlyVersion, 'Database Name')
+            super($scope, formlyVersion, 'Database Name');
             $scope.vm.title = 'Database Name module';
         }
 
@@ -18,7 +18,7 @@ module SitecoreExtensions.Options {
                         label: 'Enabled'
                     }
                 },
-            ]
+            ];
         }
     }
 }

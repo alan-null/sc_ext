@@ -9,10 +9,10 @@ namespace SitecoreExtensions.Modules.GoToDatasource.Fields {
         }
 
         public initialize() {
-            this.innerElement.classList.add(this.className)
+            this.innerElement.classList.add(this.className);
             this.innerElement.addEventListener("change", (e) => {
                 this.refreshButton();
-            })
+            });
             this.refreshButton();
         }
 
@@ -22,7 +22,7 @@ namespace SitecoreExtensions.Modules.GoToDatasource.Fields {
         }
 
         protected getButtonClasses(): string[] {
-            return [this.classButton, "scContentButton", this.innerElement.id]
+            return [this.classButton, "scContentButton", this.innerElement.id];
         }
 
         protected generateButton(): HTMLSpanElement {
@@ -36,7 +36,7 @@ namespace SitecoreExtensions.Modules.GoToDatasource.Fields {
 
         protected insertButton(spanGoToDatasource: HTMLSpanElement) {
             if (this.previous) {
-                this.destination.insertBefore(spanGoToDatasource, this.previous)
+                this.destination.insertBefore(spanGoToDatasource, this.previous);
             } else {
                 this.destination.appendChild(spanGoToDatasource);
             }

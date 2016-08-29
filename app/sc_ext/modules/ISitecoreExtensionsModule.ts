@@ -5,5 +5,5 @@ namespace SitecoreExtensions.Modules {
 
         canExecute(): boolean;
         initialize(): void;
-    } 
+    }
 }

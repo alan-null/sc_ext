@@ -5,7 +5,7 @@ module SitecoreExtensions.Options {
 
     export class GeneralOptionsController extends BaseOptionsController {
         constructor($scope: any, formlyVersion: string) {
-            super($scope, formlyVersion, 'General')
+            super($scope, formlyVersion, 'General');
             $scope.vm.title = 'Sitecore Extensions general options';
         }
 
@@ -48,7 +48,7 @@ module SitecoreExtensions.Options {
                     },
                     hideExpression: '!model.badge.enabled'
                 }
-            ]
+            ];
         }
     }
 }

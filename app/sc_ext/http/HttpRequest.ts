@@ -16,13 +16,12 @@ namespace SitecoreExtensions.Http {
             var method = this.getMethodValue(this.method);
             var async = true;
             var request = new XMLHttpRequest();
-            request.onload = this.callback
+            request.onload = this.callback;
             request.open(method, this.url, async);
             request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             if (postData) {
                 request.send(postData);
-            }
-            else {
+            } else {
                 request.send();
             }
         }

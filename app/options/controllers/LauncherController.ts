@@ -4,7 +4,7 @@ module SitecoreExtensions.Options {
     'use strict';
     export class LauncherController extends BaseOptionsController {
         constructor($scope: any, formlyVersion: string) {
-            super($scope, formlyVersion, 'Launcher')
+            super($scope, formlyVersion, 'Launcher');
             $scope.vm.title = 'Launcher module';
         }
 
@@ -18,7 +18,7 @@ module SitecoreExtensions.Options {
                         label: 'Enabled'
                     }
                 },
-            ]
+            ];
         }
     }
 }    

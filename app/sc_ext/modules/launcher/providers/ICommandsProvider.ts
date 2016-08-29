@@ -2,6 +2,6 @@
 
 namespace SitecoreExtensions.Modules.Launcher.Providers {
     export interface ICommandsProvider {
-        getCommands(): ICommand[]
+        getCommands(): ICommand[];
     }
 }

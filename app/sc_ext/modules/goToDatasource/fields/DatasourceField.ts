@@ -4,7 +4,7 @@ namespace SitecoreExtensions.Modules.GoToDatasource.Fields {
     export class DatasourceField {
         innerElement: HTMLSelectElement;
         destination: HTMLDivElement;
-        className: string = "sc-ext-goToDatasource"
+        className: string = "sc-ext-goToDatasource";
         classButton: string = "sc-ext-goToDatasource-button";
         idParser: IdParser;
 
@@ -37,7 +37,7 @@ namespace SitecoreExtensions.Modules.GoToDatasource.Fields {
 
         protected getLinkDestination() {
             let wrapper = HTMLHelpers.getElement(this.innerElement, (n) => {
-                return n.classList.contains('scEditorFieldMarkerInputCell')
+                return n.classList.contains('scEditorFieldMarkerInputCell');
             });
             let destination = wrapper.querySelector(".scEditorFieldLabel") as HTMLDivElement;
             return destination;
@@ -61,7 +61,7 @@ namespace SitecoreExtensions.Modules.GoToDatasource.Fields {
 
 
         protected removeButton() {
-            let button = this.getButton()
+            let button = this.getButton();
             if (button) {
                 button.remove();
             }
@@ -95,7 +95,7 @@ namespace SitecoreExtensions.Modules.GoToDatasource.Fields {
                     } else {
                         scForm.postRequest("", "", "", "LoadItem(\"" + id + "\")");
                     }
-                }
+                };
                 this.insertButton(spanGoToDatasource);
             }
         }

@@ -1,4 +1,4 @@
-//typings
+// Typings
 /// <reference path='typings/sitecore.d.ts'/>
 
 // Options Page

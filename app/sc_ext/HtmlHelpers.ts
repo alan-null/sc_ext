@@ -11,18 +11,18 @@ namespace SitecoreExtensions {
             for (var d in dataset) {
                 element.dataset[d] = dataset[d];
             }
-            return <any>element;
+            return <any> element;
         }
         static injectScript(scriptElement) {
             (document.head || document.documentElement).appendChild(scriptElement);
         }
         static triggerEventOnSelector(selector, event) {
-            var sections = document.querySelectorAll(selector)
+            var sections = document.querySelectorAll(selector);
             this.triggerEventOnCollection(sections, event);
         }
         static triggerEventOnCollection(elements, event) {
             for (var i = 0; i < elements.length; i++) {
-                this.triggerEventOnElement(elements[i], event)
+                this.triggerEventOnElement(elements[i], event);
             }
         }
         static triggerEventOnElement(element, event) {
@@ -47,32 +47,8 @@ namespace SitecoreExtensions {
                 callback();
             } else {
                 setTimeout(function () {
-                    HTMLHelpers.observe(parent, tick, --ticksCount, predicate, callback)
+                    HTMLHelpers.observe(parent, tick, --ticksCount, predicate, callback);
                 }, tick);
-            }
-        }
-        static addProxy(operand, functionName, proxyFn) {
-            if (typeof operand == "function") {
-                return this.addProxyToFunction(operand, functionName, proxyFn);
-            } else {
-                return this.addProxyToObject(operand, functionName, proxyFn);
-            }
-        }
-        private static addProxyToFunction(fn, functionName, proxyFn) {
-            var proxied = fn.prototype[functionName];
-            fn.prototype[functionName] = function () {
-                var result = proxied.apply(this, arguments);
-                proxyFn();
-                return result;
-            }
-        }
-
-        private static addProxyToObject(obj, functionName, proxyFn) {
-            var proxied = obj[functionName];
-            obj[functionName] = function () {
-                var result = proxied.apply(this, arguments);
-                proxyFn();
-                return result;
             }
         }
 
@@ -82,7 +58,7 @@ namespace SitecoreExtensions {
                 if (conditionFn.apply(this, arguments)) {
                     return proxied.apply(this, arguments);
                 }
-            }
+            };
         }
 
         static selectNodeContent(node: Node): void {
@@ -102,7 +78,7 @@ namespace SitecoreExtensions {
 
         static getElement(node: any, predicate: any): any {
             while (node && node.tagName && node.tagName != "BODY" && !predicate(node)) {
-                node = node.parentElement
+                node = node.parentElement;
             }
             return node;
         }
@@ -110,13 +86,39 @@ namespace SitecoreExtensions {
         static postponeAction(predicate: any, action: any, delay: number, ticks: number) {
             if (ticks > 0) {
                 if (predicate()) {
-                    action()
+                    action();
                 } else {
                     setTimeout(() => {
-                        this.postponeAction(predicate, action, delay, --ticks)
+                        this.postponeAction(predicate, action, delay, --ticks);
                     }, delay);
                 }
             }
+        }
+
+        static addProxy(operand, functionName, proxyFn) {
+            if (typeof operand == "function") {
+                return this.addProxyToFunction(operand, functionName, proxyFn);
+            } else {
+                return this.addProxyToObject(operand, functionName, proxyFn);
+            }
+        }
+
+        private static addProxyToFunction(fn, functionName, proxyFn) {
+            var proxied = fn.prototype[functionName];
+            fn.prototype[functionName] = function () {
+                var result = proxied.apply(this, arguments);
+                proxyFn();
+                return result;
+            };
+        }
+
+        private static addProxyToObject(obj, functionName, proxyFn) {
+            var proxied = obj[functionName];
+            obj[functionName] = function () {
+                var result = proxied.apply(this, arguments);
+                proxyFn();
+                return result;
+            };
         }
     }
 }

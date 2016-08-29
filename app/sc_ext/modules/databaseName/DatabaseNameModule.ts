@@ -6,12 +6,6 @@ namespace SitecoreExtensions.Modules.DatabaseName {
             super(name, description, rawOptions);
         }
 
-        adDbNameToHeader(dbName: string): void {
-            var dbnameDiv = HTMLHelpers.createElement<HTMLDivElement>('div', { class: 'sc-ext-dbName' });
-            dbnameDiv.innerText = dbName;
-            document.querySelector('.sc-globalHeader-loginInfo').parentNode.appendChild(dbnameDiv);
-        }
-
         canExecute(): boolean {
             return this.options.enabled && Context.Database() != null && document.querySelector('.sc-globalHeader-loginInfo') != null;
         }
@@ -22,5 +16,12 @@ namespace SitecoreExtensions.Modules.DatabaseName {
                 this.adDbNameToHeader(dbName.toUpperCase());
             }
         }
+
+        adDbNameToHeader(dbName: string): void {
+            var dbnameDiv = HTMLHelpers.createElement<HTMLDivElement>('div', { class: 'sc-ext-dbName' });
+            dbnameDiv.innerText = dbName;
+            document.querySelector('.sc-globalHeader-loginInfo').parentNode.appendChild(dbnameDiv);
+        }
+
     }
 }

@@ -2,10 +2,21 @@
 
 namespace SitecoreExtensions.Modules.GoToDatasource {
     export class GoToDatasourceModule extends ModuleBase implements ISitecoreExtensionsModule {
-        className: string = "sc-ext-goToDatasource"
+        className: string = "sc-ext-goToDatasource";
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
+        }
+
+        canExecute(): boolean {
+            return this.options.enabled && Context.Location() == Enums.Location.ContentEditor;
+        }
+
+        initialize(): void {
+            window.addEventListener('load', () => this.refreshFields());
+            this.addTreeNodeHandlers('scContentTree');
+            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshFields(); });
+            HTMLHelpers.addProxy(scForm, 'invoke', () => this.refreshFields());
         }
 
         private getFields(fieldSelector: string, objectInitializer: Fields.FieldInitializer) {
@@ -13,7 +24,7 @@ namespace SitecoreExtensions.Modules.GoToDatasource {
             for (let i = 0; i < fields.length; i++) {
                 var rawField = fields[i] as HTMLSelectElement;
                 if (!rawField.classList.contains(this.className)) {
-                    let field = objectInitializer(rawField) as Fields.IDatasourceField
+                    let field = objectInitializer(rawField) as Fields.IDatasourceField;
                     field.initialize();
                 }
             }
@@ -42,15 +53,5 @@ namespace SitecoreExtensions.Modules.GoToDatasource {
             }
         }
 
-        canExecute(): boolean {
-            return this.options.enabled && Context.Location() == Enums.Location.ContentEditor;
-        }
-
-        initialize(): void {
-            window.addEventListener('load', () => this.refreshFields());
-            this.addTreeNodeHandlers('scContentTree');
-            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshFields() });
-            HTMLHelpers.addProxy(scForm, 'invoke', () => this.refreshFields());
-        }
     }
 }

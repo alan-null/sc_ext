@@ -1,7 +1,7 @@
 'use strict';
 namespace SitecoreExtensions {
     export class IdParser {
-        idPattern: string = "{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}"
+        idPattern: string = "{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}";
 
         constructor() { }
 
@@ -13,7 +13,7 @@ namespace SitecoreExtensions {
         }
 
         public match(id: string): RegExpMatchArray {
-            return id.match(this.idPattern)
+            return id.match(this.idPattern);
         }
     }
 }

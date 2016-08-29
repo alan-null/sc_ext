@@ -2,7 +2,7 @@
 
 namespace SitecoreExtensions.Status {
     declare var scExtManager: SitecoreExtensions.ExtensionsManager;
-    import ISitecoreExtensionsModule = Modules.ISitecoreExtensionsModule
+    import ISitecoreExtensionsModule = Modules.ISitecoreExtensionsModule;
     import LauncherModule = Modules.Launcher.LauncherModule;
 
     export class CommandsStatusProvider implements IStatusProvider {
@@ -12,7 +12,7 @@ namespace SitecoreExtensions.Status {
 
         private getAvailableCommandsCount(): number {
             let allCommands = this.getAllCommands();
-            let availableCommands = allCommands.filter((m) => { return m.canExecute(); })
+            let availableCommands = allCommands.filter((m) => { return m.canExecute(); });
             return availableCommands.length;
         }
 
@@ -21,7 +21,7 @@ namespace SitecoreExtensions.Status {
         }
 
         private getLauncherModule(): LauncherModule {
-            return scExtManager.getModule(LauncherModule) as LauncherModule
+            return scExtManager.getModule(LauncherModule) as LauncherModule;
         }
     }
 }

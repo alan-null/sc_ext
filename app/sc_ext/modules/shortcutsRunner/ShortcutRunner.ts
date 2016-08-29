@@ -23,16 +23,16 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
                     var data = JSON.parse(e.currentTarget.responseText);
                     this.invokeCommand(data, evt);
                 }
-            }, shortcutId)
+            }, shortcutId);
         }
 
         private invokeCommand(data, evt?: KeyboardEvent): void {
             var lastCommandIndex = data.commands.length - 1;
             var iFrame = data.commands[lastCommandIndex].value;
-            var urls = iFrame.match(/\/sitecore\/shell(.)*png/)
+            var urls = iFrame.match(/\/sitecore\/shell(.)*png/);
             if (urls) {
-                var url = window.top.location.origin + urls[0]
-                var command = new Launcher.Providers.NavigationCommand(null, null, url)
+                var url = window.top.location.origin + urls[0];
+                var command = new Launcher.Providers.NavigationCommand(null, null, url);
                 command.execute(evt);
             }
         }
@@ -50,7 +50,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
                 var postData = "&__PARAMETERS=" + "RunShortcut%28%26quot%3B%7B" + shortcutId + "%7D%26quot%3B%29"
                     + "&__ISEVENT=" + "1"
                     + "&__CSRFTOKEN=" + this.token.__CSRFTOKEN
-                    + "&__VIEWSTATE=" + this.token.__VIEWSTATE
+                    + "&__VIEWSTATE=" + this.token.__VIEWSTATE;
             }
             req.execute(postData);
         }

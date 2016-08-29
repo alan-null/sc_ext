@@ -14,7 +14,7 @@ namespace SitecoreExtensions.Options {
                             optionsWrapper = new OptionsWrapper(null);
                         }
                         this.options = optionsWrapper;
-                        getOptionsCallback(optionsWrapper)
+                        getOptionsCallback(optionsWrapper);
                     }
                 }
             });

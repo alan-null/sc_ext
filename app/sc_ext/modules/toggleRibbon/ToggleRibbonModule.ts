@@ -11,25 +11,46 @@ namespace SitecoreExtensions.Modules.ToggleRibbon {
             super(name, description, rawOptions);
         }
 
+        canExecute(): boolean {
+            return this.options.enabled
+                && Context.Location() == Enums.Location.ExperienceEditor
+                && document.querySelector('#scWebEditRibbon') != null;
+        }
+
+        initialize(): void {
+            this.ribbon = new Ribbon();
+            this.toggleButton = new ToggleButton(() => {
+                this.toggle();
+            });
+            this.toggleButton.hide();
+
+            SitecoreExtensions.HTMLHelpers.postponeAction(() => {
+                return this.ribbon.isInitialized();
+            }, () => {
+                this.refresh();
+                this.toggleButton.show();
+            }, 200, 30);
+        }
+
         private isVisible() {
             var scRibbon = top.window.document.cookie.replace(/(?:(?:^|.*;\s*)scRibbon\s*\=\s*([^;]*).*$)|^.*$/, "$" + "1");
             return scRibbon === '1' || scRibbon.length == 0;
         }
 
         private hide() {
-            this.ribbon.hide()
-            this.saveRibbonState(0)
-            this.toggleButton.updatePosition(this.isVisible())
+            this.ribbon.hide();
+            this.saveRibbonState(0);
+            this.toggleButton.updatePosition(this.isVisible());
         }
 
         private show() {
             this.ribbon.show();
-            this.saveRibbonState(1)
-            this.toggleButton.updatePosition(this.isVisible())
+            this.saveRibbonState(1);
+            this.toggleButton.updatePosition(this.isVisible());
         }
 
         private toggle() {
-            this.isVisible() ? this.hide() : this.show()
+            this.isVisible() ? this.hide() : this.show();
         }
 
         private refresh() {
@@ -40,25 +61,5 @@ namespace SitecoreExtensions.Modules.ToggleRibbon {
             top.window.document.cookie = 'scRibbon=' + value;
         }
 
-        canExecute(): boolean {
-            return this.options.enabled
-                && Context.Location() == Enums.Location.ExperienceEditor
-                && document.querySelector('#scWebEditRibbon') != null;
-        }
-
-        initialize(): void {
-            this.ribbon = new Ribbon()
-            this.toggleButton = new ToggleButton(() => {
-                this.toggle();
-            });
-            this.toggleButton.hide()
-
-            SitecoreExtensions.HTMLHelpers.postponeAction(() => {
-                return this.ribbon.isInitialized();
-            }, () => {
-                this.refresh();
-                this.toggleButton.show();
-            }, 200, 30);
-        }
     }
 }

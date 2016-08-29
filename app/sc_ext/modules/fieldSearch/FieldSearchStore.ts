@@ -1,6 +1,6 @@
 namespace SitecoreExtensions.Modules.FieldSearch {
     export class FieldSearchStore {
-        public static key: string = "sc_ext::fieldSearch"
+        public static key: string = "sc_ext::fieldSearch";
 
         public static getInputValue(): string {
             return localStorage.getItem(this.key);

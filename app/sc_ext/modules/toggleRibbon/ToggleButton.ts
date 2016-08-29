@@ -2,13 +2,13 @@
 
 namespace SitecoreExtensions.Modules.ToggleRibbon {
     export class ToggleButton {
+        innerElement: HTMLDivElement;
         private classHidden: string = "sc-ext-toggleRibon-hidden";
-        innerElement: HTMLDivElement
 
         constructor(toggleHandler: any) {
             this.innerElement = HTMLHelpers.createElement("div", { id: "sc-ext-toggleRibon-button" }) as HTMLDivElement;
-            this.innerElement.onclick = () => { toggleHandler() }
-            document.body.appendChild(this.innerElement)
+            this.innerElement.onclick = () => { toggleHandler(); };
+            document.body.appendChild(this.innerElement);
         }
 
         public updatePosition(isVisible: boolean): void {

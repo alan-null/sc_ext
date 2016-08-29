@@ -8,6 +8,9 @@ namespace SitecoreExtensions.Modules.ToggleRibbon {
         constructor() {
             this.nodeRibbon = top.window.document.querySelector("#scWebEditRibbon") as HTMLDivElement;
         }
+        public isInitialized(): boolean {
+            return this.getContainerNode() != null;
+        }
 
         public show() {
             let nodeContainer = this.getContainerNode();
@@ -17,16 +20,12 @@ namespace SitecoreExtensions.Modules.ToggleRibbon {
 
         public hide() {
             let nodeContainer = this.getContainerNode();
-            nodeContainer.classList.add(this.classHidden)
+            nodeContainer.classList.add(this.classHidden);
             this.nodeRibbon.classList.add(this.classHidden);
         }
 
         private getContainerNode(): HTMLDivElement {
             return (top.window.document.querySelector("#scCrossPiece") as HTMLDivElement);
-        }
-
-        public isInitialized(): boolean {
-            return this.getContainerNode() != null;
         }
     }
 }

@@ -5,7 +5,7 @@ module SitecoreExtensions.Options {
 
     export class SectionSwitchesController extends BaseOptionsController {
         constructor($scope: any, formlyVersion: string) {
-            super($scope, formlyVersion, 'Section Switches')
+            super($scope, formlyVersion, 'Section Switches');
             $scope.vm.title = 'Section Switches module';
         }
 
@@ -19,7 +19,7 @@ module SitecoreExtensions.Options {
                         label: 'Enabled'
                     }
                 },
-            ]
+            ];
         }
     }
 }

@@ -35,11 +35,11 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
         private getRequestToken(callback: Function): void {
             new HttpRequest(this.baseUrl, Method.GET, (e) => {
                 var data = e.currentTarget.responseText;
-                var parser = new DOMParser()
+                var parser = new DOMParser();
                 var doc = parser.parseFromString(data, "text/html");
                 var __CSRFTOKEN = (doc.querySelector('#__CSRFTOKEN') as HTMLInputElement).attributes['value'].value;
                 var __VIEWSTATE = (doc.querySelector('#__VIEWSTATE') as HTMLInputElement).attributes['value'].value;
-                callback(new Token(__CSRFTOKEN, __VIEWSTATE))
+                callback(new Token(__CSRFTOKEN, __VIEWSTATE));
             }).execute();
         }
 

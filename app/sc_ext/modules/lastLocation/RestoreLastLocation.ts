@@ -11,6 +11,10 @@ namespace SitecoreExtensions.Modules.LastLocation {
             return this.options.enabled && Context.Location() == Enums.Location.ContentEditor;
         }
 
+        initialize(): void {
+            this.addTreeNodeHandlers('scContentTree');
+        }
+
         updateLastLocation(args: any): void {
             var parent = args.element();
             parent = HTMLHelpers.getElement(parent, (n) => {
@@ -31,10 +35,6 @@ namespace SitecoreExtensions.Modules.LastLocation {
                     this.updateLastLocation(evt);
                 });
             }
-        }
-
-        initialize(): void {
-            this.addTreeNodeHandlers('scContentTree');
         }
     }
 }

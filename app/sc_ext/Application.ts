@@ -25,7 +25,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         var treelistField = new Modules.TreelistField.TreelistFieldModule('Treelist Field', 'Adds path inside treelist field', wrapper.getModuleOptions('Treelist Field'));
         var fieldInspector = new Modules.FieldInspector.FieldInspectorModule('Field Inspector', 'Get real field name value or navigate to field item.', wrapper.getModuleOptions('Field Inspector'));
         var toggleRibbon = new Modules.ToggleRibbon.ToggleRibbonModule('Toggle Ribbon', 'Toggle Ribbon in Experience Editor', wrapper.getModuleOptions('Toggle Ribbon'));
-        var databaseSwitcher = new Modules.DatabaseSelector.DatabaseSwitcherModule('Database Selector', 'Change your context database', wrapper.getModuleOptions('Database Selector'));
+        var databaseSelector = new Modules.DatabaseSelector.DatabaseSelectorModule('Database Selector', 'Change your context database', wrapper.getModuleOptions('Database Selector'));
         var goToDatasource = new Modules.GoToDatasource.GoToDatasourceModule('Go To Datasource', 'Navigate to a datasource item.', wrapper.getModuleOptions('Go To Datasource'));
 
 
@@ -38,7 +38,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         scExtManager.addModule(treelistField);
         scExtManager.addModule(fieldInspector);
         scExtManager.addModule(toggleRibbon);
-        scExtManager.addModule(databaseSwitcher);
+        scExtManager.addModule(databaseSelector);
         scExtManager.addModule(goToDatasource);
 
         scExtManager.initModules();
@@ -48,10 +48,10 @@ if (SitecoreExtensions.Context.IsValid()) {
         launcher.registerProviderCommands(new Modules.ShortcutsRunner.Providers.SitecoreApplicationsCommandsProvider());
 
         SitecoreExtensions.HTMLHelpers.postponeAction(() => {
-            return new Modules.DatabaseSelector.DatabaseSelectorCommandsProvider().getCommands().length > 0
+            return new Modules.DatabaseSelector.DatabaseSelectorCommandsProvider().getCommands().length > 0;
         }, () => {
             launcher.registerProviderCommands(new Modules.DatabaseSelector.DatabaseSelectorCommandsProvider());
-        }, 200, 5)
+        }, 200, 5);
 
 
         if (scExtOptions.badge.enabled) {

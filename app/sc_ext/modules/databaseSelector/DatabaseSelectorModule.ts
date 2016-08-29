@@ -7,7 +7,7 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
     import Token = SitecoreExtensions.Modules.ShortcutsRunner.Token;
 
 
-    export class DatabaseSwitcherModule extends ModuleBase implements ISitecoreExtensionsModule {
+    export class DatabaseSelectorModule extends ModuleBase implements ISitecoreExtensionsModule {
         private retryCount: number = 3;
         private tokenService: TokenService;
         private token: Token;
@@ -16,6 +16,16 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
             super(name, description, rawOptions);
             this.tokenService = new TokenService();
             this.token = this.tokenService.getToken();
+        }
+
+        canExecute(): boolean {
+            return this.options.enabled;
+        }
+
+        initialize(): void {
+            if (DatabaseNamesStore.getDatabases().length == 0) {
+                this.init();
+            }
         }
 
         private getSelectDatabaseDialogResponse(callback) {
@@ -59,16 +69,6 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
                     DatabaseNamesStore.saveDatabases(dbNames);
                 }
             });
-        }
-
-        canExecute(): boolean {
-            return this.options.enabled;
-        }
-
-        initialize(): void {
-            if (DatabaseNamesStore.getDatabases().length == 0) {
-                this.init();
-            }
         }
     }
 }

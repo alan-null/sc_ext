@@ -1,7 +1,7 @@
 /// <reference path="../../../_all.ts"/>
 
 namespace SitecoreExtensions.Modules.ShortcutsRunner.Providers {
-    import ICommand = Launcher.ICommand
+    import ICommand = Launcher.ICommand;
 
     export class SitecoreApplicationsCommandsProvider implements Launcher.Providers.ICommandsProvider {
         private commands: ICommand[];
@@ -44,7 +44,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner.Providers {
         }
 
         private addCommand(name: string, description: string, id: string): void {
-            this.commands.push(new AppShortcutCommand(name, description, this.runner, this.trimId(id)))
+            this.commands.push(new AppShortcutCommand(name, description, this.runner, this.trimId(id)));
         }
 
         private trimId(id: string): string {

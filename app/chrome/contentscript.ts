@@ -22,7 +22,7 @@ window.addEventListener('message', function (event) {
                         sc_ext_options_response: true,
                         payload: optionsWrapper,
                     }, '*');
-                })
+                });
             } else {
                 window.postMessage({
                     sc_ext_enabled: true,
@@ -35,7 +35,7 @@ window.addEventListener('message', function (event) {
 });
 
 function createScriptElement(src: string): HTMLScriptElement {
-    var script = <HTMLScriptElement>document.createElement("script");
+    var script = <HTMLScriptElement> document.createElement("script");
     script.src = chrome.extension.getURL(src);
     return script;
 }

@@ -19,15 +19,19 @@ module SitecoreExtensions.Options {
     }
 
     export class OptionsWrapper {
-        options: IModuleOptions[]
+        options: IModuleOptions[];
 
         constructor(options: IModuleOptions[]) {
             this.options = options;
         }
 
+        static create(optionsWrapper: OptionsWrapper): OptionsWrapper {
+            return new OptionsWrapper(optionsWrapper.options);
+        }
+
         getModuleOptions(moduleName: string): IModuleOptions {
             if (this.options != null) {
-                return this.options.find(m => { return m.name == moduleName });
+                return this.options.find(m => { return m.name == moduleName; });
             }
         }
 
@@ -40,10 +44,6 @@ module SitecoreExtensions.Options {
                 this.options.push(options);
             }
         }
-
-        static create(optionsWrapper: OptionsWrapper): OptionsWrapper {
-            return new OptionsWrapper(optionsWrapper.options);
-        }
     }
 
     declare type GetOptionsCallback = (arg: OptionsWrapper) => void;
@@ -53,7 +53,7 @@ module SitecoreExtensions.Options {
             chrome.storage.local.get({
                 sc_ext_options: null,
             }, function (items: any) {
-                done(items.sc_ext_options)
+                done(items.sc_ext_options);
             });
         }
 
@@ -68,7 +68,7 @@ module SitecoreExtensions.Options {
                 if (optionsWrapper != null) {
                     done(OptionsWrapper.create(optionsWrapper).getModuleOptions(name));
                 }
-            })
+            });
         }
 
         setModuleOptions(options: IModuleOptions): void {
@@ -77,11 +77,11 @@ module SitecoreExtensions.Options {
                     (OptionsWrapper.create(optionsWrapper)).setModuleOptions(options);
                 } else {
                     var array = new Array<IModuleOptions>();
-                    array.push(options)
+                    array.push(options);
                     optionsWrapper = new OptionsWrapper(array);
                 }
                 chrome.storage.local.set({ sc_ext_options: optionsWrapper });
-            })
+            });
         }
     }
 }

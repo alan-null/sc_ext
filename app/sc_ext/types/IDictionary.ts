@@ -3,7 +3,7 @@ namespace SitecoreExtensions.Types {
         add(key: string, value: any): void;
         remove(key: string): void;
         containsKey(key: string): boolean;
-        keys(): string[];
-        values(): any[];
+        getKeys(): string[];
+        getValues(): any[];
     }
 }

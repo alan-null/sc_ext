@@ -2,7 +2,7 @@
 
 namespace SitecoreExtensions.Modules.SectionSwitches {
     import ICommand = SitecoreExtensions.Modules.Launcher.ICommand;
-    
+
     export class SectionSwitchesCommandsProvider implements Launcher.Providers.ICommandsProvider {
         commands: ICommand[];
         constructor() {

@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var livereload = require('gulp-livereload');
 var ts = require('gulp-typescript');
+var tslint = require('gulp-tslint');
 var sourcemaps = require('gulp-sourcemaps');
 var _sass = require('gulp-sass');
 var concat = require('gulp-concat');
@@ -25,15 +26,17 @@ function fixPipe(stream) {
     var origPipe = stream.pipe;
     stream.pipe = function (dest) {
         arguments[0] = dest.on('error', function (error) {
-            var state = dest._readableState,
+            var state = dest._readableState;
+            if (state) {
                 pipesCount = state.pipesCount,
-                pipes = state.pipes;
-            if (pipesCount === 1) {
-                pipes.emit('error', error);
-            } else if (pipesCount > 1) {
-                pipes.forEach(function (pipe) {
-                    pipe.emit('error', error);
-                });
+                    pipes = state.pipes;
+                if (pipesCount === 1) {
+                    pipes.emit('error', error);
+                } else if (pipesCount > 1) {
+                    pipes.forEach(function (pipe) {
+                        pipe.emit('error', error);
+                    });
+                }
             } else if (dest.listeners('error').length === 1) {
                 throw error;
             }
@@ -45,6 +48,10 @@ function fixPipe(stream) {
 
 function typescript(src, dest, concatFile) {
     var tsResult = gulp.src(src)
+        .pipe(tslint({
+            formatter: "verbose"
+        }))
+        .pipe(tslint.report({ emitError: false }))
         .pipe(sourcemaps.init())
         .pipe(ts({ sortOutput: true }));
 
@@ -76,7 +83,7 @@ function sass(src, dst) {
 }
 
 gulp.task('typescript_sc_ext', () => {
-    return typescript('app/sc_ext/**/*.ts', 'app/sc_ext', 'Application.js');
+    return typescript(['app/sc_ext/**/*.ts', '!app/sc_ext/typings/*.ts'], 'app/sc_ext', 'Application.js');
 });
 
 gulp.task('typescript_chrome', () => {
@@ -84,7 +91,7 @@ gulp.task('typescript_chrome', () => {
 });
 
 gulp.task('typescript_options', () => {
-    return typescript('app/options/**/*.ts', 'app/options', 'app.js');
+    return typescript(['app/options/**/*.ts',"!app/options/typings/**/*.ts"], 'app/options', 'app.js');
 });
 
 gulp.task('typescript_common', () => {

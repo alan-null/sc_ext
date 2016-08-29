@@ -9,6 +9,17 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
             this.sectionSwitchButtonClassName = 'scEButton';
         }
 
+        canExecute(): boolean {
+            return this.options.enabled && Context.Location() == Enums.Location.ContentEditor;
+        }
+
+        initialize(): void {
+            window.addEventListener('load', () => this.insertButtons());
+            this.addTreeNodeHandlers('scContentTree');
+            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshButtons(); });
+            HTMLHelpers.addProxy(scForm, 'invoke', () => { this.refreshButtons(); });
+        }
+
         closeOpenedSections() {
             HTMLHelpers.triggerEventOnSelector('.scEditorSectionCaptionExpanded .scEditorSectionCaptionGlyph', 'click');
         };
@@ -19,7 +30,7 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
 
         createTabControlButton(text: string, callback: { (e: MouseEvent): any }): HTMLAnchorElement {
             var span = HTMLHelpers.createElement<HTMLSpanElement>('span', {});
-            span.innerText = text
+            span.innerText = text;
             var link = HTMLHelpers.createElement<HTMLAnchorElement>('a', {
                 href: '#',
                 class: 'scEditorHeaderNavigator scEditorHeaderButton scButton ' + this.sectionSwitchButtonClassName
@@ -29,17 +40,8 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
             return link;
         }
 
-        private insertButtons(): void {
-            var btnCollapse = this.createTabControlButton('Collapse', this.closeOpenedSections)
-            var btnExpand = this.createTabControlButton('Expand', this.openClosedSections)
-
-            var controlsTab = document.querySelector('.scEditorTabControlsTab5');
-            controlsTab.insertBefore(btnCollapse, controlsTab.firstChild);
-            controlsTab.insertBefore(btnExpand, controlsTab.firstChild);
-        };
-
         buttonsExists(): boolean {
-            return document.getElementsByClassName(this.sectionSwitchButtonClassName).length > 0
+            return document.getElementsByClassName(this.sectionSwitchButtonClassName).length > 0;
         }
 
         refreshButtons(): void {
@@ -59,15 +61,13 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
             }
         }
 
-        canExecute(): boolean {
-            return this.options.enabled && Context.Location() == Enums.Location.ContentEditor;
-        }
+        private insertButtons(): void {
+            var btnCollapse = this.createTabControlButton('Collapse', this.closeOpenedSections);
+            var btnExpand = this.createTabControlButton('Expand', this.openClosedSections);
 
-        initialize(): void {
-            window.addEventListener('load', () => this.insertButtons());
-            this.addTreeNodeHandlers('scContentTree');
-            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshButtons(); });
-            HTMLHelpers.addProxy(scForm, 'invoke', () => { this.refreshButtons(); });
-        }
+            var controlsTab = document.querySelector('.scEditorTabControlsTab5');
+            controlsTab.insertBefore(btnCollapse, controlsTab.firstChild);
+            controlsTab.insertBefore(btnExpand, controlsTab.firstChild);
+        };
     }
 }

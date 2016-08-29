@@ -5,7 +5,7 @@ module SitecoreExtensions.Options {
 
     export class TreelistFieldController extends BaseOptionsController {
         constructor($scope: any, formlyVersion: string) {
-            super($scope, formlyVersion, 'Treelist Field')
+            super($scope, formlyVersion, 'Treelist Field');
             $scope.vm.title = 'Treelist Field module';
         }
 
@@ -19,7 +19,7 @@ module SitecoreExtensions.Options {
                         label: 'Enabled'
                     }
                 },
-            ]
+            ];
         }
     }
 }

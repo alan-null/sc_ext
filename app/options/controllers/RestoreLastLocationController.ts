@@ -5,7 +5,7 @@ module SitecoreExtensions.Options {
 
     export class RestoreLastLocationController extends BaseOptionsController {
         constructor($scope: any, formlyVersion: string) {
-            super($scope, formlyVersion, 'Restore Last Location')
+            super($scope, formlyVersion, 'Restore Last Location');
             $scope.vm.title = 'Restore Last Location module';
         }
 
@@ -19,7 +19,7 @@ module SitecoreExtensions.Options {
                         label: 'Enabled'
                     }
                 },
-            ]
+            ];
         }
     }
 }

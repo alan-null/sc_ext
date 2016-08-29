@@ -1,4 +1,4 @@
 /// <reference path='../../_all.ts'/>
 
-/// <reference path='DatabaseSwitcherModule.ts'/>
-/// <reference path='DatabaseSwitcherCommandsProvider.ts'/>
+/// <reference path='DatabaseSelectorModule.ts'/>
+/// <reference path='DatabaseSelectorCommandsProvider.ts'/>

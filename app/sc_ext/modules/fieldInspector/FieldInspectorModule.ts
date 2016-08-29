@@ -64,27 +64,50 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
         private getValue(mode: ViewMode) {
             let fieldName = (mode == ViewMode.FieldName) ? "field" : "default";
-            return this.currentElement.dataset[fieldName]
+            return this.currentElement.dataset[fieldName];
         }
     }
 
     export class FieldInspectorModule extends ModuleBase implements ISitecoreExtensionsModule {
-        database: string
-        lang: string
+        database: string;
+        lang: string;
         idParser: IdParser;
-        classSectionInitialized: string = "sc-ext-gotofield-sections-initialized"
-        classFieldIDsInitialized: string = "sc-ext-gotofield-fieldIDs-initialized"
-        classFieldNameSpan: string = "sc-ext-getfieldName"
+        classSectionInitialized: string = "sc-ext-gotofield-sections-initialized";
+        classFieldIDsInitialized: string = "sc-ext-gotofield-fieldIDs-initialized";
+        classFieldNameSpan: string = "sc-ext-getfieldName";
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
         }
 
+        canExecute(): boolean {
+            return this.options.enabled && Context.Location() == Enums.Location.ContentEditor;
+        }
+
+        initialize(): void {
+            window.addEventListener('load', () => this.refreshControls());
+            this.addTreeNodeHandlers('scContentTree');
+            this.database = SitecoreExtensions.Context.Database();
+            this.lang = SitecoreExtensions.Context.Language();
+            this.idParser = new IdParser();
+        }
+
+        addTreeNodeHandlers(className: string): void {
+            var nodes = document.getElementsByClassName(className);
+            for (var i = 0; i < nodes.length; i++) {
+                nodes[i].addEventListener('click', (evt) => {
+                    setTimeout(() => {
+                        this.refreshControls();
+                    }, 10);
+                });
+            }
+        }
+
         private refreshControls(): void {
             if (!document.querySelector("." + this.classSectionInitialized)) {
-                this.insertControls()
-                let sectionsRoot = document.querySelector(".scEditorSections")
-                sectionsRoot.classList.add(this.classSectionInitialized)
+                this.insertControls();
+                let sectionsRoot = document.querySelector(".scEditorSections");
+                sectionsRoot.classList.add(this.classSectionInitialized);
             }
         }
 
@@ -100,15 +123,15 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                 for (let j = 0; j < fieldLabels.length; j++) {
                     var child = fieldLabels[j] as HTMLTableRowElement;
                     if (child.innerText == label.innerText) {
-                        label.dataset["sectionid"] = sectionElement.innerText + "-" + j
+                        label.dataset["sectionid"] = sectionElement.innerText + "-" + j;
 
-                        let spanGoToField = HTMLHelpers.createElement("a", { class: "sc-ext-gotofield scContentButton" }) as HTMLSpanElement
-                        spanGoToField.innerText = "Go to field"
+                        let spanGoToField = HTMLHelpers.createElement("a", { class: "sc-ext-gotofield scContentButton" }) as HTMLSpanElement;
+                        spanGoToField.innerText = "Go to field";
                         spanGoToField.onclick = (e) => {
-                            this.ensureFieldsInitialized()
+                            this.ensureFieldsInitialized();
                             if (e.ctrlKey) {
                                 this.getFieldID(this.getActiveNodeID(), sectionElement.innerText, j, (fieldID) => {
-                                    var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + fieldID
+                                    var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + fieldID;
                                     new Launcher.Providers.NavigationCommand(null, null, url).execute(e);
                                 });
 
@@ -118,19 +141,19 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                                 });
                             }
 
-                        }
+                        };
 
                         let spanGetFieldName = HTMLHelpers.createElement("span", { class: this.classFieldNameSpan }, { default: label.innerHTML }) as HTMLSpanElement;
-                        spanGetFieldName.innerHTML = label.innerHTML
+                        spanGetFieldName.innerHTML = label.innerHTML;
                         spanGetFieldName.onclick = (e) => {
                             let currentElement = this.getFirstElementWithClass(e.srcElement, this.classFieldNameSpan);
 
                             let fieldNameElement = new FieldNameElement(currentElement as HTMLSpanElement);
                             if (!fieldNameElement.IsInitialized()) {
 
-                                let initialized = this.ensureFieldsInitialized(() => { this.writeDownFieldName(e, sectionElement, j) });
+                                let initialized = this.ensureFieldsInitialized(() => { this.writeDownFieldName(e, sectionElement, j); });
                                 if (initialized) {
-                                    this.writeDownFieldName(e, sectionElement, j)
+                                    this.writeDownFieldName(e, sectionElement, j);
                                 }
                             } else {
                                 if (fieldNameElement.getMode() == ViewMode.FieldName) {
@@ -141,9 +164,9 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                             }
                         };
 
-                        label.innerHTML = ""
-                        label.appendChild(spanGetFieldName)
-                        label.appendChild(spanGoToField)
+                        label.innerHTML = "";
+                        label.appendChild(spanGetFieldName);
+                        label.appendChild(spanGoToField);
                     }
                 }
             }
@@ -151,54 +174,54 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
         private ensureFieldsInitialized(callback?: any) {
             if (document.querySelector("." + this.classFieldIDsInitialized) == null) {
-                this.initFieldIDs(callback)
+                this.initFieldIDs(callback);
                 return false;
             }
             return true;
         }
 
         private getActiveNodeID(): string {
-            return document.querySelector(".scContentTreeContainer .scContentTreeNodeActive").id.substring(10)
+            return document.querySelector(".scContentTreeContainer .scContentTreeNodeActive").id.substring(10);
         }
 
         private initFieldIDs(callback?: any) {
             this.getItemFields(this.getActiveNodeID(), callback);
-            let sectionsRoot = document.querySelector(".scEditorSections")
-            sectionsRoot.classList.add(this.classFieldIDsInitialized)
+            let sectionsRoot = document.querySelector(".scEditorSections");
+            sectionsRoot.classList.add(this.classFieldIDsInitialized);
         }
 
         private writeDownFieldName(e, sectionElement, j) {
-            let elemenet = HTMLHelpers.getElement(e.srcElement, (e) => { return e.dataset['fieldid'] != null }) as HTMLDivElement;
-            let fieldID = elemenet.dataset['fieldid']
+            let elemenet = HTMLHelpers.getElement(e.srcElement, (e) => { return e.dataset['fieldid'] != null; }) as HTMLDivElement;
+            let fieldID = elemenet.dataset['fieldid'];
             this.getFieldName(fieldID, sectionElement.innerText, j, (fieldName) => {
                 let node = this.getFirstElementWithClass(e.srcElement, this.classFieldNameSpan) as HTMLDivElement;
                 let currentElement = new FieldNameElement(node);
                 currentElement.Initialize(fieldName);
                 currentElement.setFieldName();
-            })
+            });
         }
 
         private getFieldID(itemID: string, sectionName: string, index: number, callback: GetFieldIDCallback) {
             var request = new Http.HttpRequest(this.buildEndpointURL(itemID), Http.Method.GET, (e) => {
                 var data = e.currentTarget.responseText;
-                var parser = new DOMParser()
+                var parser = new DOMParser();
                 var doc = parser.parseFromString(data, "text/html");
 
-                let allSections = doc.querySelectorAll(".FieldSection")
-                var section = null
+                let allSections = doc.querySelectorAll(".FieldSection");
+                var section = null;
                 for (let i = 0; i < allSections.length; i++) {
                     var sectionCandidate = allSections[i] as HTMLDivElement;
                     if (sectionCandidate.innerText == sectionName) {
-                        section = sectionCandidate
+                        section = sectionCandidate;
                         break;
                     }
                 }
                 let fieldNode = section.parentNode;
                 do {
-                    fieldNode = fieldNode.nextElementSibling
+                    fieldNode = fieldNode.nextElementSibling;
                     index--;
                 } while (index >= 0);
-                let fieldID = this.idParser.extractID(fieldNode.querySelector(".FieldLabel>span>a").attributes['href'].value)
+                let fieldID = this.idParser.extractID(fieldNode.querySelector(".FieldLabel>span>a").attributes['href'].value);
                 callback(fieldID);
             });
             request.execute();
@@ -212,11 +235,11 @@ namespace SitecoreExtensions.Modules.FieldInspector {
         private getFieldName(fieldID: string, sectionName: string, index: number, callback: GetFieldNameCallback) {
             var request = new Http.HttpRequest(this.buildEndpointURL(fieldID), Http.Method.GET, (e) => {
                 var data = e.currentTarget.responseText;
-                var parser = new DOMParser()
+                var parser = new DOMParser();
                 var doc = parser.parseFromString(data, "text/html");
                 let pathFragments = doc.querySelectorAll(".ItemPathFragment");
-                let lastPathFragment = pathFragments[pathFragments.length - 1] as HTMLAnchorElement
-                let fieldName = lastPathFragment.innerText
+                let lastPathFragment = pathFragments[pathFragments.length - 1] as HTMLAnchorElement;
+                let fieldName = lastPathFragment.innerText;
                 callback(fieldName);
             });
             request.execute();
@@ -225,17 +248,17 @@ namespace SitecoreExtensions.Modules.FieldInspector {
         private getItemFields(itemID: string, callback?: any) {
             var request = new Http.HttpRequest(this.buildEndpointURL(itemID), Http.Method.GET, (e) => {
                 var data = e.currentTarget.responseText;
-                var parser = new DOMParser()
+                var parser = new DOMParser();
                 var doc = parser.parseFromString(data, "text/html");
 
-                let allSections = doc.querySelector(".FieldsScroller").querySelectorAll("td.FieldSection,td.FieldLabel .ItemPathTemplate")
+                let allSections = doc.querySelector(".FieldsScroller").querySelectorAll("td.FieldSection,td.FieldLabel .ItemPathTemplate");
                 let currentSection;
-                for (var index = 0; index < allSections.length;) {
+                for (var index = 0; index < allSections.length; ) {
                     var section = allSections[index] as HTMLTableDataCellElement;
 
                     if (section.className == "FieldSection") {
-                        currentSection = document.querySelector(".scEditorSections #Section_" + section.innerText.replace(" ", "_"))
-                        index++
+                        currentSection = document.querySelector(".scEditorSections #Section_" + section.innerText.replace(" ", "_"));
+                        index++;
                         if (currentSection == null) {
                             break;
                         }
@@ -245,12 +268,12 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                         break;
                     }
 
-                    let fieldIndex = 0
+                    let fieldIndex = 0;
                     while (section.className == "ItemPathTemplate") {
                         let id = currentSection.innerText + "-" + fieldIndex++;
-                        let label = document.querySelector("[data-sectionid='" + id + "']") as HTMLAnchorElement
+                        let label = document.querySelector("[data-sectionid='" + id + "']") as HTMLAnchorElement;
 
-                        label.dataset["fieldid"] = this.idParser.extractID(section.attributes['href'].value)
+                        label.dataset["fieldid"] = this.idParser.extractID(section.attributes['href'].value);
                         section = allSections[++index] as HTMLTableDataCellElement;
                     }
                 }
@@ -263,31 +286,8 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
         private getFirstElementWithClass(parent: any, className: string): Node {
             return HTMLHelpers.getElement(parent, (e) => {
-                return e.classList.contains(className)
-            })
-        }
-
-        addTreeNodeHandlers(className: string): void {
-            var nodes = document.getElementsByClassName(className);
-            for (var i = 0; i < nodes.length; i++) {
-                nodes[i].addEventListener('click', (evt) => {
-                    setTimeout(() => {
-                        this.refreshControls();
-                    }, 10);
-                });
-            }
-        }
-
-        canExecute(): boolean {
-            return this.options.enabled && Context.Location() == Enums.Location.ContentEditor;
-        }
-
-        initialize(): void {
-            window.addEventListener('load', () => this.refreshControls());
-            this.addTreeNodeHandlers('scContentTree');
-            this.database = SitecoreExtensions.Context.Database();
-            this.lang = SitecoreExtensions.Context.Language();
-            this.idParser = new IdParser();
+                return e.classList.contains(className);
+            });
         }
     }
 }

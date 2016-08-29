@@ -4,6 +4,6 @@ namespace SitecoreExtensions.Modules.Launcher {
         name: string;
         description: string;
         execute: Function;
-        canExecute: Function
+        canExecute: Function;
     }
 }

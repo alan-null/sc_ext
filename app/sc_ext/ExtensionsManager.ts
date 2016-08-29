@@ -5,7 +5,7 @@ namespace SitecoreExtensions {
 
     export class ExtensionsManager {
         modules: ISitecoreExtensionsModule[];
-        modulesOptions:  Options.IModuleOptions[];
+        modulesOptions: Options.IModuleOptions[];
         constructor() {
             this.modules = new Array<ISitecoreExtensionsModule>();
         }
@@ -14,19 +14,10 @@ namespace SitecoreExtensions {
             this.modules.push(module);
         }
 
-        private initModule(m: ISitecoreExtensionsModule) {
-            try {
-                m.initialize();
-            } catch (e) {
-                console.log('Cannot initialize module: ' + m.moduleName);
-                console.log(e);
-            }
-        }
-
         initModules(): void {
             this.modules
                 .filter(m => { return m.canExecute(); })
-                .forEach(m => { this.initModule(m) });
+                .forEach(m => { this.initModule(m); });
         }
 
         getModule(type: any): ISitecoreExtensionsModule {
@@ -47,6 +38,15 @@ namespace SitecoreExtensions {
                 }
             }
             return null;
+        }
+
+        private initModule(m: ISitecoreExtensionsModule) {
+            try {
+                m.initialize();
+            } catch (e) {
+                console.log('Cannot initialize module: ' + m.moduleName);
+                console.log(e);
+            }
         }
     }
 }

@@ -3,7 +3,7 @@
 namespace SitecoreExtensions.Modules.Launcher.Providers {
     export class LaunchpadShortcutCommand extends NavigationCommand implements ICommand {
         constructor(name: string, description: string, url: string) {
-            super(name, description, url)
+            super(name, description, url);
         }
     }
 
@@ -40,11 +40,11 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addCommand("Role Manager", "Create and manage the roles that you want to assign the users of your system", "/sitecore/shell/Applications/Security/Role%20Manager.aspx?sc_bw=1");
             this.addCommand("Security Editor", "Manage the access rights that roles and users have to the items in Sitecore", "/sitecore/shell/Applications/Security/Security%20Editor.aspx?sc_bw=1");
             this.addCommand("User Manager", "Create and manage the users that have access to the system", "/sitecore/shell/Applications/Security/User%20Manager.aspx?sc_bw=1");
-            this.addCommand("Xpath Builder", "Test Sitecore query", "/sitecore/shell/default.aspx?xmlcontrol=IDE.XPath.Builder")
+            this.addCommand("Xpath Builder", "Test Sitecore query", "/sitecore/shell/default.aspx?xmlcontrol=IDE.XPath.Builder");
         }
 
         private addCommand(name: string, description: string, url: string): void {
-            this.commands.push(new LaunchpadShortcutCommand(name, description, url))
+            this.commands.push(new LaunchpadShortcutCommand(name, description, url));
         }
     }
 }

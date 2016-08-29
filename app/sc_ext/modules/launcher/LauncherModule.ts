@@ -16,7 +16,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         delayedSearch: any;
         resultsDelay: number = 300;
         recentCommandsStore: RecentCommandsStore;
-        idParser: IdParser
+        idParser: IdParser;
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
@@ -37,10 +37,24 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.recentCommandsStore = new RecentCommandsStore(this.launcherOptions.searchResultsCount);
         }
 
-        private registerModuleCommands(): void {
-            this.registerProviderCommands(new Launcher.Providers.ContentEditorRibbonCommandsProvider());
-            this.registerProviderCommands(new Launcher.Providers.AdminShortcutsCommandsProvider());
-            this.registerProviderCommands(new Launcher.Providers.LaunchpadCommandsProvider());
+        canExecute(): boolean {
+            return true && this.options.enabled;
+        }
+
+        initialize(): void {
+            this.injectlauncherHtml();
+            this.registerGlobalShortcuts();
+            if (Context.Location() == Enums.Location.ContentEditor) {
+                this.addFlowConditionForKeyDownEvent();
+            }
+            this.modalElement = <HTMLDivElement> document.getElementById('sc-ext-modal');
+            this.searchBoxElement = <HTMLInputElement> document.getElementById('sc-ext-searchBox');
+            this.searchResultsElement = <HTMLUListElement> document.getElementById('sc-ext-searchResults');
+            this.selectedCommand = document.getElementsByClassName('selected') as NodeListOf<HTMLLIElement>;
+
+            this.fuzzy.highlighting.before = "<span class='term'>";
+            this.fuzzy.highlighting.after = '</span>';
+            this.idParser = new IdParser();
         }
 
         registerProviderCommands(provider: Providers.ICommandsProvider): void {
@@ -58,10 +72,6 @@ namespace SitecoreExtensions.Modules.Launcher {
             }
         }
 
-        private isUnique(command: ICommand): boolean {
-            return this.commands.filter(c => c.name == command.name && c.canExecute() == command.canExecute()).length == 0
-        }
-
         showLauncher(): void {
             this.modalElement.style.display = 'block';
             this.searchBoxElement.focus();
@@ -73,74 +83,11 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.clearResults();
         }
 
-        private appendResults(sortedResults: SearchResult[]): void {
-            this.clearResults();
-            if (sortedResults.length > 0) {
-                for (var i = 0; i < sortedResults.length && i < this.launcherOptions.searchResultsCount; i++) {
-                    var li = this.buildCommandHtml(sortedResults[i]);
-                    this.searchResultsElement.appendChild(li);
-                }
-
-                if (this.searchResultsElement.className !== 'term-list') {
-                    this.searchResultsElement.className = 'term-list';
-                }
-            }
-        }
-
         clearResults(): void {
             this.searchResultsElement.className = 'term-list hidden';
             this.searchResultsElement.innerHTML = '';
         }
 
-        private buildCommandHtml(sr: SearchResult): HTMLLIElement {
-            var li = HTMLHelpers.createElement<HTMLLIElement>('li', null, { id: sr.command.id });
-            var spanName = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-name' });
-            spanName.innerHTML = sr.highlightedTerm;
-            var spanDescription = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-description' });
-            spanDescription.innerText = sr.command.description;
-
-            li.appendChild(spanName);
-            li.appendChild(spanDescription);
-
-            li.onclick = (e) => {
-                var element = <Element>e.srcElement;
-                while (element.tagName != 'LI') {
-                    element = <Element>element.parentNode;
-                }
-                this.changeSelectedCommand(element);
-                this.searchBoxElement.focus();
-            };
-            li.ondblclick = (e: UserActionEvent) => {
-                this.executeSelectedCommand(e);
-            };
-            return li;
-        }
-
-        private buildItemHtml(sr: SitecoreSearchResults): HTMLLIElement {
-            var li = HTMLHelpers.createElement<HTMLLIElement>('li', null, { id: sr.id });
-            var spanName = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-name' });
-            spanName.innerHTML = sr.title;
-            var spanDescription = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-description' });
-            spanDescription.innerText = sr.path;
-
-            var img = HTMLHelpers.createElement<HTMLImageElement>('img', { src: sr.img, class: 'command-img' });
-            li.appendChild(img);
-            li.appendChild(spanName);
-            li.appendChild(spanDescription);
-
-            li.onclick = (e) => {
-                var element = <Element>e.srcElement;
-                while (element.tagName != 'LI') {
-                    element = <Element>element.parentNode;
-                }
-                this.changeSelectedCommand(element);
-                this.searchBoxElement.focus();
-            };
-            li.ondblclick = (e: UserActionEvent) => {
-                this.executeSelectedCommand(e);
-            }
-            return li;
-        }
 
         injectlauncherHtml(): void {
             var modal = HTMLHelpers.createElement<HTMLDivElement>('div', { class: 'launcher-modal', id: 'sc-ext-modal' });
@@ -158,7 +105,7 @@ namespace SitecoreExtensions.Modules.Launcher {
 
         registerGlobalShortcuts(): void {
             document.onkeydown = (evt: KeyboardEvent) => {
-                evt = (evt != null ? evt : <KeyboardEvent>window.event);
+                evt = (evt != null ? evt : <KeyboardEvent> window.event);
                 switch (evt.which || evt.keyCode) {
                     case this.launcherOptions.shortcuts.show: {
                         if (evt.ctrlKey) {
@@ -181,13 +128,13 @@ namespace SitecoreExtensions.Modules.Launcher {
 
         addFlowConditionForKeyDownEvent(): void {
             HTMLHelpers.addFlowConditionToEvent(scSitecore, 'onKeyDown', (evt: KeyboardEvent) => {
-                evt = (evt != null ? evt : <KeyboardEvent>window.event);
+                evt = (evt != null ? evt : <KeyboardEvent> window.event);
                 return (evt as any).element().id != 'sc-ext-searchBox';
             });
         }
 
         executeSelectedCommand(evt?: UserActionEvent): void {
-            var id = (<HTMLLIElement>this.selectedCommand[0]).dataset['id'];
+            var id = (<HTMLLIElement> this.selectedCommand[0]).dataset['id'];
             if (this.idParser.match(id)) {
                 console.log("Navigate to item:" + id);
                 if (Context.Location() == Enums.Location.ContentEditor) {
@@ -197,14 +144,14 @@ namespace SitecoreExtensions.Modules.Launcher {
                 }
 
             } else {
-                var selectedComandId = parseInt(id)
-                var command = <ICommand>this.commands.find((cmd: ICommand) => {
-                    return cmd.id == selectedComandId
+                var selectedComandId = parseInt(id);
+                var command = <ICommand> this.commands.find((cmd: ICommand) => {
+                    return cmd.id == selectedComandId;
                 });
                 command.execute(evt);
                 this.recentCommandsStore.add(command);
             }
-            this.hideLauncher()
+            this.hideLauncher();
         }
 
         inputKeyUpEvent(evt: KeyboardEvent): void {
@@ -219,8 +166,8 @@ namespace SitecoreExtensions.Modules.Launcher {
                 if (phrase.length == 0) {
                     var recentResults = new Array<SearchResult>();
                     var recentCommands = this.recentCommandsStore.getRecentCommands(this.commands);
-                    recentCommands.forEach(cmd => { recentResults.push(SearchResult.Cast(cmd)) });
-                    this.appendResults(recentResults)
+                    recentCommands.forEach(cmd => { recentResults.push(SearchResult.Cast(cmd)); });
+                    this.appendResults(recentResults);
                     this.selectFirstResult();
                 } else {
                     if (phrase.startsWith("#") && phrase.length >= 1) {
@@ -237,45 +184,45 @@ namespace SitecoreExtensions.Modules.Launcher {
             }
         }
 
-        private selectFirstResult(): void {
-            if (this.searchResultsElement.children.length > 0) {
-                (<HTMLLIElement>this.searchResultsElement.firstChild).setAttribute('class', 'selected');
-            }
-        }
 
         windowClickEvent(evt: MouseEvent): void {
             if (evt.target == this.modalElement) {
                 this.modalElement.style.display = 'none';
-                this.searchBoxElement.value = ''
+                this.searchBoxElement.value = '';
             }
         }
 
         changeSelectedCommand(newSelected): void {
-            var oldSelected = <HTMLLIElement>this.searchResultsElement.querySelector('.selected');
+            var oldSelected = <HTMLLIElement> this.searchResultsElement.querySelector('.selected');
             oldSelected.removeAttribute('class');
             newSelected.setAttribute('class', 'selected');
         }
 
         commandSelectionEvent(evt: KeyboardEvent): void {
-            var commands = this.searchResultsElement.querySelectorAll('li')
+            var commands = this.searchResultsElement.querySelectorAll('li');
             if (commands.length > 0) {
-                var selected = <HTMLLIElement>this.searchResultsElement.querySelector('.selected');
-                if (selected == undefined) selected = <HTMLLIElement>this.searchResultsElement.querySelector('li')
+                var selected = <HTMLLIElement> this.searchResultsElement.querySelector('.selected');
+                if (selected == undefined) selected = <HTMLLIElement> this.searchResultsElement.querySelector('li');
 
                 if (evt.keyCode == this.launcherOptions.shortcuts.selectPrevResult && commands[0] != selected) {
                     if (selected.className == 'selected') {
-                        this.changeSelectedCommand(selected.previousSibling)
+                        this.changeSelectedCommand(selected.previousSibling);
                     }
                 }
 
                 if (evt.keyCode == this.launcherOptions.shortcuts.selectNextResult && commands.length != 0) {
                     if (selected.className == 'selected' && commands[commands.length - 1] !== selected) {
-                        this.changeSelectedCommand(selected.nextSibling)
+                        this.changeSelectedCommand(selected.nextSibling);
                     }
                 }
             }
         }
 
+        private selectFirstResult(): void {
+            if (this.searchResultsElement.children.length > 0) {
+                (<HTMLLIElement> this.searchResultsElement.firstChild).setAttribute('class', 'selected');
+            }
+        }
         private canBeExecuted(command: ICommand, index: number, array: ICommand[]): boolean {
             return command.canExecute();
         }
@@ -293,12 +240,12 @@ namespace SitecoreExtensions.Modules.Launcher {
             for (i = 0; i < availableCommands.length; i++) {
                 var cmd = availableCommands[i];
                 var f = this.fuzzy.getScore(cmd.name, query);
-                results[i] = <SearchResult>{
+                results[i] = <SearchResult> {
                     command: cmd,
                     score: f.score,
                     term: f.term,
                     highlightedTerm: f.highlightedTerm,
-                }
+                };
             }
             results.sort(this.fuzzy.matchComparator);
             return results.slice(0, this.launcherOptions.searchResultsCount);
@@ -308,11 +255,11 @@ namespace SitecoreExtensions.Modules.Launcher {
             var searchEndpointUrl = window.top.location.origin + "/sitecore/shell/applications/search/instant/instantsearch.aspx";
             var request = new Http.HttpRequest(searchEndpointUrl + "?q=" + phrase + "&v=1", Http.Method.POST, (e) => {
                 var data = e.currentTarget.responseText;
-                var parser = new DOMParser()
+                var parser = new DOMParser();
                 var doc = parser.parseFromString(data, "text/html");
 
                 var categories = doc.querySelectorAll(".scSearchResultsTable td");
-                var currentCategoryName = "Uncategorized"
+                var currentCategoryName = "Uncategorized";
                 var results = new Array<SitecoreSearchResults>();
                 for (var index = 0; index < categories.length; index++) {
                     var td = categories[index] as HTMLTableDataCellElement;
@@ -348,28 +295,82 @@ namespace SitecoreExtensions.Modules.Launcher {
             clearTimeout(this.delayedSearch);
             this.delayedSearch = setTimeout(() => {
                 this.clearResults();
-                request.execute()
+                request.execute();
             }, this.resultsDelay);
         }
 
-        canExecute(): boolean {
-            return true && this.options.enabled;
+        private isUnique(command: ICommand): boolean {
+            return this.commands.filter(c => c.name == command.name && c.canExecute() == command.canExecute()).length == 0;
         }
 
-        initialize(): void {
-            this.injectlauncherHtml();
-            this.registerGlobalShortcuts();
-            if (Context.Location() == Enums.Location.ContentEditor) {
-                this.addFlowConditionForKeyDownEvent();
-            }
-            this.modalElement = <HTMLDivElement>document.getElementById('sc-ext-modal');
-            this.searchBoxElement = <HTMLInputElement>document.getElementById('sc-ext-searchBox')
-            this.searchResultsElement = <HTMLUListElement>document.getElementById('sc-ext-searchResults')
-            this.selectedCommand = document.getElementsByClassName('selected') as NodeListOf<HTMLLIElement>;
+        private registerModuleCommands(): void {
+            this.registerProviderCommands(new Launcher.Providers.ContentEditorRibbonCommandsProvider());
+            this.registerProviderCommands(new Launcher.Providers.AdminShortcutsCommandsProvider());
+            this.registerProviderCommands(new Launcher.Providers.LaunchpadCommandsProvider());
+        }
 
-            this.fuzzy.highlighting.before = "<span class='term'>";
-            this.fuzzy.highlighting.after = '</span>';
-            this.idParser = new IdParser();
+        private appendResults(sortedResults: SearchResult[]): void {
+            this.clearResults();
+            if (sortedResults.length > 0) {
+                for (var i = 0; i < sortedResults.length && i < this.launcherOptions.searchResultsCount; i++) {
+                    var li = this.buildCommandHtml(sortedResults[i]);
+                    this.searchResultsElement.appendChild(li);
+                }
+
+                if (this.searchResultsElement.className !== 'term-list') {
+                    this.searchResultsElement.className = 'term-list';
+                }
+            }
+        }
+
+        private buildCommandHtml(sr: SearchResult): HTMLLIElement {
+            var li = HTMLHelpers.createElement<HTMLLIElement>('li', null, { id: sr.command.id });
+            var spanName = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-name' });
+            spanName.innerHTML = sr.highlightedTerm;
+            var spanDescription = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-description' });
+            spanDescription.innerText = sr.command.description;
+
+            li.appendChild(spanName);
+            li.appendChild(spanDescription);
+
+            li.onclick = (e) => {
+                var element = <Element> e.srcElement;
+                while (element.tagName != 'LI') {
+                    element = <Element> element.parentNode;
+                }
+                this.changeSelectedCommand(element);
+                this.searchBoxElement.focus();
+            };
+            li.ondblclick = (e: UserActionEvent) => {
+                this.executeSelectedCommand(e);
+            };
+            return li;
+        }
+
+        private buildItemHtml(sr: SitecoreSearchResults): HTMLLIElement {
+            var li = HTMLHelpers.createElement<HTMLLIElement>('li', null, { id: sr.id });
+            var spanName = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-name' });
+            spanName.innerHTML = sr.title;
+            var spanDescription = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-description' });
+            spanDescription.innerText = sr.path;
+
+            var img = HTMLHelpers.createElement<HTMLImageElement>('img', { src: sr.img, class: 'command-img' });
+            li.appendChild(img);
+            li.appendChild(spanName);
+            li.appendChild(spanDescription);
+
+            li.onclick = (e) => {
+                var element = <Element> e.srcElement;
+                while (element.tagName != 'LI') {
+                    element = <Element> element.parentNode;
+                }
+                this.changeSelectedCommand(element);
+                this.searchBoxElement.focus();
+            };
+            li.ondblclick = (e: UserActionEvent) => {
+                this.executeSelectedCommand(e);
+            };
+            return li;
         }
     }
 }

@@ -1,7 +1,7 @@
 /// <reference path="../../../_all.ts"/>
 
 namespace SitecoreExtensions.Modules.ShortcutsRunner.Providers {
-    import ICommand = Launcher.ICommand
+    import ICommand = Launcher.ICommand;
 
     export class AppShortcutCommand implements ICommand {
         id: number;

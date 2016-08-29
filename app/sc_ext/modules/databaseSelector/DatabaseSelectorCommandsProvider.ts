@@ -1,17 +1,17 @@
 /// <reference path='../../_all.ts'/>
 
 namespace SitecoreExtensions.Modules.DatabaseSelector {
-    import ICommand = Launcher.ICommand
+    import ICommand = Launcher.ICommand;
 
     export class DatabaseNamesStore {
-        private static LocalStorageKey: string = "sc_ext::db_names";
+        private static localStorageKey: string = "sc_ext::db_names";
 
         public static saveDatabases(dbs: Array<string>): void {
-            localStorage.setItem(this.LocalStorageKey, dbs.join(','));
+            localStorage.setItem(this.localStorageKey, dbs.join(','));
         }
 
         public static getDatabases(): Array<string> {
-            let raw = localStorage.getItem(this.LocalStorageKey);
+            let raw = localStorage.getItem(this.localStorageKey);
             if (raw) {
                 return raw.split(',');
             }
@@ -25,6 +25,11 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
         constructor() {
             this.commands = Array<ICommand>();
             this.createCommands();
+        }
+
+        public getCommands(): ICommand[] {
+            return this.commands;
+
         }
 
         private createCommands() {
@@ -46,13 +51,9 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
                         },
                         canExecute: () => { return true; }
                     };
-                    this.commands.push(cmd)
+                    this.commands.push(cmd);
                 }
             }
-        }
-
-        public getCommands(): ICommand[] {
-            return this.commands;
         }
     }
 }

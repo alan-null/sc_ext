@@ -5,7 +5,7 @@ module SitecoreExtensions.Options {
 
     export class FieldSearchController extends BaseOptionsController {
         constructor($scope: any, formlyVersion: string) {
-            super($scope, formlyVersion, 'Field Search')
+            super($scope, formlyVersion, 'Field Search');
             $scope.vm.title = 'Field Search module';
         }
 
@@ -38,7 +38,7 @@ module SitecoreExtensions.Options {
                         ]
                     }
                 }
-            ]
+            ];
         }
     }
 }

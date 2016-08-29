@@ -1,9 +1,9 @@
-/// <reference path='../_all.ts' />
+/// <reference path='../_all.ts' /> 
 
 module SitecoreExtensions.Options {
-	'use strict';
+    'use strict';
 
-	export class BaseController {
-		public static $inject = ['$scope'];
-	}
+    export class BaseController {
+        public static $inject = ['$scope'];
+    }
 }

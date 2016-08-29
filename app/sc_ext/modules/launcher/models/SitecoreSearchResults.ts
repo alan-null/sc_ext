@@ -2,10 +2,10 @@
 
 namespace SitecoreExtensions.Modules.Launcher.Models {
     export class SitecoreSearchResults {
-        path: string
-        id: string
-        category: string
-        title: string
-        img: string
+        path: string;
+        id: string;
+        category: string;
+        title: string;
+        img: string;
     }
 }

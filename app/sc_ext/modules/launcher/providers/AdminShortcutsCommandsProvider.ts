@@ -3,7 +3,7 @@
 namespace SitecoreExtensions.Modules.Launcher.Providers {
     class ShortcutCommand extends NavigationCommand implements ICommand {
         constructor(name: string, description: string, aspx: string) {
-            super(name, description, window.top.location.origin + '/sitecore/admin/' + aspx + '.aspx')
+            super(name, description, window.top.location.origin + '/sitecore/admin/' + aspx + '.aspx');
         }
     }
     export class AdminShortcutsCommandsProvider implements ICommandsProvider {
@@ -42,7 +42,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
 
 
         addCommand(name: string, description: string, aspx: string): void {
-            this.commands.push(new ShortcutCommand(name, description, aspx))
+            this.commands.push(new ShortcutCommand(name, description, aspx));
         }
 
         getCommands(): ICommand[] {
