@@ -17,9 +17,11 @@ namespace SitecoreExtensions.Modules.LastLocation {
                 return n.tagName.toLowerCase() === "a";
             });
 
-            let id = parent.id;
-            id = id.substring(id.lastIndexOf("_") + 1);
-            LastLocationStore.saveLastItemId(id);
+            if (parent) {
+                let id = parent.id;
+                id = id.substring(id.lastIndexOf("_") + 1);
+                LastLocationStore.saveLastItemId(id);
+            }
         }
 
         addTreeNodeHandlers(className: string): void {

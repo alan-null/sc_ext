@@ -20,11 +20,13 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
 
         private getSelectDatabaseDialogResponse(callback) {
             let url = window.top.location.origin + "/sitecore/shell/default.aspx";
-            var postData = "&__PARAMETERS=" + "ShowDatabases"
-                + "&__ISEVENT=" + "1"
-                + "&__CSRFTOKEN=" + this.token.__CSRFTOKEN
-                + "&__VIEWSTATE=" + this.token.__VIEWSTATE
-            new Http.HttpRequest(url, Http.Method.POST, callback).execute(postData)
+            if (this.token) {
+                var postData = "&__PARAMETERS=" + "ShowDatabases"
+                    + "&__ISEVENT=" + "1"
+                    + "&__CSRFTOKEN=" + this.token.__CSRFTOKEN
+                    + "&__VIEWSTATE=" + this.token.__VIEWSTATE;
+            }
+            new Http.HttpRequest(url, Http.Method.POST, callback).execute(postData);
         }
 
         private handleErrorAndRetry(): void {
@@ -39,9 +41,10 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
             this.getSelectDatabaseDialogResponse((e) => {
                 this.handleErrorAndRetry();
                 if (e.currentTarget.status == 500) {
+                    this.handleErrorAndRetry();
                 } else {
                     var data = e.currentTarget.responseText;
-                    var parser = new DOMParser()
+                    var parser = new DOMParser();
                     var doc = parser.parseFromString(data, "text/html");
 
                     let trs = doc.querySelectorAll('body>table>tbody>tr');
@@ -50,12 +53,12 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
                     for (var index = 1; index < trs.length; index++) {
                         var dbRow = trs[index] as HTMLTableRowElement;
                         if (dbRow.innerText.length > 0) {
-                            dbNames.push(dbRow.innerText)
+                            dbNames.push(dbRow.innerText);
                         }
                     }
-                    DatabaseNamesStore.saveDatabases(dbNames)
+                    DatabaseNamesStore.saveDatabases(dbNames);
                 }
-            })
+            });
         }
 
         canExecute(): boolean {

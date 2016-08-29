@@ -46,10 +46,12 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
 
         private getShortcutUrl(callback: Function, shortcutId: string): void {
             var req = new HttpRequest(this.baseUrl, Method.POST, callback);
-            var postData = "&__PARAMETERS=" + "RunShortcut%28%26quot%3B%7B" + shortcutId + "%7D%26quot%3B%29"
-                + "&__ISEVENT=" + "1"
-                + "&__CSRFTOKEN=" + this.token.__CSRFTOKEN
-                + "&__VIEWSTATE=" + this.token.__VIEWSTATE
+            if (this.token) {
+                var postData = "&__PARAMETERS=" + "RunShortcut%28%26quot%3B%7B" + shortcutId + "%7D%26quot%3B%29"
+                    + "&__ISEVENT=" + "1"
+                    + "&__CSRFTOKEN=" + this.token.__CSRFTOKEN
+                    + "&__VIEWSTATE=" + this.token.__VIEWSTATE
+            }
             req.execute(postData);
         }
     }

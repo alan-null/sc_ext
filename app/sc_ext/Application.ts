@@ -27,7 +27,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         var toggleRibbon = new Modules.ToggleRibbon.ToggleRibbonModule('Toggle Ribbon', 'Toggle Ribbon in Experience Editor', wrapper.getModuleOptions('Toggle Ribbon'));
         var databaseSwitcher = new Modules.DatabaseSelector.DatabaseSwitcherModule('Database Selector', 'Change your context database', wrapper.getModuleOptions('Database Selector'));
         var goToDatasource = new Modules.GoToDatasource.GoToDatasourceModule('Go To Datasource', 'Navigate to a datasource item.', wrapper.getModuleOptions('Go To Datasource'));
-        
+
 
         scExtManager.addModule(sectionSwitchesModule);
         scExtManager.addModule(dbNameModule);
@@ -46,7 +46,12 @@ if (SitecoreExtensions.Context.IsValid()) {
         launcher.registerProviderCommands(new Modules.SectionSwitches.SectionSwitchesCommandsProvider());
         launcher.registerProviderCommands(new Modules.LastLocation.RestoreLastLocationCommandProvider());
         launcher.registerProviderCommands(new Modules.ShortcutsRunner.Providers.SitecoreApplicationsCommandsProvider());
-        launcher.registerProviderCommands(new Modules.DatabaseSelector.DatabaseSelectorCommandsProvider);
+
+        SitecoreExtensions.HTMLHelpers.postponeAction(() => {
+            return new Modules.DatabaseSelector.DatabaseSelectorCommandsProvider().getCommands().length > 0
+        }, () => {
+            launcher.registerProviderCommands(new Modules.DatabaseSelector.DatabaseSelectorCommandsProvider());
+        }, 200, 5)
 
 
         if (scExtOptions.badge.enabled) {
