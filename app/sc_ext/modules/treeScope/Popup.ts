@@ -11,7 +11,7 @@ namespace SitecoreExtensions.Modules.TreeScope {
             var tbody = this.popupElement.querySelector("table>tbody");
             let newTr = (tbody.parentNode as HTMLTableElement).insertRow(index);
             newTr.parentNode.replaceChild(button.renderButton(), newTr);
-            this.relocatePopup(this.popupElement, 1);
+            this.relocatePopup(1);
         }
 
         getIndexOfElement(elementId: string): number {
@@ -23,11 +23,24 @@ namespace SitecoreExtensions.Modules.TreeScope {
             this.popupElement.remove();
         }
 
-        private relocatePopup(popup: HTMLDivElement, count: number = 1): void {
-            let buttonHeight = 26;
+        private relocatePopup(count: number = 1): void {
+            let numberOfExistingButtons = this.getNumberOfExistingButtons();
+            let buttonHeight = this.popupElement.clientHeight / numberOfExistingButtons;
+
             let value = buttonHeight * count;
-            popup.style.height = (this.parseStyleInt(popup.style.height) + value) + "px";
-            popup.style.top = (this.parseStyleInt(popup.style.top) - value) + "px";
+            this.popupElement.style.height = (this.parseStyleInt(this.popupElement.style.height) + value) + "px";
+            this.popupElement.style.top = (this.parseStyleInt(this.popupElement.style.top) - value) + "px";
+        }
+
+        private getNumberOfExistingButtons(): number {
+            var tbody = this.popupElement.querySelector("table>tbody");
+            let numberOfExistingButtons = 0;
+            [].forEach.call(tbody.childNodes, (e) => {
+                if (e.id != null && e.id.length > 0) {
+                    numberOfExistingButtons++;
+                }
+            });
+            return numberOfExistingButtons;
         }
 
         private parseStyleInt(intWannaBe: string) {
