@@ -20,8 +20,9 @@ namespace SitecoreExtensions.Modules.DatabaseName {
         adDbNameToHeader(dbName: string): void {
             var dbnameDiv = HTMLHelpers.createElement<HTMLDivElement>('div', { class: 'sc-ext-dbName' });
             dbnameDiv.innerText = dbName;
-            document.querySelector('.sc-globalHeader-loginInfo').parentNode.appendChild(dbnameDiv);
-        }
 
+            let destination = document.querySelector('.sc-globalHeader');
+            destination.insertBefore(dbnameDiv, destination.firstChild);
+        }
     }
 }

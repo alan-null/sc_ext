@@ -3,32 +3,7 @@ $break-small: 550px;
 $break-tiny: 390px;
 
 .sc-ext-dbName {
-  float: left;
-  margin-left: -10%;
-}
-
-@media only screen and (max-width: $break-medium) {
-  .sc-ext-dbName {
-    margin-left: -30px;
-  }
-  .col-md-6 .sc-ext-dbName {
-    padding-left: 40%;
-    margin-left: 0px;
-  }
-}
-
-@media only screen and (max-width: $break-small) {
-  .sc-ext-dbName {
-    margin-left: -50%;
-  }
-  .col-md-6 .sc-ext-dbName {
-    padding-left: 25%;
-    margin-left: 0px;
-  }  
-}
-
-@media only screen and (max-width: $break-tiny) {
-  .sc-ext-dbName {
-    display: none;
-  }
+    position: fixed;
+    width: 100%;
+    text-align: center;
 }
