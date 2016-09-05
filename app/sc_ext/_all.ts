@@ -42,6 +42,7 @@
 /// <reference path='modules/toggleRibbon/_all.ts'/>
 /// <reference path='modules/treelistField/_all.ts'/>
 /// <reference path='modules/treeScope/_all.ts'/>
+/// <reference path='modules/treeAutoExpand/_all.ts'/>
 
 
 // Status

@@ -28,6 +28,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         var toggleRibbon = new Modules.ToggleRibbon.ToggleRibbonModule('Toggle Ribbon', 'Toggle Ribbon in Experience Editor', wrapper.getModuleOptions('Toggle Ribbon'));
         var databaseSelector = new Modules.DatabaseSelector.DatabaseSelectorModule('Database Selector', 'Change your context database', wrapper.getModuleOptions('Database Selector'));
         var goToDatasource = new Modules.GoToDatasource.GoToDatasourceModule('Go To Datasource', 'Navigate to a datasource item.', wrapper.getModuleOptions('Go To Datasource'));
+        var treeAutoExpand = new Modules.TreeAutoExpand.TreeAutoExpandModule('Tree Auto Expand', 'Automatically expand tree deeply if there is only one child.', wrapper.getModuleOptions('Tree Auto Expand'));
 
 
         scExtManager.addModule(sectionSwitchesModule);
@@ -42,6 +43,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         scExtManager.addModule(toggleRibbon);
         scExtManager.addModule(databaseSelector);
         scExtManager.addModule(goToDatasource);
+        scExtManager.addModule(treeAutoExpand);
 
         scExtManager.initModules();
 
