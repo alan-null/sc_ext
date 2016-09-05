@@ -21,6 +21,11 @@
 /// <reference path='controllers/GeneralOptionsController.ts' />
 /// <reference path='controllers/SettingsController.ts' />
 /// <reference path='controllers/TreeScopeController.ts' />
+/// <reference path='controllers/FieldInspectorController.ts' />
+/// <reference path='controllers/ToggleRibbonController.ts' />
+/// <reference path='controllers/DatabaseSelectorController.ts' />
+/// <reference path='controllers/GoToDatasourceController.ts' />
+/// <reference path='controllers/TreeAutoExpandController.ts' />
 
 // Directives
 /// <reference path='directives/NavigationDirective.ts' />

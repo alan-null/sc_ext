@@ -15,5 +15,10 @@ module SitecoreExtensions.Options {
         .controller('TreelistFieldController', TreelistFieldController)
         .controller('SettingsController', SettingsController)
         .controller('TreeScopeController', TreeScopeController)
+        .controller('DatabaseSelectorController', DatabaseSelectorController)
+        .controller('FieldInspectorController', FieldInspectorController)
+        .controller('GoToDatasourceController', GoToDatasourceController)
+        .controller('ToggleRibbonController', ToggleRibbonController)
+        .controller('TreeAutoExpandController', TreeAutoExpandController)
         .directive('navigation', NavigationDirective);
 }
