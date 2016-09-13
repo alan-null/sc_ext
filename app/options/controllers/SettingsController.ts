@@ -15,8 +15,10 @@ module SitecoreExtensions.Options {
         }
 
         reset() {
-            alert("Your all Sitecore Extensions options are now set to default.");
-            chrome.storage.sync.clear();
+            let confirmation = confirm("Are you sure you want to reset all Sitecore Extensions options?");
+            if (confirmation) {
+                chrome.storage.local.clear();
+            }
         }
     }
 }
