@@ -208,20 +208,27 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                 var doc = parser.parseFromString(data, "text/html");
 
                 let allSections = doc.querySelectorAll(".FieldSection");
-                var section = null;
+                let possibleSections = new Array<HTMLDivElement>();
                 for (let i = 0; i < allSections.length; i++) {
                     var sectionCandidate = allSections[i] as HTMLDivElement;
                     if (sectionCandidate.innerText == sectionName) {
-                        section = sectionCandidate;
-                        break;
+                        possibleSections.push(sectionCandidate);
                     }
                 }
-                let fieldNode = section.parentNode;
-                do {
-                    fieldNode = fieldNode.nextElementSibling;
-                    index--;
-                } while (index >= 0);
-                let fieldID = this.idParser.extractID(fieldNode.querySelector(".FieldLabel>span>a").attributes['href'].value);
+
+                let fieldNode = null;
+                for (var j = 0; j < possibleSections.length; j++) {
+                    var section = possibleSections[j];
+                    let currentNode = section.parentNode as HTMLDivElement;
+                    do {
+                        currentNode = currentNode.nextElementSibling as HTMLDivElement;
+                        index--;
+                    } while (index >= 0 && currentNode.nextElementSibling.querySelector(".FieldSection") == null);
+                    fieldNode = currentNode.querySelector(".FieldLabel>span>a");
+                    if (fieldNode != null && index < 0) break;
+                }
+
+                let fieldID = this.idParser.extractID(fieldNode.attributes['href'].value);
                 callback(fieldID);
             });
             request.execute();
@@ -253,7 +260,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
                 let allSections = doc.querySelector(".FieldsScroller").querySelectorAll("td.FieldSection,td.FieldLabel .ItemPathTemplate");
                 let currentSection;
-                for (var index = 0; index < allSections.length; ) {
+                for (var index = 0; index < allSections.length;) {
                     var section = allSections[index] as HTMLTableDataCellElement;
 
                     if (section.className == "FieldSection") {
@@ -269,8 +276,18 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                     }
 
                     let fieldIndex = 0;
+
+                    let getSectionID = (tempIndex: number): string => {
+                        let id = currentSection.innerText + "-" + tempIndex;
+                        while (document.querySelector("[data-sectionid='" + id + "']:not([data-fieldid])") == null) {
+                            id = currentSection.innerText + "-" + (++tempIndex);
+                        }
+                        return id;
+                    };
+
                     while (section.className == "ItemPathTemplate") {
-                        let id = currentSection.innerText + "-" + fieldIndex++;
+                        let id = getSectionID(fieldIndex++);
+
                         let label = document.querySelector("[data-sectionid='" + id + "']") as HTMLAnchorElement;
 
                         label.dataset["fieldid"] = this.idParser.extractID(section.attributes['href'].value);
