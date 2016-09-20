@@ -5,6 +5,7 @@
 Sitecore Extensions is a google chrome extension which provides small improvements for Sitecore CMS. 
 
 ## Supported versions:
+- Sitecore.NET 8.2 
 - Sitecore.NET 8.1 
 - Sitecore.NET 8.0 
 - Sitecore.NET 7.5 (partial) 
