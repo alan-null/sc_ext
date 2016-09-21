@@ -84,7 +84,7 @@ namespace SitecoreExtensions.Modules.GoToDatasource.Fields {
 
         protected appendButton() {
             let selectedValue = this.getSelectedValue();
-            if (selectedValue) {
+            if (selectedValue && new IdParser().match(selectedValue)) {
                 let id = this.idParser.extractID(selectedValue);
                 let spanGoToDatasource = this.generateButton();
                 spanGoToDatasource.onclick = (e) => {

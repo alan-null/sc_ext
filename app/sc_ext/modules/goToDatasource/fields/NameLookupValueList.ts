@@ -29,7 +29,7 @@ namespace SitecoreExtensions.Modules.GoToDatasource.Fields {
             let spanGoToDatasource = HTMLHelpers.createElement("a", {
                 class: this.getButtonClasses().join(' '),
             }) as HTMLSpanElement;
-            spanGoToDatasource.innerText = "Go to '" + this.getSelectedOption().innerText + "'";
+            spanGoToDatasource.innerText = "Go to '" + this.getSelectedOption().textContent + "'";
             spanGoToDatasource.dataset['index'] = this.innerElement.selectedIndex.toString();
             return spanGoToDatasource;
         }
