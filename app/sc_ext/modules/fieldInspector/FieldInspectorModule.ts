@@ -260,7 +260,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
                 let allSections = doc.querySelector(".FieldsScroller").querySelectorAll("td.FieldSection,td.FieldLabel .ItemPathTemplate");
                 let currentSection;
-                for (var index = 0; index < allSections.length;) {
+                for (var index = 0; index < allSections.length; ) {
                     var section = allSections[index] as HTMLTableDataCellElement;
 
                     if (section.className == "FieldSection") {

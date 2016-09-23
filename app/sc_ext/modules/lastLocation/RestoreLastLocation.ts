@@ -17,9 +17,13 @@ namespace SitecoreExtensions.Modules.LastLocation {
 
         updateLastLocation(args: any): void {
             var parent = args.element();
-            parent = HTMLHelpers.getElement(parent, (n) => {
-                return n.tagName.toLowerCase() === "a";
-            });
+            if ((parent as HTMLDivElement).classList.contains("scContentTreeNode")) {
+                parent = parent.querySelector("a");
+            } else {
+                parent = HTMLHelpers.getElement(parent, (n) => {
+                    return n.tagName.toLowerCase() === "a";
+                });
+            }
 
             if (parent) {
                 let id = parent.id;
