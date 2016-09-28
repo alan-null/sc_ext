@@ -11,5 +11,9 @@
         },
         "app/common/*.js": true,
         "app/common/*.js.map": true
+    },
+    "files.trimTrailingWhitespace": true,
+    "search.exclude": {
+        "**/dist": true
     }
 }
