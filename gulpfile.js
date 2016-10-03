@@ -95,7 +95,7 @@ gulp.task('typescript_options', () => {
 });
 
 gulp.task('typescript_common', () => {
-    return typescript('app/options/providers/OptionsProvider.ts', 'app/common', 'optionsProvider.js')
+    return typescript(['app/options/providers/OptionsProvider.ts','app/options/models/LinkItem.ts'], 'app/common', 'optionsProvider.js')
 });
 
 gulp.task('typescript_all', ['cleanup_dev'], (callback) => {
@@ -233,9 +233,14 @@ gulp.task('publish_common', () => {
     ], './dist/common');
 });
 
+gulp.task('publish_popup', () => {
+    return publish([
+        'app/chrome/popup/fonts/*.*',
+    ], './dist/chrome/popup/fonts');
+});
 
 gulp.task('publish_all', (callback) => {
-    runSequence('publish_sc_ext', 'publish_chrome', 'publish_options', 'publish_options_libs', 'publish_common', callback);
+    runSequence('publish_sc_ext', 'publish_chrome', 'publish_options', 'publish_options_libs', 'publish_common', 'publish_popup', callback);
 });
 
 gulp.task('build', ['cleanup_release'], (callback) => {

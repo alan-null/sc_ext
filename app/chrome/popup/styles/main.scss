@@ -1,36 +1,80 @@
 body {
-  padding: 20px;
+  margin: 0;
 }
 
-a:link {
-    color: red;
+@font-face {
+  font-family: 'fontawesome-webfont';
+  src: url('../fonts/fontawesome-webfont.eot?22561381');
+  src: url('../fonts/fontawesome-webfont.eot?22561381#iefix')
+  format('embedded-opentype'),
+  url('../fonts/fontawesome-webfont.woff?22561381')
+  format('woff'), url('../fonts/fontawesome-webfont.ttf?22561381')
+  format('truetype'),
+  url('../fonts/fontawesome-webfont.svg?22561381#fontawesome-webfont') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
 
-a:visited {
-    color: red;
+.fa {
+  font-family: "fontawesome-webfont";
+  font-style: normal;
+  font-weight: normal;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  text-align: center;
+  font-variant: normal;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3);
+  padding-right: 5px;
 }
 
-a:hover {
-    color: black;
-}
-a:active {
-    color: black;
-}
-
-.text {
-  font-weight: 700;
-  font-size: 8vw;
+li.logo {
+  float: right !important;
+  margin-right: 10px;
+  padding-top: 2px;
 }
 
-.logo {
-  margin-top: 0px;
-  margin-bottom: 30px;
+ul.link-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 350px;
+  background-color: #f1f1f1;
+  li a {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+  }
+  li a:hover {
+    background-color: #555;
+    color: white;
+  }
 }
 
-#go-to-options{
-  float: right;  
-}
-
-#version{
-  float: left;  
+ul.header-navigation {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  li {
+    float: left;
+  }
+  li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 14px;
+    text-decoration: none;
+  }
+  li a:hover {
+    background-color: #111;
+  }
+  li.active {
+    background-color: #111;
+  }
 }

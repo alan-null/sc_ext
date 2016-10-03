@@ -3,6 +3,7 @@
 
 // Options Page
 /// <reference path='../options/providers/OptionsProvider.ts'/>
+/// <reference path='../options/models/LinkItem.ts'/>
 
 // Options
 /// <reference path='options/OptionsAutoMapper.ts'/>

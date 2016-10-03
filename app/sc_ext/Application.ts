@@ -50,6 +50,7 @@ if (SitecoreExtensions.Context.IsValid()) {
         launcher.registerProviderCommands(new Modules.SectionSwitches.SectionSwitchesCommandsProvider());
         launcher.registerProviderCommands(new Modules.LastLocation.RestoreLastLocationCommandProvider());
         launcher.registerProviderCommands(new Modules.ShortcutsRunner.Providers.SitecoreApplicationsCommandsProvider());
+        launcher.registerProviderCommands(new Modules.Launcher.Providers.UserDefinedLinksCommandsProvider(wrapper.getModuleOptions('Links')));
 
         SitecoreExtensions.HTMLHelpers.postponeAction(() => {
             return new Modules.DatabaseSelector.DatabaseSelectorCommandsProvider().getCommands().length > 0;

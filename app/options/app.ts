@@ -20,5 +20,7 @@ module SitecoreExtensions.Options {
         .controller('GoToDatasourceController', GoToDatasourceController)
         .controller('ToggleRibbonController', ToggleRibbonController)
         .controller('TreeAutoExpandController', TreeAutoExpandController)
-        .directive('navigation', NavigationDirective);
+        .directive('navigation', NavigationDirective)
+        .controller('LinksController', LinksController)
+        .service('linkStorage', LinkStorage);
 }

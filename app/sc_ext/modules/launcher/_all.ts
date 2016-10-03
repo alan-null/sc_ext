@@ -10,3 +10,4 @@
 /// <reference path='providers/ContentEditorRibbonCommandsProvider.ts'/>
 /// <reference path='providers/AdminShortcutsCommandsProvider.ts'/>
 /// <reference path='providers/LaunchpadCommandsProvider.ts'/>
+/// <reference path='providers/UserDefinedLinksCommandsProvider.ts'/>

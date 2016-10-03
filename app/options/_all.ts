@@ -30,6 +30,17 @@
 // Directives
 /// <reference path='directives/NavigationDirective.ts' />
 
+// Interfaces
+/// <reference path='interfaces/ILinkScope.ts' />
+/// <reference path='interfaces/ILinksStorage.ts' />
+
+// Models
+/// <reference path='models/LinkItem.ts' />
+
+// Models
+/// <reference path='services/LinkStorage.ts' />
+/// <reference path='controllers/LinksController.ts' />
+
 // Main
 /// <reference path='app.ts' />
 
