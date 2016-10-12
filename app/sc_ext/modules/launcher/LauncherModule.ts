@@ -9,7 +9,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         modalElement: HTMLDivElement;
         searchResultsElement: HTMLUListElement;
         searchBoxElement: HTMLInputElement;
-        selectedCommand: NodeListOf<HTMLLIElement>;
+        selectedCommand: HTMLCollection;
         launcherOptions: any;
         commands: ICommand[];
         fuzzy: Libraries.Fuzzy;
@@ -28,7 +28,9 @@ namespace SitecoreExtensions.Modules.Launcher {
                     hide: 27,
                     selectNextResult: 40,
                     selectPrevResult: 38,
-                    executeCommand: 13
+                    executeCommand: 13,
+                    selectFirstResult: 33,
+                    selectLastResult: 34
                 }
             };
 
@@ -51,7 +53,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.modalElement = <HTMLDivElement> document.getElementById('sc-ext-modal');
             this.searchBoxElement = <HTMLInputElement> document.getElementById('sc-ext-searchBox');
             this.searchResultsElement = <HTMLUListElement> document.getElementById('sc-ext-searchResults');
-            this.selectedCommand = document.getElementsByClassName('selected') as NodeListOf<HTMLLIElement>;
+            this.selectedCommand = document.getElementsByClassName('selected') as HTMLCollection;
 
             this.fuzzy.highlighting.before = "<span class='term'>";
             this.fuzzy.highlighting.after = '</span>';
@@ -161,7 +163,10 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.executeSelectedCommand(evt);
                 return;
             }
-            if (evt.keyCode == this.launcherOptions.shortcuts.selectPrevResult || evt.keyCode == this.launcherOptions.shortcuts.selectNextResult) {
+            if (evt.keyCode == this.launcherOptions.shortcuts.selectPrevResult
+                || evt.keyCode == this.launcherOptions.shortcuts.selectNextResult
+                || evt.keyCode == this.launcherOptions.shortcuts.selectLastResult
+                || evt.keyCode == this.launcherOptions.shortcuts.selectFirstResult) {
                 this.commandSelectionEvent(evt);
             } else {
                 let phrase = this.searchBoxElement.value;
@@ -217,6 +222,18 @@ namespace SitecoreExtensions.Modules.Launcher {
                 if (evt.keyCode == this.launcherOptions.shortcuts.selectNextResult && commands.length != 0) {
                     if (selected.className == 'selected' && commands[commands.length - 1] !== selected) {
                         this.changeSelectedCommand(selected.nextSibling);
+                    }
+                }
+
+                if (evt.keyCode == this.launcherOptions.shortcuts.selectLastResult && commands.length != 0) {
+                    if (selected.className == 'selected' && commands[commands.length - 1] !== selected) {
+                        this.changeSelectedCommand(commands[commands.length - 1]);
+                    }
+                }
+
+                if (evt.keyCode == this.launcherOptions.shortcuts.selectFirstResult && commands.length != 0) {
+                    if (selected.className == 'selected' && commands[0] !== selected) {
+                        this.changeSelectedCommand(commands[0]);
                     }
                 }
             }
