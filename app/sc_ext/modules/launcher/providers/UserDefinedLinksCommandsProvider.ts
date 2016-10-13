@@ -14,8 +14,10 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
 
         constructor(rawOptions: Options.ModuleOptionsBase) {
             this.commands = Array<ICommand>();
-            this.links = rawOptions.model;
-            this.createCommands();
+            if (rawOptions) {
+                this.links = rawOptions.model;
+                this.createCommands();
+            }
         }
 
         createCommands(): void {

@@ -2,6 +2,7 @@
 
 /// <reference path='models/SearchResult.ts'/>
 /// <reference path='models/SitecoreSearchResults.ts'/>
+/// <reference path='models/LauncherOptions.ts'/>
 /// <reference path='RecentCommandsStore.ts'/>
 /// <reference path='LauncherModule.ts'/>
 /// <reference path='ICommand.ts'/>

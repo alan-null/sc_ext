@@ -10,33 +10,26 @@ namespace SitecoreExtensions.Modules.Launcher {
         searchResultsElement: HTMLUListElement;
         searchBoxElement: HTMLInputElement;
         selectedCommand: HTMLCollection;
-        launcherOptions: any;
         commands: ICommand[];
         fuzzy: Libraries.Fuzzy;
         delayedSearch: any;
         resultsDelay: number = 300;
         recentCommandsStore: RecentCommandsStore;
         idParser: IdParser;
+        options: Models.LauncherOptions;
+
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
-            super(name, description, rawOptions);
+            super(name, description);
+
+            this.options = new Models.LauncherOptions(rawOptions);
+            this.mapOptions<Models.LauncherOptions>(rawOptions);
+
             this.commands = new Array<ICommand>();
-            this.launcherOptions = {
-                searchResultsCount: 8,
-                shortcuts: {
-                    show: 32,
-                    hide: 27,
-                    selectNextResult: 40,
-                    selectPrevResult: 38,
-                    executeCommand: 13,
-                    selectFirstResult: 33,
-                    selectLastResult: 34
-                }
-            };
 
             this.registerModuleCommands();
             this.fuzzy = new Libraries.Fuzzy();
-            this.recentCommandsStore = new RecentCommandsStore(this.launcherOptions.searchResultsCount);
+            this.recentCommandsStore = new RecentCommandsStore(this.options.searchResultsCount);
         }
 
         canExecute(): boolean {
@@ -110,14 +103,14 @@ namespace SitecoreExtensions.Modules.Launcher {
             document.onkeydown = (evt: KeyboardEvent) => {
                 evt = (evt != null ? evt : <KeyboardEvent> window.event);
                 switch (evt.which || evt.keyCode) {
-                    case this.launcherOptions.shortcuts.show: {
+                    case this.options.keyBindings.show: {
                         if (evt.ctrlKey) {
                             this.showLauncher();
                             break;
                         }
                         return;
                     }
-                    case this.launcherOptions.shortcuts.hide: {
+                    case this.options.keyBindings.hide: {
                         if (evt.target == this.searchBoxElement) {
                             this.hideLauncher();
                         }
@@ -159,14 +152,14 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         inputKeyUpEvent(evt: KeyboardEvent): void {
-            if (evt.keyCode == this.launcherOptions.shortcuts.executeCommand && this.selectedCommand[0]) {
+            if (evt.keyCode == this.options.keyBindings.executeCommand && this.selectedCommand[0]) {
                 this.executeSelectedCommand(evt);
                 return;
             }
-            if (evt.keyCode == this.launcherOptions.shortcuts.selectPrevResult
-                || evt.keyCode == this.launcherOptions.shortcuts.selectNextResult
-                || evt.keyCode == this.launcherOptions.shortcuts.selectLastResult
-                || evt.keyCode == this.launcherOptions.shortcuts.selectFirstResult) {
+            if (evt.keyCode == this.options.keyBindings.selectPrevResult
+                || evt.keyCode == this.options.keyBindings.selectNextResult
+                || evt.keyCode == this.options.keyBindings.selectLastResult
+                || evt.keyCode == this.options.keyBindings.selectFirstResult) {
                 this.commandSelectionEvent(evt);
             } else {
                 let phrase = this.searchBoxElement.value;
@@ -213,25 +206,25 @@ namespace SitecoreExtensions.Modules.Launcher {
                 var selected = <HTMLLIElement> this.searchResultsElement.querySelector('.selected');
                 if (selected == undefined) selected = <HTMLLIElement> this.searchResultsElement.querySelector('li');
 
-                if (evt.keyCode == this.launcherOptions.shortcuts.selectPrevResult && commands[0] != selected) {
+                if (evt.keyCode == this.options.keyBindings.selectPrevResult && commands[0] != selected) {
                     if (selected.className == 'selected') {
                         this.changeSelectedCommand(selected.previousSibling);
                     }
                 }
 
-                if (evt.keyCode == this.launcherOptions.shortcuts.selectNextResult && commands.length != 0) {
+                if (evt.keyCode == this.options.keyBindings.selectNextResult && commands.length != 0) {
                     if (selected.className == 'selected' && commands[commands.length - 1] !== selected) {
                         this.changeSelectedCommand(selected.nextSibling);
                     }
                 }
 
-                if (evt.keyCode == this.launcherOptions.shortcuts.selectLastResult && commands.length != 0) {
+                if (evt.keyCode == this.options.keyBindings.selectLastResult && commands.length != 0) {
                     if (selected.className == 'selected' && commands[commands.length - 1] !== selected) {
                         this.changeSelectedCommand(commands[commands.length - 1]);
                     }
                 }
 
-                if (evt.keyCode == this.launcherOptions.shortcuts.selectFirstResult && commands.length != 0) {
+                if (evt.keyCode == this.options.keyBindings.selectFirstResult && commands.length != 0) {
                     if (selected.className == 'selected' && commands[0] !== selected) {
                         this.changeSelectedCommand(commands[0]);
                     }
@@ -269,7 +262,7 @@ namespace SitecoreExtensions.Modules.Launcher {
                 };
             }
             results.sort(this.fuzzy.matchComparator);
-            return results.slice(0, this.launcherOptions.searchResultsCount);
+            return results.slice(0, this.options.searchResultsCount);
         }
 
         private searchItems(phrase: string) {
@@ -305,7 +298,7 @@ namespace SitecoreExtensions.Modules.Launcher {
                 }
 
                 if (results.length > 0) {
-                    for (var i = 0; i < results.length && i < this.launcherOptions.searchResultsCount; i++) {
+                    for (var i = 0; i < results.length && i < this.options.searchResultsCount; i++) {
                         var li = this.buildItemHtml(results[i]);
                         this.searchResultsElement.appendChild(li);
                     }
@@ -357,7 +350,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         private appendResults(sortedResults: SearchResult[]): void {
             this.clearResults();
             if (sortedResults.length > 0) {
-                for (var i = 0; i < sortedResults.length && i < this.launcherOptions.searchResultsCount; i++) {
+                for (var i = 0; i < sortedResults.length && i < this.options.searchResultsCount; i++) {
                     var li = this.buildCommandHtml(sortedResults[i]);
                     this.searchResultsElement.appendChild(li);
                 }
