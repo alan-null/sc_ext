@@ -1,7 +1,6 @@
 /// <reference path="../_all.ts"/>
 
 namespace SitecoreExtensions.Status {
-    declare var scExtManager: SitecoreExtensions.ExtensionsManager;
     import ISitecoreExtensionsModule = Modules.ISitecoreExtensionsModule;
     import LauncherModule = Modules.Launcher.LauncherModule;
 
@@ -16,7 +15,7 @@ namespace SitecoreExtensions.Status {
         public saveState() {
             var globalModules = window.top[this.globalModulesKey] || new Array<ISitecoreExtensionsModule>();
             for (let i = 0; i < this.globalModulesNames.length; i++) {
-                let m = scExtManager.getModuleByName(this.globalModulesNames[i]);
+                let m = SitecoreExtensions.scExtManager.getModuleByName(this.globalModulesNames[i]);
                 if (m != null && m.canExecute()) {
                     globalModules.push(m);
                 }
@@ -29,7 +28,7 @@ namespace SitecoreExtensions.Status {
         }
 
         private getAvailableCommandsCount(): string {
-            var launcher = scExtManager.getModule(LauncherModule) as LauncherModule;
+            var launcher = SitecoreExtensions.scExtManager.getModule(LauncherModule) as LauncherModule;
             var availableCommands = launcher.commands.filter((m) => { return m.canExecute(); });
             return availableCommands.length.toString();
         }
@@ -39,7 +38,7 @@ namespace SitecoreExtensions.Status {
         }
 
         private getActiveModules(): ISitecoreExtensionsModule[] {
-            var activeModules = scExtManager.modules.filter(m => { return m.canExecute(); });
+            var activeModules = SitecoreExtensions.scExtManager.modules.filter(m => { return m.canExecute(); });
             var globalModules = window.top[this.globalModulesKey] || new Array<ISitecoreExtensionsModule>();
             for (var index = 0; index < globalModules.length; index++) {
                 activeModules.push(globalModules[index]);

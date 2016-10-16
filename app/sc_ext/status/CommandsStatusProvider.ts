@@ -1,7 +1,6 @@
 /// <reference path="../_all.ts"/>
 
 namespace SitecoreExtensions.Status {
-    declare var scExtManager: SitecoreExtensions.ExtensionsManager;
     import ISitecoreExtensionsModule = Modules.ISitecoreExtensionsModule;
     import LauncherModule = Modules.Launcher.LauncherModule;
 
@@ -21,7 +20,7 @@ namespace SitecoreExtensions.Status {
         }
 
         private getLauncherModule(): LauncherModule {
-            return scExtManager.getModule(LauncherModule) as LauncherModule;
+            return SitecoreExtensions.scExtManager.getModule(LauncherModule) as LauncherModule;
         }
     }
 }

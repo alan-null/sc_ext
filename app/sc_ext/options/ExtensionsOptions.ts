@@ -4,15 +4,15 @@ namespace SitecoreExtensions.Options {
     export class ExtensionsOptions extends ModuleOptions {
         badge: {
             enabled: boolean,
-            statusType: StatusType
-        } = { enabled: true, statusType: StatusType.ModulesCount };
+            statusType: Status.StatusType
+        } = { enabled: true, statusType: Status.StatusType.ModulesCount };
 
         constructor(wrapper: any) {
             super();
             if (wrapper != null) {
                 this.enabled = wrapper.model.enabled;
                 this.badge.enabled = wrapper.model.badge.enabled;
-                this.badge.statusType = StatusType[wrapper.model.badge.statusType as string];
+                this.badge.statusType = Status.StatusType[wrapper.model.badge.statusType as string];
             };
         }
     }
