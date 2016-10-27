@@ -2,7 +2,7 @@
     <div class="col-lg-8 col-md-offset-2">
         <div ng-controller="DatabaseNameController as vm">
             <h1>{{::vm.title}}</h1>
-            <form ng-submit="vm.onSubmit()" name="vm.form" novalidate>
+            <form ng-submit="vm.onSubmit()" name="vm.form" >
                 <formly-form model="vm.model" fields="vm.fields" options="vm.options" form="vm.form">
                     <button type="submit" class="btn btn-primary submit-button" ng-disabled="vm.form.$invalid">Save</button>
                 </formly-form>
