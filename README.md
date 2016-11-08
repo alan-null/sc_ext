@@ -1,15 +1,15 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/4nag8qas7dk96nme/branch/master?svg=true)](https://ci.appveyor.com/project/alannull/sc-ext/branch/master)
 
 # Sitecore Extensions
- 
-Sitecore Extensions is a google chrome extension which provides small improvements for Sitecore CMS. 
+
+Sitecore Extensions is a google chrome/firefox extension which provides small improvements for Sitecore CMS.
 
 ## Supported versions:
-- Sitecore.NET 8.2 
-- Sitecore.NET 8.1 
-- Sitecore.NET 8.0 
-- Sitecore.NET 7.5 (partial) 
-- Sitecore.NET 7.2 (partial) 
+- Sitecore.NET 8.2
+- Sitecore.NET 8.1
+- Sitecore.NET 8.0
+- Sitecore.NET 7.5 (partial)
+- Sitecore.NET 7.2 (partial)
 - Sitecore.NET 7.1 (partial)
 - Sitecore.NET 7.0 (partial)
 
@@ -24,7 +24,7 @@ Sitecore Extensions is a google chrome extension which provides small improvemen
 ## Contributing
 If you are interested in fixing issues and contributing directly to the code base, please see the document [How to Contribute](.github/CONTRIBUTING.md)
 
-## Development 
+## Development
 Follow steps below if you want to start coding.
 #### Prerequisites
 Install **nodejs**
@@ -49,7 +49,7 @@ Build project
 ```
 gulp build
 ```
-Run watch task if you want dynamic code rebuild in the background 
+Run watch task if you want dynamic code rebuild in the background
 ```
 gulp watch
 ```
