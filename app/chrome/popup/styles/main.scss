@@ -78,3 +78,23 @@ ul.header-navigation {
     background-color: #111;
   }
 }
+
+.wrapper{
+    height: 350px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(136,136,136,0.8);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}

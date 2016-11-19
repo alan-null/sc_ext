@@ -14,7 +14,7 @@ import LinkItem = SitecoreExtensions.Options.LinkItem;
 
 class LinkItemViewModel extends LinkItem {
     constructor(linkItem: LinkItem) {
-        super(linkItem.name, linkItem.url, linkItem.mode);
+        super(linkItem.name, linkItem.url, linkItem.mode, linkItem.order);
     }
 
     public renderElement(): HTMLLIElement {
@@ -55,6 +55,7 @@ class LinkItemViewModel extends LinkItem {
 
 new SitecoreExtensions.Options.OptionsProvider().getModuleOptions("Links", (options: SitecoreExtensions.Options.IModuleOptions) => {
     let links = options.model as Array<LinkItem>;
+    links = links.sort((a: LinkItem, b: LinkItem) => a.order - b.order);
 
     let linkListNode = document.getElementById('links');
     for (let index = 0; index < links.length; index++) {

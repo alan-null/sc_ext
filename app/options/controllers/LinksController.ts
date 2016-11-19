@@ -17,6 +17,7 @@ module SitecoreExtensions.Options {
             $scope.url = '';
             $scope.mode = 'newtab';
             $scope.editedLink = null;
+            $scope.order = 0;
 
             $scope.vm = this;
 
@@ -44,11 +45,12 @@ module SitecoreExtensions.Options {
                 return;
             }
 
-            this.links.push(new LinkItem(name, url, mode));
+            this.links.push(new LinkItem(name, url, mode, 0));
 
             this.$scope.name = '';
             this.$scope.url = '';
             this.$scope.mode = 'currenttab';
+            this.$scope.order = 0;
         }
 
         editLink(linkItem: LinkItem) {

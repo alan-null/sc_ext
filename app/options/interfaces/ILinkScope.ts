@@ -6,6 +6,7 @@ module SitecoreExtensions.Options {
         name: string;
         url: string;
         mode: string;
+        order: number;
         editedLink: LinkItem;
         originalLink: LinkItem;
         reverted: boolean;

@@ -5,7 +5,8 @@ module SitecoreExtensions.Options {
         constructor(
             public name: string,
             public url: string,
-            public mode: string
+            public mode: string,
+            public order: number
         ) { }
     }
 }
