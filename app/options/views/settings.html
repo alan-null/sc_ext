@@ -2,10 +2,12 @@
 	<div class="col-lg-8 col-md-offset-2">
 		<div ng-controller="SettingsController as vm">
 			<h1>{{::vm.title}}</h1>
-
 			<h3>Reset settings to default:</h3>
+			<formly-form model="vm.model" fields="vm.fields" options="vm.options" form="vm.form"> </formly-form>
+			<br>
 			<span class="text-danger">After you click reset button, all your personal settings will be changed to default.</span>
-			<br></br>
+			</br>
+			</br>
 			<button ng-click="vm.reset()" class="btn  btn-danger">Reset</button>
 		</div>
 	</div>
