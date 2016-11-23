@@ -60,10 +60,12 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
                     let trs = doc.querySelectorAll('body>table>tbody>tr');
                     let dbNames = new Array<string>();
 
-                    for (var index = 1; index < trs.length; index++) {
+                    for (var index = trs.length - 1; index >= 0; index--) {
                         var dbRow = trs[index] as HTMLTableRowElement;
                         if (dbRow.innerText.length > 0) {
                             dbNames.push(dbRow.innerText);
+                        } else {
+                            break;
                         }
                     }
                     DatabaseNamesStore.saveDatabases(dbNames);
