@@ -24,7 +24,9 @@ namespace SitecoreExtensions {
                 return value.split('/').slice(2, 3)[0];
             }
             if (pageMode == Location.Desktop) {
-                return (document.querySelector('.scDatabaseName') as HTMLDivElement).innerText;
+                let trayElement = document.querySelector('#Tray') as HTMLDivElement;
+                let firstChild = trayElement.children[0] as HTMLElement;
+                return firstChild.innerText;
             }
             if (pageMode == Location.ExperienceEditor) {
                 var webEditRibbonIFrame = (document.querySelector('#scWebEditRibbon') as HTMLIFrameElement);
