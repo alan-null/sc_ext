@@ -80,9 +80,9 @@ ul.header-navigation {
 }
 
 .wrapper{
-    height: 350px;
+    max-height: 350px;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 
@@ -90,11 +90,8 @@ ul.header-navigation {
     width: 12px;
 }
 
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-}
-
 ::-webkit-scrollbar-thumb {
     background: rgba(136,136,136,0.8);
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    box-shadow: #000;
 }

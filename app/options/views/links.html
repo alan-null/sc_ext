@@ -42,7 +42,7 @@
 				</div>
 				<div ng-repeat="link in links | orderBy:'1*order' track by $index" ng-class="{completed: link.completed, editing: link == editedLink}">
 					<form ng-submit="vm.doneEditing(link)" class="col-lg-12">
-						<div class="col-lg-1"><input class="form-control order" ng-model="link.order"/></div>
+						<div class="col-lg-1"><input class="form-control order" ng-model="link.order" ng-model-options="{ updateOn: 'blur'}"/></div>
 						<div class="col-lg-2"><input class="form-control" ng-model="link.name" /></div>
 						<div class="col-lg-5"><input class="form-control" ng-model="link.url" /></div>
 						<div class="col-lg-2">
