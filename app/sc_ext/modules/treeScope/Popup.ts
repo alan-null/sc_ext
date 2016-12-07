@@ -29,6 +29,11 @@ namespace SitecoreExtensions.Modules.TreeScope {
 
             let value = buttonHeight * count;
             this.popupElement.style.height = (this.parseStyleInt(this.popupElement.style.height) + value) + "px";
+
+            let bottomOffset = this.popupElement.offsetParent.clientHeight - (parseInt(this.popupElement.style.height) + this.popupElement.offsetTop);
+            if (bottomOffset < 0) {
+                this.popupElement.style.top = (this.parseStyleInt(this.popupElement.style.top) + bottomOffset) + "px";
+            }
         }
 
         private getNumberOfExistingButtons(): number {
