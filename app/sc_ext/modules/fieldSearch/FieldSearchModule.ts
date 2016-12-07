@@ -96,7 +96,7 @@ namespace SitecoreExtensions.Modules.FieldSearch {
         }
 
         private toggleSections(hide: boolean): void {
-            var contentSection = document.getElementById("EditorPanel");
+            var contentSection = document.querySelector('[id^="EditorPanel"]');
             var sectionsExpanded = contentSection.getElementsByClassName("scEditorSectionCaptionExpanded");
             var sectionsCollapsed = contentSection.getElementsByClassName("scEditorSectionCaptionCollapsed");
             var panels = contentSection.getElementsByClassName("scEditorSectionPanel");

@@ -28,7 +28,7 @@ module SitecoreExtensions.Options {
             if (confirmation) {
                 chrome.storage.local.clear();
             }
-            if(this.model.resetLinks){
+            if (this.model.resetLinks) {
                 localStorage.clear();
             }
         }
