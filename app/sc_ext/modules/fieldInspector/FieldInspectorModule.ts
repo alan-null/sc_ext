@@ -264,7 +264,9 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                     var section = allSections[index] as HTMLTableDataCellElement;
 
                     if (section.className == "FieldSection") {
-                        currentSection = document.querySelector(".scEditorSections #Section_" + section.innerText.replace(" ", "_"));
+                        let sectionName = section.innerText.replace(" ", "_");
+                        let sectionID = "Section_" + sectionName;
+                        currentSection = document.querySelector(".scEditorSections [id^='" + sectionID + "']");
                         index++;
                         if (currentSection == null) {
                             break;
