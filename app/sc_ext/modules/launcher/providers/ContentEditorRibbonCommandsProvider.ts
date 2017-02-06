@@ -1,15 +1,11 @@
 /// <reference path='../../../_all.ts'/>
 
 namespace SitecoreExtensions.Modules.Launcher.Providers {
-    export class ContentEditorRibbonCommandsProvider implements ICommandsProvider {
+    export class ContentEditorRibbonCommandsProvider extends BaseCommandsProvider {
         commands: ICommand[];
 
         constructor() {
-            this.commands = Array<ICommand>();
-            this.createCommands();
-        }
-        getCommands(): ICommand[] {
-            return this.commands;
+            super();
         }
 
         createCommands(): void {
@@ -89,7 +85,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addCommand('Sync', 'Synchronize this item bucket. (Ctrl+Shift+U)', () => { scForm.invoke('item:syncbucket', 'click'); }, canExecute);
             this.addCommand('Bucketable:Current item', 'Allow the current item to be stored as an unstructured item in an item bucket.', () => { scForm.postEvent(this, 'click', 'item:bucketable'); }, canExecute);
             this.addCommand('Bucketable:Standard values', 'Allow all items based on the Sample Item to be stored as an unstructured item in a bucket.', () => { scForm.postEvent(this, 'click', 'template:bucketable'); }, canExecute);
-            this.addCommand('Set Masters', 'Assign insert options', () => { scForm.postEvent(this, 'click', 'item:setmasters'); }, canExecute);
+            this.addCommand('Set Masters (insert options)', 'Assign insert options', () => { scForm.postEvent(this, 'click', 'item:setmasters'); }, canExecute);
             this.addCommand('Reset', 'Reset to the insert options defined on the template.', () => { scForm.postEvent(this, 'click', 'masters:reset'); }, canExecute);
             this.addCommand('Change Template', 'Change to another template.', () => { scForm.postEvent(this, 'click', 'item:changetemplate'); }, canExecute);
             this.addCommand('Edit Template', 'Open the Template Editor.', () => { scForm.postEvent(this, 'click', 'shell:edittemplate'); }, canExecute);

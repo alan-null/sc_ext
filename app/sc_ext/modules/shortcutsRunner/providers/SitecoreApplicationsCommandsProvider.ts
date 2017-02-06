@@ -25,7 +25,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner.Providers {
             this.addCommand("Domain Manager", "Use the Domain Manager to create and manage domains", "{FDDE6301-442C-44B8-B934-0F1FF29413F6}");
             this.addCommand("File Explorer", "Browse your web application files.", "{9EA291E8-3E56-4335-B8B9-296F13638DAC}");
             this.addCommand("Image Editor", "Edit images", "{42D4CBE0-60A9-4A8B-81A6-9596246976C5}");
-            this.addCommand("Install Package", "Package design tool", "{DCA06E38-AF13-4299-BFA3-4D0DDCA0A9BF}");
+            this.addCommand("Install Package", "Package installation window", "{DCA06E38-AF13-4299-BFA3-4D0DDCA0A9BF}");
             this.addCommand("Keyboard Map", "You can use this functionality to assign keyboard shortcuts to an action in Sitecore, for example, Save or Open.", "{5F4DA892-CD7F-40A6-B115-31019633639D}");
             this.addCommand("Licenses", "Information about installed licenses.", "{B079E515-F945-41CC-A3C8-B94777BF4B95}");
             this.addCommand("Log Viewer", "View your applications logs", "{27EC41F4-EA84-4FC6-A996-C56FE397EC18}");
