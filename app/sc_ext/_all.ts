@@ -11,6 +11,9 @@
 /// <reference path='options/OptionsRepository.ts'/>
 /// <reference path='options/ExtensionsOptions.ts'/>
 
+// Page Objects
+/// <reference path='page objects/_all.ts'/>
+
 // Other
 /// <reference path='enums/Location.ts'/>
 /// <reference path='Context.ts'/>

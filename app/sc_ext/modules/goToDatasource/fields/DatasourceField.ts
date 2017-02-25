@@ -93,7 +93,8 @@ namespace SitecoreExtensions.Modules.GoToDatasource.Fields {
                         var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + id;
                         new Launcher.Providers.NavigationCommand(null, null, url).execute(e);
                     } else {
-                        scForm.postRequest("", "", "", "LoadItem(\"" + id + "\")");
+                        let contentTree = new PageObjects.ContentTree();
+                        contentTree.loadItem(id);
                     }
                 };
                 this.insertButton(spanGoToDatasource);

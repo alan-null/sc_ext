@@ -32,12 +32,12 @@ namespace SitecoreExtensions {
             }
         }
         /**
-         * Observe DOM element and waits until specific criteria are meet, then execute callback 
+         * Observe DOM element and waits until specific criteria are meet, then execute callback
          * @param {Element} parent element to observe changes
          * @param {Number} ticksCount determines number of miliseconds per each tick
          * @param {Number} count is a numbeer of 10ms ticks between each check
-         * @param {Function} predicate determines whether certain criteria are meet. If true callback function will be executed                 
-         * @param  {Function} callback called when predicate returns true                  
+         * @param {Function} predicate determines whether certain criteria are meet. If true callback function will be executed
+         * @param  {Function} callback called when predicate returns true
          **/
         static observe(parent, tick, ticksCount, predicate, callback) {
             if (ticksCount < 0) {
@@ -101,6 +101,10 @@ namespace SitecoreExtensions {
             } else {
                 return this.addProxyToObject(operand, functionName, proxyFn);
             }
+        }
+
+        static scrollToElement(element: HTMLElement, parent: HTMLElement) {
+            parent.scrollTop = element.offsetTop - parent.clientHeight / 2;
         }
 
         private static addProxyToFunction(fn, functionName, proxyFn) {

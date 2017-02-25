@@ -133,9 +133,9 @@ namespace SitecoreExtensions.Modules.Launcher {
             if (!this.selectedCommand[0]) return;
             var id = (<HTMLLIElement> this.selectedCommand[0]).dataset['id'];
             if (this.idParser.match(id)) {
-                console.log("Navigate to item:" + id);
                 if (Context.Location() == Enums.Location.ContentEditor) {
-                    scForm.postRequest("", "", "", "LoadItem(\"" + id + "\")");
+                    let contentTree = new PageObjects.ContentTree();
+                    contentTree.loadItem(id);
                 } else {
                     new Providers.LaunchpadShortcutCommand("", "", "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + id).execute(evt);
                 }

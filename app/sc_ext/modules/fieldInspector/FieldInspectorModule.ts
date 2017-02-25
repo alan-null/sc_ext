@@ -137,7 +137,8 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
                             } else {
                                 this.getFieldID(this.getActiveNodeID(), sectionElement.innerText, j, (fieldID) => {
-                                    scForm.postRequest("", "", "", "LoadItem(\"" + fieldID + "\")");
+                                    let contentTree = new PageObjects.ContentTree();
+                                    contentTree.loadItem(fieldID);
                                 });
                             }
 

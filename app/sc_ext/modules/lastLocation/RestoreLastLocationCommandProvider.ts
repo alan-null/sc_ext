@@ -12,7 +12,8 @@ namespace SitecoreExtensions.Modules.LastLocation {
                 execute: () => {
                     var lastItem = LastLocationStore.loadLastItemId();
                     if (lastItem) {
-                        scForm.postRequest("", "", "", "LoadItem(\"" + lastItem + "\")");
+                        let contentTree = new PageObjects.ContentTree();
+                        contentTree.loadItem(lastItem);
                     }
                 },
                 canExecute: () => { return Context.Location() == Enums.Location.ContentEditor; }
