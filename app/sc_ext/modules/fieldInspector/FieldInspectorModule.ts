@@ -123,20 +123,21 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                 for (let j = 0; j < fieldLabels.length; j++) {
                     var child = fieldLabels[j] as HTMLTableRowElement;
                     if (child.innerText == label.innerText) {
-                        label.dataset["sectionid"] = sectionElement.innerText + "-" + j;
+                        let sectionName = this.getSectionName(sectionElement);
+                        label.dataset["sectionid"] = sectionName + "-" + j;
 
                         let spanGoToField = HTMLHelpers.createElement("a", { class: "sc-ext-gotofield scContentButton" }) as HTMLSpanElement;
                         spanGoToField.innerText = "Go to field";
                         spanGoToField.onclick = (e) => {
                             this.ensureFieldsInitialized();
                             if (e.ctrlKey) {
-                                this.getFieldID(this.getActiveNodeID(), sectionElement.innerText, j, (fieldID) => {
+                                this.getFieldID(this.getActiveNodeID(), sectionName, j, (fieldID) => {
                                     var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + fieldID;
                                     new Launcher.Providers.NavigationCommand(null, null, url).execute(e);
                                 });
 
                             } else {
-                                this.getFieldID(this.getActiveNodeID(), sectionElement.innerText, j, (fieldID) => {
+                                this.getFieldID(this.getActiveNodeID(), sectionName, j, (fieldID) => {
                                     let contentTree = new PageObjects.ContentTree();
                                     contentTree.loadItem(fieldID);
                                 });
@@ -194,7 +195,8 @@ namespace SitecoreExtensions.Modules.FieldInspector {
         private writeDownFieldName(e, sectionElement, j) {
             let elemenet = HTMLHelpers.getElement(e.srcElement, (e) => { return e.dataset['fieldid'] != null; }) as HTMLDivElement;
             let fieldID = elemenet.dataset['fieldid'];
-            this.getFieldName(fieldID, sectionElement.innerText, j, (fieldName) => {
+            let sectionName = this.getSectionName(sectionElement);
+            this.getFieldName(fieldID, sectionName, j, (fieldName) => {
                 let node = this.getFirstElementWithClass(e.srcElement, this.classFieldNameSpan) as HTMLDivElement;
                 let currentElement = new FieldNameElement(node);
                 currentElement.Initialize(fieldName);
@@ -261,7 +263,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
                 let allSections = doc.querySelector(".FieldsScroller").querySelectorAll("td.FieldSection,td.FieldLabel .ItemPathTemplate");
                 let currentSection;
-                for (var index = 0; index < allSections.length; ) {
+                for (var index = 0; index < allSections.length;) {
                     var section = allSections[index] as HTMLTableDataCellElement;
 
                     if (section.className == "FieldSection") {
@@ -281,9 +283,10 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                     let fieldIndex = 0;
 
                     let getSectionID = (tempIndex: number): string => {
-                        let id = currentSection.innerText + "-" + tempIndex;
+                        let sectionName = this.getSectionName(currentSection);
+                        let id = sectionName + "-" + tempIndex;
                         while (document.querySelector("[data-sectionid='" + id + "']:not([data-fieldid])") == null) {
-                            id = currentSection.innerText + "-" + (++tempIndex);
+                            id = sectionName + "-" + (++tempIndex);
                         }
                         return id;
                     };
@@ -302,6 +305,10 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                 }
             });
             request.execute();
+        }
+
+        private getSectionName(section: HTMLElement): string {
+            return section.onclick.toString().match(/,(.)*(?='\))/)[0].substring(2);
         }
 
         private getFirstElementWithClass(parent: any, className: string): Node {
