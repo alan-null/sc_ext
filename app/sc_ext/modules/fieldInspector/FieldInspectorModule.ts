@@ -87,6 +87,8 @@ namespace SitecoreExtensions.Modules.FieldInspector {
         initialize(): void {
             window.addEventListener('load', () => this.refreshControls());
             this.addTreeNodeHandlers('scContentTree');
+            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshControls(); });
+            HTMLHelpers.addProxy(scForm, 'invoke', () => { this.refreshControls(); });
             this.database = SitecoreExtensions.Context.Database();
             this.lang = SitecoreExtensions.Context.Language();
             this.idParser = new IdParser();
