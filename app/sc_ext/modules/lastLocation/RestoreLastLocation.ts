@@ -13,10 +13,17 @@ namespace SitecoreExtensions.Modules.LastLocation {
 
         initialize(): void {
             this.addTreeNodeHandlers('scContentTree');
+            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.saveCurrentLocationAfterChange(); });
+            HTMLHelpers.addProxy(scForm, 'invoke', () => { this.saveCurrentLocationAfterChange(); });
         }
 
-        updateLastLocation(args: any): void {
-            var parent = args.element();
+        private getElement(args: any): Element {
+            if (args["element"] != null) {
+                return args.element();
+            }
+        }
+
+        private updateLastLocation(parent: Element): void {
             if ((parent as HTMLDivElement).classList.contains("scContentTreeNode")) {
                 parent = parent.querySelector("a");
             } else {
@@ -32,13 +39,26 @@ namespace SitecoreExtensions.Modules.LastLocation {
             }
         }
 
-        addTreeNodeHandlers(className: string): void {
+        private addTreeNodeHandlers(className: string): void {
             var nodes = document.getElementsByClassName(className);
             for (var i = 0; i < nodes.length; i++) {
                 nodes[i].addEventListener('click', (evt) => {
-                    this.updateLastLocation(evt);
+                    let element = this.getElement(evt);
+                    this.updateLastLocation(element);
                 });
             }
+        }
+
+        private saveCurrentLocationAfterChange() {
+            let contentTree = new PageObjects.ContentTree();
+            let previousId = contentTree.getActiveTreeNode().id;
+
+            HTMLHelpers.postponeAction(_ => {
+                let currentId = contentTree.getActiveTreeNode().id;
+                return currentId.length > 0 && currentId !== previousId;
+            }, _ => {
+                this.updateLastLocation(document.querySelector(".scContentTreeNodeActive"));
+            }, 100, 10);
         }
     }
 }
