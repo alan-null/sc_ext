@@ -107,11 +107,21 @@ namespace SitecoreExtensions {
             parent.scrollTop = element.offsetTop - parent.clientHeight / 2;
         }
 
+        private static logError(error: any) {
+            console.log("An error occured in the proxy function.");
+            console.log("Please report it here: https://github.com/alan-null/sc_ext/issues/new");
+            console.log(error);
+        }
+
         private static addProxyToFunction(fn, functionName, proxyFn) {
             var proxied = fn.prototype[functionName];
             fn.prototype[functionName] = function () {
                 var result = proxied.apply(this, arguments);
-                proxyFn(arguments);
+                try {
+                    proxyFn(arguments);
+                } catch (error) {
+                    HTMLHelpers.logError(error);
+                }
                 return result;
             };
         }
@@ -120,7 +130,11 @@ namespace SitecoreExtensions {
             var proxied = obj[functionName];
             obj[functionName] = function () {
                 var result = proxied.apply(this, arguments);
-                proxyFn(arguments);
+                try {
+                    proxyFn(arguments);
+                } catch (error) {
+                    HTMLHelpers.logError(error);
+                }
                 return result;
             };
         }
