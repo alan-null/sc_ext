@@ -26,6 +26,7 @@
 /// <reference path='controllers/DatabaseSelectorController.ts' />
 /// <reference path='controllers/GoToDatasourceController.ts' />
 /// <reference path='controllers/TreeAutoExpandController.ts' />
+/// <reference path='controllers/ScrollToItemController.ts' />
 
 // Directives
 /// <reference path='directives/NavigationDirective.ts' />

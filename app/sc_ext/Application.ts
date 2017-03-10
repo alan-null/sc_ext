@@ -26,6 +26,7 @@ namespace SitecoreExtensions {
             var databaseSelector = new Modules.DatabaseSelector.DatabaseSelectorModule('Database Selector', 'Change your context database', wrapper.getModuleOptions('Database Selector'));
             var goToDatasource = new Modules.GoToDatasource.GoToDatasourceModule('Go To Datasource', 'Navigate to a datasource item.', wrapper.getModuleOptions('Go To Datasource'));
             var treeAutoExpand = new Modules.TreeAutoExpand.TreeAutoExpandModule('Tree Auto Expand', 'Automatically expand tree deeply if there is only one child.', wrapper.getModuleOptions('Tree Auto Expand'));
+            var scrollToItem = new Modules.ScrollToItem.ScrollToItemModule('Scroll To Item', 'Scrolls to the active tree node in a Content Editor', wrapper.getModuleOptions('Scroll To Item'));
 
 
             scExtManager.addModule(sectionSwitchesModule);
@@ -41,6 +42,7 @@ namespace SitecoreExtensions {
             scExtManager.addModule(databaseSelector);
             scExtManager.addModule(goToDatasource);
             scExtManager.addModule(treeAutoExpand);
+            scExtManager.addModule(scrollToItem);
 
             scExtManager.initModules();
 

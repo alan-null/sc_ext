@@ -51,14 +51,9 @@ namespace SitecoreExtensions.Modules.LastLocation {
 
         private saveCurrentLocationAfterChange() {
             let contentTree = new PageObjects.ContentTree();
-            let previousId = contentTree.getActiveTreeNode().id;
-
-            HTMLHelpers.postponeAction(_ => {
-                let currentId = contentTree.getActiveTreeNode().id;
-                return currentId.length > 0 && currentId !== previousId;
-            }, _ => {
-                this.updateLastLocation(document.querySelector(".scContentTreeNodeActive"));
-            }, 100, 10);
+            contentTree.onActiveTreeNodeChanged(_ => {
+                    this.updateLastLocation(document.querySelector(".scContentTreeNodeActive"));
+            });
         }
     }
 }

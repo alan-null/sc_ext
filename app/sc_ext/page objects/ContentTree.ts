@@ -30,5 +30,19 @@ namespace SitecoreExtensions.PageObjects {
             let element = this.getActiveTreeNode();
             HTMLHelpers.scrollToElement(element, this.element);
         }
+
+        public onActiveTreeNodeChanged(callback: Function) {
+            let previousId = this.getActiveTreeNode().id;
+            HTMLHelpers.postponeAction(_ => {
+                let activeTreeNode = this.getActiveTreeNode();
+                if (activeTreeNode && activeTreeNode.id) {
+                    let currentId = activeTreeNode.id;
+                    return currentId.length > 0 && currentId !== previousId;
+                }
+                return false;
+            }, _ => {
+                callback();
+            }, 100, 20);
+        }
     }
 }
