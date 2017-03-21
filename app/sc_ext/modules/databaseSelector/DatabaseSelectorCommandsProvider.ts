@@ -48,6 +48,9 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
                                 let location = window.top.location;
                                 new Launcher.Providers.NavigationCommand(null, null, location.href).execute(e);
                             }
+
+                            let args = new Events.DatabaseChangeEventArgs(dbs[index]);
+                            Events.EventsDispatcher.Dispatch(args);
                         },
                         canExecute: () => { return true; }
                     };

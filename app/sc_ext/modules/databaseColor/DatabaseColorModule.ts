@@ -1,6 +1,8 @@
 /// <reference path='../../_all.ts'/>
 
 namespace SitecoreExtensions.Modules.DatabaseColor {
+    import DatabaseChangeEventArgs = Events.DatabaseChangeEventArgs;
+
     export class DatabaseColorModule extends ModuleBase implements ISitecoreExtensionsModule {
         coloursMapping: Types.IDictionary;
         options: DatabaseColorOptions;
@@ -23,12 +25,20 @@ namespace SitecoreExtensions.Modules.DatabaseColor {
             if (dbName != null) {
                 this.changeheaderColor(dbName.toUpperCase());
             }
+
+            new Events.EventHandler("onDatabaseChange", (args: DatabaseChangeEventArgs) => { this.onDatabaseChange(args); });
+        }
+
+        onDatabaseChange(args: DatabaseChangeEventArgs) {
+            this.changeheaderColor(args.databaseName.toUpperCase());
         }
 
         changeheaderColor(dbName: string): void {
+            let header = document.getElementsByClassName('sc-globalHeader-content')[0];
             if (this.coloursMapping.containsKey(dbName)) {
-                var header = document.getElementsByClassName('sc-globalHeader-content')[0];
                 header.setAttribute("style", "background-color: " + this.coloursMapping[dbName] + ";");
+            } else {
+                header.removeAttribute("style");
             }
         }
     }
