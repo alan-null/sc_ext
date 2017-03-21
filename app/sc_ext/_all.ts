@@ -23,6 +23,9 @@
 /// <reference path='types/Dictionary.ts'/>
 /// <reference path='types/IDictionary.ts'/>
 
+///Events
+/// <reference path='events/_all.ts'/>
+
 // Http
 /// <reference path='http/Method.ts'/>
 /// <reference path='http/HttpRequest.ts'/>
