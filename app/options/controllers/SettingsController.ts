@@ -19,6 +19,14 @@ module SitecoreExtensions.Options {
                     templateOptions: {
                         label: 'Reset links'
                     },
+                },
+                {
+                    key: 'resetDbColorsMapping',
+                    type: 'checkbox',
+                    defaultValue: true,
+                    templateOptions: {
+                        label: 'Reset database colors mapping'
+                    },
                 }
             ];
         }
@@ -29,7 +37,10 @@ module SitecoreExtensions.Options {
                 chrome.storage.local.clear();
             }
             if (this.model.resetLinks) {
-                localStorage.clear();
+                localStorage.removeItem('Links');
+            }
+            if (this.model.resetDbColorsMapping) {
+                localStorage.removeItem('Database Colour');
             }
         }
     }

@@ -7,7 +7,7 @@ module SitecoreExtensions.Options {
         name: string;
         model: any;
         optionsProvider: OptionsProvider;
-        constructor(private $scope: any, formlyVersion: string, name: string) {
+        constructor(public $scope: any, formlyVersion: string, name: string) {
             super();
             this.name = name;
             this.optionsProvider = new OptionsProvider();

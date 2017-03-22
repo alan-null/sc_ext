@@ -11,9 +11,16 @@ namespace SitecoreExtensions.Modules.DatabaseColor {
             super(name, description);
             this.options = new DatabaseColorOptions();
             this.mapOptions<DatabaseColorOptions>(rawOptions);
-            this.coloursMapping = new Types.Dictionary([
-                { key: 'WEB', value: '#DC291E' },
-            ]);
+            this.coloursMapping = new Types.Dictionary([]);
+
+            this.options.colors.forEach((dc: Options.DatabaseColorMapping) => {
+                let name = dc.name.toUpperCase();
+                let color = dc.color;
+                if (!color.startsWith("#")) {
+                    color = '#' + color;
+                }
+                this.coloursMapping.add(name, color);
+            });
         }
 
         canExecute(): boolean {

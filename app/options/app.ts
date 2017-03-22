@@ -23,5 +23,6 @@ module SitecoreExtensions.Options {
         .controller('ScrollToItemController', ScrollToItemController)
         .directive('navigation', NavigationDirective)
         .controller('LinksController', LinksController)
-        .service('linkStorage', LinkStorage);
+        .service('linkStorage', LinkStorage)
+        .service('databaseColorsStorage', DatabasesColorsStorage);
 }

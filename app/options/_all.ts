@@ -34,12 +34,15 @@
 // Interfaces
 /// <reference path='interfaces/ILinkScope.ts' />
 /// <reference path='interfaces/ILinksStorage.ts' />
+/// <reference path='interfaces/IDatabasesColorsStorage.ts' />
 
 // Models
 /// <reference path='models/LinkItem.ts' />
+/// <reference path='models/DatabaseColorMapping.ts' />
 
 // Models
 /// <reference path='services/LinkStorage.ts' />
+/// <reference path='services/DatabasesColorsStorage.ts' />
 /// <reference path='controllers/LinksController.ts' />
 
 // Main
