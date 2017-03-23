@@ -9,7 +9,7 @@ module SitecoreExtensions.Libraries {
 
         matchComparator = (m1, m2) => {
             return (m2.score - m1.score != 0) ? m2.score - m1.score : m1.term.length - m2.term.length;
-        };
+        }
 
         getScore(term, query) {
             var max = this.calcFuzzyScore(term, query);

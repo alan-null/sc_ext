@@ -76,13 +76,7 @@ interface MediaTrackSupportedConstraints {
 }
 
 interface MediaStream extends EventTarget {
-    id: string;
-    active: boolean;
 
-    onactive: EventListener;
-    oninactive: EventListener;
-    onaddtrack: (event: MediaStreamTrackEvent) => any;
-    onremovetrack: (event: MediaStreamTrackEvent) => any;
 
     clone(): MediaStream;
     stop(): void;
@@ -98,27 +92,16 @@ interface MediaStream extends EventTarget {
 }
 
 interface MediaStreamTrackEvent extends Event {
-    track: MediaStreamTrack;
 }
 
 declare enum MediaStreamTrackState {
-	"live",
+    "live",
     "ended"
 }
 
 interface MediaStreamTrack extends EventTarget {
-    id: string;
-    kind: string;
-    label: string;
     enabled: boolean;
-    muted: boolean;
-    remote: boolean;
-    readyState: MediaStreamTrackState;
 
-    onmute: EventListener;
-    onunmute: EventListener;
-    onended: EventListener;
-    onoverconstrained: EventListener;
 
     clone(): MediaStreamTrack;
 
@@ -131,48 +114,22 @@ interface MediaStreamTrack extends EventTarget {
 }
 
 interface MediaTrackCapabilities {
-    width: number | W3C.LongRange;
-    height: number | W3C.LongRange;
-    aspectRatio: number | W3C.DoubleRange;
-    frameRate: number | W3C.DoubleRange;
-    facingMode: string;
-    volume: number | W3C.DoubleRange;
-    sampleRate: number | W3C.LongRange;
-    sampleSize: number | W3C.LongRange;
-    echoCancellation: boolean[];
     latency: number | W3C.DoubleRange;
-    deviceId: string;
-    groupId: string;
 }
 
 interface MediaTrackSettings {
-    width: number;
-    height: number;
-    aspectRatio: number;
-    frameRate: number;
-    facingMode: string;
-    volume: number;
-    sampleRate: number;
-    sampleSize: number;
-    echoCancellation: boolean;
     latency: number;
-    deviceId: string;
-    groupId: string;
 }
 
 interface MediaStreamError {
-    name: string;
-    message: string;
-    constraintName: string;
 }
 
 interface NavigatorGetUserMedia {
     (constraints: MediaStreamConstraints,
-     successCallback: (stream: MediaStream) => void,
-     errorCallback: (error: MediaStreamError) => void): void;
+        successCallback: (stream: MediaStream) => void,
+        errorCallback: (error: MediaStreamError) => void): void;
 }
 
-// to use with adapter.js, see: https://github.com/webrtc/adapter
 declare var getUserMedia: NavigatorGetUserMedia;
 
 interface Navigator {
@@ -195,8 +152,4 @@ interface MediaDevices {
 }
 
 interface MediaDeviceInfo {
-    label: string;
-    deviceId: string;
-    kind: string;
-    groupId: string;
 }

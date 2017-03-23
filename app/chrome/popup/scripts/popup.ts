@@ -20,7 +20,7 @@ class LinkItemViewModel extends LinkItem {
     public renderElement(): HTMLLIElement {
         let elLi = document.createElement("li") as HTMLLIElement;
 
-        let elIcon = document.createElement('i') as HTMLPhraseElement;
+        let elIcon = document.createElement('i');
         elIcon.innerHTML = '&#xe800;';
         elIcon.setAttribute("class", "fa icon-link");
 

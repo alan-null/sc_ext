@@ -45,6 +45,4 @@
 /// <reference path='services/DatabasesColorsStorage.ts' />
 /// <reference path='controllers/LinksController.ts' />
 
-// Main
-/// <reference path='app.ts' />
 

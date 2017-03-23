@@ -2,7 +2,6 @@
 
 namespace SitecoreExtensions.Options {
     export class OptionsRepository {
-        options: OptionsWrapper;
         constructor(getOptionsCallback: any) {
             window.addEventListener('message', function (event) {
                 if (event.data.sc_ext_enabled) {
@@ -13,7 +12,6 @@ namespace SitecoreExtensions.Options {
                         } else {
                             optionsWrapper = new OptionsWrapper(null);
                         }
-                        this.options = optionsWrapper;
                         getOptionsCallback(optionsWrapper);
                     }
                 }

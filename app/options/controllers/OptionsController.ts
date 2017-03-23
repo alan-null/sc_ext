@@ -11,4 +11,4 @@ module SitecoreExtensions.Options {
             $scope.vm.content = "views/general.html";
         }
     }
-}    
+}

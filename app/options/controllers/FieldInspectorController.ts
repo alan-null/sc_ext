@@ -21,4 +21,4 @@ module SitecoreExtensions.Options {
             ];
         }
     }
-}    
+}

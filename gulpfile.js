@@ -53,7 +53,7 @@ function typescript(src, dest, concatFile) {
         }))
         .pipe(tslint.report({ emitError: false }))
         .pipe(sourcemaps.init())
-        .pipe(ts({ sortOutput: true }));
+        .pipe(ts({ outFile: concatFile }));
 
     concatFile = (concatFile || '|');
     return tsResult.js
