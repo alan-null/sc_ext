@@ -37,9 +37,14 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
                 var data = e.currentTarget.responseText;
                 var parser = new DOMParser();
                 var doc = parser.parseFromString(data, "text/html");
-                var __CSRFTOKEN = (doc.querySelector('#__CSRFTOKEN') as HTMLInputElement).attributes['value'].value;
-                var __VIEWSTATE = (doc.querySelector('#__VIEWSTATE') as HTMLInputElement).attributes['value'].value;
-                callback(new Token(__CSRFTOKEN, __VIEWSTATE));
+
+                let csrfElement = (doc.querySelector('#__CSRFTOKEN') as HTMLInputElement);
+                let viewstateElement = (doc.querySelector('#__VIEWSTATE') as HTMLInputElement);
+                if (csrfElement && viewstateElement) {
+                    var __CSRFTOKEN = csrfElement.attributes['value'].value;
+                    var __VIEWSTATE = viewstateElement.attributes['value'].value;
+                    callback(new Token(__CSRFTOKEN, __VIEWSTATE));
+                }
             }).execute();
         }
 

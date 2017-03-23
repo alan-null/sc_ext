@@ -8,12 +8,18 @@ namespace SitecoreExtensions {
         itemID: string;
         constructor() { }
 
-        static IsValid(): boolean {
-            return window.location.pathname.indexOf('/sitecore/') == 0 || Context.Location() == Location.ExperienceEditor;
+        static IsValid(): Promise<boolean> {
+            return new Promise<boolean>(async returnValue => {
+                let validUrl = window.location.pathname.indexOf('/sitecore/') == 0;
+                let isEE = Context.Location() == Location.ExperienceEditor;
+                let contextService = new ContextService();
+                let isScInstance = await contextService.IsSitecoreInstance();
+                returnValue((validUrl && isScInstance) || isEE);
+            });
         }
 
         static GetCurrentItem(): string {
-            var element = <HTMLInputElement> document.querySelector('#__CurrentItem');
+            var element = <HTMLInputElement>document.querySelector('#__CurrentItem');
             return element.value;
         }
 
@@ -41,7 +47,7 @@ namespace SitecoreExtensions {
                     return peBar.attributes['data-sc-database'].value;
                 }
             } else {
-                var contendDb = <HTMLMetaElement> document.querySelector('[data-sc-name=sitecoreContentDatabase]');
+                var contendDb = <HTMLMetaElement>document.querySelector('[data-sc-name=sitecoreContentDatabase]');
                 if (contendDb != null) {
                     if (contendDb.attributes['data-sc-content'] != undefined) {
                         return contendDb.attributes['data-sc-content'].value;
@@ -78,7 +84,7 @@ namespace SitecoreExtensions {
                     return peBar.attributes['data-sc-content'].value;
                 }
             } else {
-                var contendDb = <HTMLMetaElement> document.querySelector('[data-sc-name=sitecoreLanguage]');
+                var contendDb = <HTMLMetaElement>document.querySelector('[data-sc-name=sitecoreLanguage]');
                 if (contendDb != null) {
                     if (contendDb.attributes['data-sc-content'] != undefined) {
                         return contendDb.attributes['data-sc-content'].value;
@@ -110,6 +116,38 @@ namespace SitecoreExtensions {
                 return Location.ExperienceEditor;
             }
             return Location.Unknown;
+        }
+    }
+
+    export class ContextService {
+        private localStorageKey: string = "sc_ext::context_service";
+        private validationUrl: string = null;
+
+        constructor() {
+            try {
+                this.validationUrl = window.top.location.origin + "/sitecore/images/blank.gif";
+            } catch (error) {
+                // cross-origin frame detected
+            }
+        }
+
+        public IsSitecoreInstance(): Promise<boolean> {
+            return new Promise<boolean>(returnValue => {
+                if (this.validationUrl == null) {
+                    returnValue(false);
+                } else {
+                    let storageValue = localStorage.getItem(this.localStorageKey);
+                    if (storageValue == null) {
+                        new Http.HttpRequest(this.validationUrl, Http.Method.GET, (e) => {
+                            let valid = e.currentTarget.status == 200 && e.currentTarget.response.length == 42 && e.currentTarget.response.startsWith("GIF");
+                            localStorage.setItem(this.localStorageKey, valid.toString());
+                            returnValue(valid);
+                        }).execute();
+                    } else {
+                        returnValue(storageValue == "true");
+                    }
+                }
+            });
         }
     }
 }

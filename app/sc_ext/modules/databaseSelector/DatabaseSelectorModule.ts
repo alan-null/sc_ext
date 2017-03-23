@@ -68,7 +68,9 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
                             break;
                         }
                     }
-                    DatabaseNamesStore.saveDatabases(dbNames);
+                    if (dbNames.length > 0) {
+                        DatabaseNamesStore.saveDatabases(dbNames);
+                    }
                 }
             });
         }
