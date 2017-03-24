@@ -18,6 +18,7 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
             this.addTreeNodeHandlers('scContentTree');
             HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshButtons(); });
             HTMLHelpers.addProxy(scForm, 'invoke', () => { this.refreshButtons(); });
+            HTMLHelpers.addProxy(scForm, 'resume', () => { this.refreshButtons(); });
         }
 
         closeOpenedSections() {

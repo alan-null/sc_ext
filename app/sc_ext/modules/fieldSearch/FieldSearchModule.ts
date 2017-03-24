@@ -21,6 +21,7 @@ namespace SitecoreExtensions.Modules.FieldSearch {
             this.addTreeNodeHandlers('scContentTree');
             HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshSearchField(); });
             HTMLHelpers.addProxy(scForm, 'invoke', () => { this.refreshSearchField(); });
+            HTMLHelpers.addProxy(scForm, 'resume', () => { this.refreshSearchField(); });
         }
 
         doSearch(e: KeyboardEvent): void {

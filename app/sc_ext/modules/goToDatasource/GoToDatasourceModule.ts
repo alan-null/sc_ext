@@ -17,6 +17,7 @@ namespace SitecoreExtensions.Modules.GoToDatasource {
             this.addTreeNodeHandlers('scContentTree');
             HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshFields(); });
             HTMLHelpers.addProxy(scForm, 'invoke', () => this.refreshFields());
+            HTMLHelpers.addProxy(scForm, 'resume', () => this.refreshFields());
         }
 
         private getFields(fieldSelector: string, objectInitializer: Fields.FieldInitializer) {
