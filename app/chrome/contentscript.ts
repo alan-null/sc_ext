@@ -1,10 +1,59 @@
 /// <reference path='../../typings/chrome/chrome.d.ts'/>
 /// <reference path='../../typings/es6-shim/es6-shim.d.ts'/>
 /// <reference path='../options/providers/OptionsProvider.ts'/>
-
+/// <reference path='../common/_all.ts'/>
 
 'use strict';
+
 window.addEventListener('message', function (event) {
+    var Communication = SitecoreExtensions.Common.Communication;
+    var OptionsProvider = SitecoreExtensions.Options.OptionsProvider;
+
+    let parser = new Communication.DataParser();
+    let instance = parser.tryParse(event.data);
+
+    if (instance instanceof Communication.GetOptionsRequestMessage) {
+        let response = new Communication.GetOptionsResponseMessage();
+        if (chrome.storage) {
+            var provider = new OptionsProvider();
+            provider.getOptions((result: SitecoreExtensions.Options.OptionsWrapper) => {
+                response.optionsWrapper = result;
+                window.postMessage(response, '*');
+            });
+        } else {
+            window.postMessage(response, '*');
+        }
+    }
+
+    if (instance instanceof Communication.GetModuleOptionsRequestMessage) {
+        let response = new Communication.GetModuleOptionsResponseMessage();
+        if (chrome.storage) {
+            let moduleName = instance.moduleName;
+            var provider = new OptionsProvider();
+            provider.getModuleOptions(moduleName, (result: SitecoreExtensions.Options.IModuleOptions) => {
+                response.moduleOptions = result;
+                window.postMessage(response, '*');
+            });
+        } else {
+            window.postMessage(response, '*');
+        }
+    }
+
+    if (instance instanceof Communication.SetOptionsRequestMessage) {
+        if (chrome.storage) {
+            var provider = new OptionsProvider();
+            provider.setOptions(instance.options, () => { });
+        }
+    }
+
+    if (instance instanceof Communication.SetModuleOptionsRequestMessage) {
+        if (chrome.storage) {
+            let moduleOptions = instance.moduleOptions;
+            var provider = new OptionsProvider();
+            provider.setModuleOptions(moduleOptions);
+        }
+    }
+
     if (event.data.sc_ext_enabled) {
         if (event.data.sc_ext_seticon_request) {
             chrome.runtime.sendMessage({
@@ -12,30 +61,11 @@ window.addEventListener('message', function (event) {
                 modulesCount: event.data.sc_ext_badgetext
             });
         }
-
-        if (event.data.sc_ext_options_request) {
-            if (chrome.storage) {
-                var provider = new SitecoreExtensions.Options.OptionsProvider();
-                provider.getOptions((optionsWrapper) => {
-                    window.postMessage({
-                        sc_ext_enabled: true,
-                        sc_ext_options_response: true,
-                        payload: optionsWrapper,
-                    }, '*');
-                });
-            } else {
-                window.postMessage({
-                    sc_ext_enabled: true,
-                    sc_ext_options_response: true,
-                    payload: null,
-                }, '*');
-            }
-        }
     }
 });
 
 function createScriptElement(src: string): HTMLScriptElement {
-    var script = <HTMLScriptElement> document.createElement("script");
+    var script = <HTMLScriptElement>document.createElement("script");
     script.src = chrome.extension.getURL(src);
     return script;
 }

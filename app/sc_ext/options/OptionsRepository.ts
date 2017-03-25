@@ -1,28 +1,49 @@
 /// <reference path='../_all.ts'/>
 
+import Communication = SitecoreExtensions.Common.Communication;
+
 namespace SitecoreExtensions.Options {
     export class OptionsRepository {
-        constructor(getOptionsCallback: any) {
-            window.addEventListener('message', function (event) {
-                if (event.data.sc_ext_enabled) {
-                    if (event.data.sc_ext_options_response) {
-                        var optionsWrapper = null;
-                        if (event.data.payload) {
-                            optionsWrapper = OptionsWrapper.create(event.data.payload);
-                        } else {
-                            optionsWrapper = new OptionsWrapper(null);
-                        }
-                        getOptionsCallback(optionsWrapper);
+        constructor(getOptionsCallback?: any) {
+        }
+
+        getOptions(): Promise<OptionsWrapper> {
+            return new Promise<OptionsWrapper>(returnValue => {
+                window.addEventListener('message', function (event) {
+                    let validator = new Communication.DataParser();
+                    let instance = validator.tryParse<Communication.GetOptionsResponseMessage>(event.data);
+                    if (instance instanceof Communication.GetOptionsResponseMessage) {
+                        returnValue(instance.optionsWrapper);
                     }
-                }
+                });
+                let message = new Communication.GetOptionsRequestMessage();
+                window.postMessage(message, '*');
             });
         }
 
-        loadOptions() {
-            window.postMessage({
-                sc_ext_enabled: true,
-                sc_ext_options_request: true
-            }, '*');
+        getModuleOptions(moduleName: string): Promise<ModuleOptionsBase> {
+            return new Promise<ModuleOptionsBase>(returnValue => {
+                window.addEventListener('message', function (event) {
+                    let validator = new Communication.DataParser();
+                    let instance = validator.tryParse<Communication.GetModuleOptionsResponseMessage>(event.data);
+                    if (instance instanceof Communication.GetModuleOptionsResponseMessage) {
+                        returnValue(instance.moduleOptions);
+                    }
+                });
+                let message = new Communication.GetModuleOptionsRequestMessage(moduleName);
+                window.postMessage(message, '*');
+            });
+        }
+
+
+        setOptions(modulesOptions: IModuleOptions[]): void {
+            let message = new Communication.SetOptionsRequestMessage(modulesOptions);
+            window.postMessage(message, '*');
+        }
+
+        setModuleOptions(moduleOptions: IModuleOptions): void {
+            let message = new Communication.SetModuleOptionsRequestMessage(moduleOptions);
+            window.postMessage(message, '*');
         }
     }
 }

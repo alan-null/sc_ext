@@ -95,7 +95,7 @@ gulp.task('typescript_options', () => {
 });
 
 gulp.task('typescript_common', () => {
-    return typescript(['app/options/providers/OptionsProvider.ts','app/options/models/LinkItem.ts'], 'app/common', 'optionsProvider.js')
+    return typescript(['app/options/providers/OptionsProvider.ts', 'app/options/models/LinkItem.ts', 'app/common/_all.ts'], 'app/common', 'optionsProvider.js')
 });
 
 gulp.task('typescript_all', ['cleanup_dev'], (callback) => {
@@ -139,7 +139,7 @@ gulp.task('watch', ['set_mode', 'typescript_all', 'sass_all'], () => {
     gulp.watch('app/sc_ext/styles/**/*.scss', ['sass_sc_ext']);
     gulp.watch('app/chrome/popup/**/*.scss', ['sass_popup']);
     gulp.watch('app/chrome/**/*.ts', ['typescript_chrome']);
-    gulp.watch('app/options/**/*.ts', ['typescript_options', 'typescript_common']);
+    gulp.watch(['app/options/**/*.ts', 'app/common/**/*.ts'], ['typescript_options', 'typescript_common', 'typescript_sc_ext']);
 });
 
 gulp.task('extras', () => {

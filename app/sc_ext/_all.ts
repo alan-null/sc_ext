@@ -12,6 +12,9 @@
 /// <reference path='options/OptionsRepository.ts'/>
 /// <reference path='options/ExtensionsOptions.ts'/>
 
+// Common
+/// <reference path='../common/_all.ts'/>
+
 // Page Objects
 /// <reference path='page objects/_all.ts'/>
 

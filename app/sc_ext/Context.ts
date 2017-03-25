@@ -19,7 +19,7 @@ namespace SitecoreExtensions {
         }
 
         static GetCurrentItem(): string {
-            var element = <HTMLInputElement>document.querySelector('#__CurrentItem');
+            var element = <HTMLInputElement> document.querySelector('#__CurrentItem');
             return element.value;
         }
 
@@ -47,7 +47,7 @@ namespace SitecoreExtensions {
                     return peBar.attributes['data-sc-database'].value;
                 }
             } else {
-                var contendDb = <HTMLMetaElement>document.querySelector('[data-sc-name=sitecoreContentDatabase]');
+                var contendDb = <HTMLMetaElement> document.querySelector('[data-sc-name=sitecoreContentDatabase]');
                 if (contendDb != null) {
                     if (contendDb.attributes['data-sc-content'] != undefined) {
                         return contendDb.attributes['data-sc-content'].value;
@@ -84,7 +84,7 @@ namespace SitecoreExtensions {
                     return peBar.attributes['data-sc-content'].value;
                 }
             } else {
-                var contendDb = <HTMLMetaElement>document.querySelector('[data-sc-name=sitecoreLanguage]');
+                var contendDb = <HTMLMetaElement> document.querySelector('[data-sc-name=sitecoreLanguage]');
                 if (contendDb != null) {
                     if (contendDb.attributes['data-sc-content'] != undefined) {
                         return contendDb.attributes['data-sc-content'].value;
