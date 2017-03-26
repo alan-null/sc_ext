@@ -54,6 +54,24 @@ window.addEventListener('message', function (event) {
         }
     }
 
+    if (instance instanceof Communication.SetGlobalStorageRequestMessage) {
+        if (chrome.storage) {
+            SitecoreExtensions.Common.GlobalStorage.set(instance.key, instance.value);
+        }
+    }
+
+    if (instance instanceof Communication.GetGlobalStorageRequestMessage) {
+        let response = new Communication.GetGlobalStorageResponseMessage();
+        if (chrome.storage) {
+            (async () => {
+                response.value = await SitecoreExtensions.Common.GlobalStorage.get(instance.key);
+                window.postMessage(response, '*');
+            })();
+        } else {
+            window.postMessage(response, '*');
+        }
+    }
+
     if (event.data.sc_ext_enabled) {
         if (event.data.sc_ext_seticon_request) {
             chrome.runtime.sendMessage({

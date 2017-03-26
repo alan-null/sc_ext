@@ -15,6 +15,9 @@
 // Common
 /// <reference path='../common/_all.ts'/>
 
+// Storage
+/// <reference path='storage/GlobalStorage.ts'/>
+
 // Page Objects
 /// <reference path='page objects/_all.ts'/>
 

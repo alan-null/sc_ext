@@ -1,25 +1,46 @@
 /// <reference path='../../_all.ts'/>
 
 namespace SitecoreExtensions.Modules.Launcher {
+    import GlobalStorage = SitecoreExtensions.Storage.GlobalStorage;
     export class RecentCommandsStore {
         array: Array<string>;
         recentCommandsKey: string = "sc_ext::recent_commands";
+        private storageType: StorageType;
 
-        constructor(historyCount: number) {
+        constructor(historyCount: number, storageType: StorageType) {
             this.array = this.getArrayWithLimitedLength<string>(historyCount);
+            this.storageType = storageType;
         }
 
         add(command: ICommand): void {
             this.array = this.array.filter((name) => { return name != command.name; });
             this.array.push(command.name);
-            localStorage.setItem(this.recentCommandsKey, this.array.join('|'));
+
+            let storageValue = this.array.slice(-50).join('|');
+            if (this.storageType == StorageType.GlobalStorage) {
+                let options = new Options.ModuleOptionsBase(this.recentCommandsKey, {
+                    value: storageValue
+                });
+                GlobalStorage.set(this.recentCommandsKey, storageValue);
+            } else {
+                localStorage.setItem(this.recentCommandsKey, storageValue);
+            }
         }
 
-        getRecentCommands(commands: ICommand[]) {
+        async getRecentCommands(commands: ICommand[]) {
             if (this.array.length == 0) {
-                var recentCommands = localStorage.getItem(this.recentCommandsKey);
-                if (recentCommands) {
-                    this.array = recentCommands.split('|').filter((x) => { return x.length > 0; });
+                if (this.storageType == StorageType.GlobalStorage) {
+                    let options = await GlobalStorage.get(this.recentCommandsKey);
+                    if (options) {
+                        this.array = options.split('|').filter((x) => { return x.length > 0; });
+                    }
+                } else {
+                    var recentCommands = localStorage.getItem(this.recentCommandsKey);
+                    await (async () => {
+                        if (recentCommands) {
+                            this.array = recentCommands.split('|').filter((x) => { return x.length > 0; });
+                        }
+                    })();
                 }
             }
 

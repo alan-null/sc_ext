@@ -1,5 +1,6 @@
 /// <reference path='../../_all.ts'/>
 
+/// <reference path='StorageType.ts'/>
 /// <reference path='models/SearchResult.ts'/>
 /// <reference path='models/SitecoreSearchResults.ts'/>
 /// <reference path='models/LauncherOptions.ts'/>

@@ -13,7 +13,11 @@ namespace SitecoreExtensions.Options {
                     let validator = new Communication.DataParser();
                     let instance = validator.tryParse<Communication.GetOptionsResponseMessage>(event.data);
                     if (instance instanceof Communication.GetOptionsResponseMessage) {
-                        returnValue(instance.optionsWrapper);
+                        if (instance.optionsWrapper && instance.optionsWrapper.options) {
+                            returnValue(instance.optionsWrapper);
+                        } else {
+                            returnValue(new OptionsWrapper([]));
+                        }
                     }
                 });
                 let message = new Communication.GetOptionsRequestMessage();

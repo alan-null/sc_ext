@@ -21,7 +21,7 @@ namespace SitecoreExtensions.Modules.Launcher.Models {
         };
 
         searchResultsCount: number = 8;
-
+        storageType: StorageType = StorageType.LocalStorage;
         constructor(wrapper: any) {
             super();
             if (wrapper != null) {
@@ -34,6 +34,7 @@ namespace SitecoreExtensions.Modules.Launcher.Models {
                 this.keyBindings.selectFirstResult = wrapper.model.keyBindings.selectFirstResult;
                 this.keyBindings.selectLastResult = wrapper.model.keyBindings.selectLastResult;
                 this.searchResultsCount = wrapper.model.searchResultsCount;
+                this.storageType = StorageType[wrapper.model.storageType as string];
             };
         }
     }

@@ -22,7 +22,11 @@ module SitecoreExtensions.Options {
             this.optionsProvider.getModuleOptions(name, (settings: IModuleOptions) => {
                 $scope.$apply(function () {
                     if (settings != null) {
-                        $scope.vm.model = settings.model;
+                        for (var f in settings.model) {
+                            if ($scope.vm.model.hasOwnProperty(f)) {
+                                $scope.vm.model[f] = settings.model[f];
+                            }
+                        }
                     }
                 });
             });

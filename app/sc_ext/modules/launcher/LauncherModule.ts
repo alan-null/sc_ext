@@ -23,13 +23,12 @@ namespace SitecoreExtensions.Modules.Launcher {
             super(name, description);
 
             this.options = new Models.LauncherOptions(rawOptions);
-            this.mapOptions<Models.LauncherOptions>(rawOptions);
 
             this.commands = new Array<ICommand>();
 
             this.registerModuleCommands();
             this.fuzzy = new Libraries.Fuzzy();
-            this.recentCommandsStore = new RecentCommandsStore(this.options.searchResultsCount);
+            this.recentCommandsStore = new RecentCommandsStore(this.options.searchResultsCount, this.options.storageType);
         }
 
         canExecute(): boolean {
@@ -164,11 +163,13 @@ namespace SitecoreExtensions.Modules.Launcher {
             } else {
                 let phrase = this.searchBoxElement.value;
                 if (phrase.length == 0) {
-                    var recentResults = new Array<SearchResult>();
-                    var recentCommands = this.recentCommandsStore.getRecentCommands(this.commands);
-                    recentCommands.forEach(cmd => { recentResults.push(SearchResult.Cast(cmd)); });
-                    this.appendResults(recentResults);
-                    this.selectFirstResult();
+                    (async () => {
+                        var recentResults = new Array<SearchResult>();
+                        var recentCommands = await this.recentCommandsStore.getRecentCommands(this.commands);
+                        recentCommands.forEach(cmd => { recentResults.push(SearchResult.Cast(cmd)); });
+                        this.appendResults(recentResults);
+                        this.selectFirstResult();
+                    })();
                 } else {
                     if (phrase.startsWith("#") && phrase.length >= 1) {
                         phrase = phrase.substring(phrase.indexOf("#") + 1);

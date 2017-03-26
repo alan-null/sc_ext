@@ -32,31 +32,50 @@ module SitecoreExtensions.Options {
                         label: 'Enabled'
                     }
                 },
+                this.buildHeader('<h3>Recent commands:</h3>', 'col-lg-12'),
+                {
+                    key: "storageType",
+                    type: "radio",
+                    defaultValue: "LocalStorage",
+                    templateOptions: {
+                        label: "Storage type:",
+                        options: [
+                            {
+                                name: "Local Storage",
+                                value: "LocalStorage"
+                            },
+                            {
+                                name: "Global Storage",
+                                value: "GlobalStorage"
+                            },
+                        ]
+                    }
+                },
                 this.buildHeader('<h3>Results:</h3>', 'col-lg-12'),
                 this.buildHeader('Search results count', 'col-lg-6'),
                 this.buildInputkey('searchResultsCount', 8),
                 this.buildHeader('', 'col-lg-3'),
                 this.buildHeader('<h3>Key mapping</h3>', 'col-lg-12'),
                 this.buildHeader('<b>Show</b> Launcher', 'col-lg-6'),
-                this.buildInputkey('keyBindings.show', 2),
+                this.buildInputkey('keyBindings.show', 32),
                 this.buildHeader('', 'col-lg-3'),
                 this.buildHeader('<b>Hide</b> Launcher', 'col-lg-6'),
-                this.buildInputkey('keyBindings.hide', 7),
+                this.buildInputkey('keyBindings.hide', 27),
                 this.buildHeader('', 'col-lg-3'),
                 this.buildHeader('<b>Execute</b> command', 'col-lg-6'),
-                this.buildInputkey('keyBindings.executeCommand', 3),
+                this.buildInputkey('keyBindings.executeCommand', 13),
                 this.buildHeader('', 'col-lg-3'),
                 this.buildHeader('<b>Select</b> next result', 'col-lg-6'),
-                this.buildInputkey('keyBindings.selectNextResult', 0),
+                this.buildInputkey('keyBindings.selectNextResult', 40),
                 this.buildHeader('', 'col-lg-3'),
                 this.buildHeader('<b>Select</b> previous result', 'col-lg-6'),
-                this.buildInputkey('keyBindings.selectPrevResult', 8),
+                this.buildInputkey('keyBindings.selectPrevResult', 38),
                 this.buildHeader('', 'col-lg-3'),
                 this.buildHeader('<b>Select</b> first result', 'col-lg-6'),
-                this.buildInputkey('keyBindings.selectFirstResult', 3),
+                this.buildInputkey('keyBindings.selectFirstResult', 33),
                 this.buildHeader('', 'col-lg-3'),
                 this.buildHeader('<b>Select</b> last result', 'col-lg-6'),
-                this.buildInputkey('keyBindings.selectLastResult', 3),
+                this.buildInputkey('keyBindings.selectLastResult', 34),
                 this.buildHeader('', 'col-lg-3')
             ];
         }
