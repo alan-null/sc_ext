@@ -14,6 +14,7 @@ var htmlmin = require('gulp-htmlmin')
 var zip = require('gulp-zip')
 var size = require('gulp-size')
 var jsonEditor = require('gulp-json-editor')
+var replace = require('gulp-string-replace');
 
 var mode = "build"
 
@@ -59,6 +60,9 @@ function typescript(src, dest, concatFile) {
     return tsResult.js
         .pipe(_if(concatFile != '|', concat(concatFile)))
         .pipe(sourcemaps.write('.'))
+        .pipe(replace('__extends', '__extends_sc_ext', { logs: { enabled: false } }))
+        .pipe(replace('__generator', '__generator_sc_ext', { logs: { enabled: false } }))
+        .pipe(replace('__awaiter', '__awaiter_sc_ext', { logs: { enabled: false } }))
         .pipe(gulp.dest(dest))
         .on('error', function (error) {
             console.log("An error has occurred");
