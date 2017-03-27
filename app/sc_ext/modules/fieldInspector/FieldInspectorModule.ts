@@ -257,7 +257,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
             });
             request.execute();
         }
-        ;
+
         private getItemFields(itemID: string, callback?: any) {
             var request = new Http.HttpRequest(this.buildEndpointURL(itemID), Http.Method.GET, (e) => {
                 var data = e.currentTarget.responseText;
@@ -270,7 +270,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                     var section = allSections[index] as HTMLTableDataCellElement;
 
                     if (section.className == "FieldSection") {
-                        let sectionName = section.innerText.replace(" ", "_");
+                        let sectionName = section.innerText.replace(/ /g, "_");
                         let sectionID = "Section_" + sectionName;
                         currentSection = document.querySelector(".scEditorSections [id^='" + sectionID + "']");
                         index++;
