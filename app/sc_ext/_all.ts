@@ -1,5 +1,7 @@
 // Typings
 /// <reference path='typings/sitecore.d.ts'/>
+/// <reference path='Extensions.ts'/>
+
 
 // Options Page
 /// <reference path='../options/providers/OptionsProvider.ts'/>

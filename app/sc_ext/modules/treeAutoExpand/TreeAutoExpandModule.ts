@@ -27,7 +27,7 @@ namespace SitecoreExtensions.Modules.TreeAutoExpand {
         }
 
         expandSubTree(evt: MouseEvent): void {
-            let glyphId = evt.srcElement.id;
+            let glyphId = evt.getSrcElement().id;
             let icon = new TreeNodeGlyph(glyphId);
 
             if (icon.isExpandable()) {

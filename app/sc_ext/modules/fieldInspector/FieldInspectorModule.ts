@@ -151,7 +151,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                         let spanGetFieldName = HTMLHelpers.createElement("span", { class: this.classFieldNameSpan }, { default: label.innerHTML }) as HTMLSpanElement;
                         spanGetFieldName.innerHTML = label.innerHTML;
                         spanGetFieldName.onclick = (e) => {
-                            let currentElement = this.getFirstElementWithClass(e.srcElement, this.classFieldNameSpan);
+                            let currentElement = this.getFirstElementWithClass(e.getSrcElement(), this.classFieldNameSpan);
 
                             let fieldNameElement = new FieldNameElement(currentElement as HTMLSpanElement);
                             if (!fieldNameElement.IsInitialized()) {
@@ -196,11 +196,11 @@ namespace SitecoreExtensions.Modules.FieldInspector {
         }
 
         private writeDownFieldName(e, sectionElement, j) {
-            let elemenet = HTMLHelpers.getElement(e.srcElement, (e) => { return e.dataset['fieldid'] != null; }) as HTMLDivElement;
+            let elemenet = HTMLHelpers.getElement(e.getSrcElement(), (e) => { return e.dataset['fieldid'] != null; }) as HTMLDivElement;
             let fieldID = elemenet.dataset['fieldid'];
             let sectionName = this.getSectionName(sectionElement);
             this.getFieldName(fieldID, sectionName, j, (fieldName) => {
-                let node = this.getFirstElementWithClass(e.srcElement, this.classFieldNameSpan) as HTMLDivElement;
+                let node = this.getFirstElementWithClass(e.getSrcElement(), this.classFieldNameSpan) as HTMLDivElement;
                 let currentElement = new FieldNameElement(node);
                 currentElement.Initialize(fieldName);
                 currentElement.setFieldName();

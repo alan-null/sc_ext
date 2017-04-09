@@ -375,7 +375,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             li.appendChild(spanDescription);
 
             li.onclick = (e) => {
-                var element = <Element> e.srcElement;
+                var element = <Element> e.getSrcElement();
                 while (element.tagName != 'LI') {
                     element = <Element> element.parentNode;
                 }
@@ -401,7 +401,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             li.appendChild(spanDescription);
 
             li.onclick = (e) => {
-                var element = <Element> e.srcElement;
+                var element = <Element> e.getSrcElement();
                 while (element.tagName != 'LI') {
                     element = <Element> element.parentNode;
                 }

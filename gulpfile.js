@@ -180,7 +180,7 @@ function publish(src, dest) {
         .pipe(_if('*.css', cleanCss({
             compatibility: '*'
         })))
-        .pipe(_if('*.js', uglify()))
+        .pipe(_if('*.js', uglify({ mangle:false})))
         .pipe(_if('*.html', htmlmin({
             removeComments: true,
             collapseWhitespace: true

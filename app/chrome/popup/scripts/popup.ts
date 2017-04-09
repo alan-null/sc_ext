@@ -38,7 +38,8 @@ class LinkItemViewModel extends LinkItem {
         let href = connector + this.url;
         let mode = this.mode;
         elLi.onclick = () => {
-            chrome.tabs.getSelected(null, function (tab) {
+            chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+                let tab = tabs[0];
                 var tablink = tab.url;
                 var origin = tablink.match(/^[\w-]+:\/*\[?([\w\.:-]+)\]?(?::\d+)?/)[0];
                 if (mode == 'newtab') {
