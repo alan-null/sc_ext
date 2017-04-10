@@ -42,14 +42,20 @@ namespace SitecoreExtensions.Modules.Launcher {
             if (Context.Location() == Enums.Location.ContentEditor) {
                 this.addFlowConditionForKeyDownEvent();
             }
-            this.modalElement = <HTMLDivElement> document.getElementById('sc-ext-modal');
-            this.searchBoxElement = <HTMLInputElement> document.getElementById('sc-ext-searchBox');
-            this.searchResultsElement = <HTMLUListElement> document.getElementById('sc-ext-searchResults');
+            this.modalElement = <HTMLDivElement>document.getElementById('sc-ext-modal');
+            this.searchBoxElement = <HTMLInputElement>document.getElementById('sc-ext-searchBox');
+            this.searchResultsElement = <HTMLUListElement>document.getElementById('sc-ext-searchResults');
             this.selectedCommand = document.getElementsByClassName('selected') as HTMLCollection;
 
             this.fuzzy.highlighting.before = "<span class='term'>";
             this.fuzzy.highlighting.after = '</span>';
             this.idParser = new IdParser();
+
+            this.modalElement.onclick = (e) => {
+                if (e.getSrcElement() == this.modalElement) {
+                    this.hideLauncher();
+                }
+            };
         }
 
         registerProviderCommands(provider: Providers.ICommandsProvider): void {
@@ -100,7 +106,7 @@ namespace SitecoreExtensions.Modules.Launcher {
 
         registerGlobalShortcuts(): void {
             document.onkeydown = (evt: KeyboardEvent) => {
-                evt = (evt != null ? evt : <KeyboardEvent> window.event);
+                evt = (evt != null ? evt : <KeyboardEvent>window.event);
                 switch (evt.which || evt.keyCode) {
                     case this.options.keyBindings.show: {
                         if (evt.ctrlKey) {
@@ -123,14 +129,14 @@ namespace SitecoreExtensions.Modules.Launcher {
 
         addFlowConditionForKeyDownEvent(): void {
             HTMLHelpers.addFlowConditionToEvent(scSitecore, 'onKeyDown', (evt: KeyboardEvent) => {
-                evt = (evt != null ? evt : <KeyboardEvent> window.event);
+                evt = (evt != null ? evt : <KeyboardEvent>window.event);
                 return (evt as any).element().id != 'sc-ext-searchBox';
             });
         }
 
         executeSelectedCommand(evt?: UserActionEvent): void {
             if (!this.selectedCommand[0]) return;
-            var id = (<HTMLLIElement> this.selectedCommand[0]).dataset['id'];
+            var id = (<HTMLLIElement>this.selectedCommand[0]).dataset['id'];
             if (this.idParser.match(id)) {
                 if (Context.Location() == Enums.Location.ContentEditor) {
                     let contentTree = new PageObjects.ContentTree();
@@ -141,7 +147,7 @@ namespace SitecoreExtensions.Modules.Launcher {
 
             } else {
                 var selectedComandId = parseInt(id);
-                var command = <ICommand> this.commands.find((cmd: ICommand) => {
+                var command = <ICommand>this.commands.find((cmd: ICommand) => {
                     return cmd.id == selectedComandId;
                 });
                 command.execute(evt);
@@ -194,7 +200,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         changeSelectedCommand(newSelected): void {
-            var oldSelected = <HTMLLIElement> this.searchResultsElement.querySelector('.selected');
+            var oldSelected = <HTMLLIElement>this.searchResultsElement.querySelector('.selected');
             if (oldSelected) {
                 oldSelected.removeAttribute('class');
                 newSelected.setAttribute('class', 'selected');
@@ -204,8 +210,8 @@ namespace SitecoreExtensions.Modules.Launcher {
         commandSelectionEvent(evt: KeyboardEvent): void {
             var commands = this.searchResultsElement.querySelectorAll('li');
             if (commands.length > 0) {
-                var selected = <HTMLLIElement> this.searchResultsElement.querySelector('.selected');
-                if (selected == undefined) selected = <HTMLLIElement> this.searchResultsElement.querySelector('li');
+                var selected = <HTMLLIElement>this.searchResultsElement.querySelector('.selected');
+                if (selected == undefined) selected = <HTMLLIElement>this.searchResultsElement.querySelector('li');
 
                 if (evt.keyCode == this.options.keyBindings.selectPrevResult && commands[0] != selected) {
                     if (selected.className == 'selected') {
@@ -235,7 +241,7 @@ namespace SitecoreExtensions.Modules.Launcher {
 
         private selectFirstResult(): void {
             if (this.searchResultsElement.children.length > 0) {
-                (<HTMLLIElement> this.searchResultsElement.firstChild).setAttribute('class', 'selected');
+                (<HTMLLIElement>this.searchResultsElement.firstChild).setAttribute('class', 'selected');
             }
         }
         private canBeExecuted(command: ICommand, index: number, array: ICommand[]): boolean {
@@ -255,7 +261,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             for (i = 0; i < availableCommands.length; i++) {
                 var cmd = availableCommands[i];
                 var f = this.fuzzy.getScore(cmd.name, query);
-                results[i] = <SearchResult> {
+                results[i] = <SearchResult>{
                     command: cmd,
                     score: f.score,
                     term: f.term,
@@ -375,9 +381,9 @@ namespace SitecoreExtensions.Modules.Launcher {
             li.appendChild(spanDescription);
 
             li.onclick = (e) => {
-                var element = <Element> e.getSrcElement();
+                var element = <Element>e.getSrcElement();
                 while (element.tagName != 'LI') {
-                    element = <Element> element.parentNode;
+                    element = <Element>element.parentNode;
                 }
                 this.changeSelectedCommand(element);
                 this.searchBoxElement.focus();
@@ -401,9 +407,9 @@ namespace SitecoreExtensions.Modules.Launcher {
             li.appendChild(spanDescription);
 
             li.onclick = (e) => {
-                var element = <Element> e.getSrcElement();
+                var element = <Element>e.getSrcElement();
                 while (element.tagName != 'LI') {
-                    element = <Element> element.parentNode;
+                    element = <Element>element.parentNode;
                 }
                 this.changeSelectedCommand(element);
                 this.searchBoxElement.focus();
