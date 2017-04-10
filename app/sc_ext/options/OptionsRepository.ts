@@ -7,7 +7,7 @@ namespace SitecoreExtensions.Options {
         constructor(getOptionsCallback?: any) {
         }
 
-        getOptions(): Promise<OptionsWrapper> {
+        async getOptions(): Promise<OptionsWrapper> {
             return new Promise<OptionsWrapper>(returnValue => {
                 window.addEventListener('message', function (event) {
                     let validator = new Communication.DataParser();
@@ -25,7 +25,7 @@ namespace SitecoreExtensions.Options {
             });
         }
 
-        getModuleOptions(moduleName: string): Promise<ModuleOptionsBase> {
+        async getModuleOptions(moduleName: string): Promise<ModuleOptionsBase> {
             return new Promise<ModuleOptionsBase>(returnValue => {
                 window.addEventListener('message', function (event) {
                     let validator = new Communication.DataParser();

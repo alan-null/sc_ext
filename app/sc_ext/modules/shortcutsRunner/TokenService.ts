@@ -9,26 +9,44 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
         private cacheKey: string = 'sc_ext::request_token';
         private baseUrl: string = window.top.location.origin + "/sitecore/shell/default.aspx";
 
-        constructor() {
+        constructor(baseUrl?: string) {
+            if (baseUrl) {
+                this.baseUrl = baseUrl;
+            }
+            this.cacheKey = this.cacheKey + this.baseUrl.replace(window.location.origin, '');
             this.token = this.getTokenFromCache(this.cacheKey);
             if (this.token == undefined) {
                 this.getRequestToken((t) => {
                     this.token = t;
                     this.storeTokenInCache(this.cacheKey, t);
+                    console.log('Storing in cache');
                 });
             }
         }
 
-        public getToken(): Token {
-            return this.token;
+        public async getToken(): Promise<Token> {
+            return new Promise<Token>(returnValue => {
+                if (this.token) {
+                    returnValue(this.token);
+                } else {
+                    this.getRequestToken((t) => {
+                        this.token = t;
+                        this.storeTokenInCache(this.cacheKey, t);
+                        console.log('Storing in cache');
+                        returnValue(t);
+                    });
+                }
+            });
         }
 
-        public invalidateToken(callback) {
+        public async invalidateToken(): Promise<Token> {
             localStorage.clear();
-            this.getRequestToken((t) => {
-                this.token = t;
-                callback(t);
-                this.storeTokenInCache(this.cacheKey, t);
+            return new Promise<Token>(returnValue => {
+                this.getRequestToken((t) => {
+                    this.token = t;
+                    returnValue(t);
+                    this.storeTokenInCache(this.cacheKey, t);
+                });
             });
         }
 

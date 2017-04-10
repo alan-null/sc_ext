@@ -10,12 +10,10 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
     export class DatabaseSelectorModule extends ModuleBase implements ISitecoreExtensionsModule {
         private retryCount: number = 3;
         private tokenService: TokenService;
-        private token: Token;
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
             this.tokenService = new TokenService();
-            this.token = this.tokenService.getToken();
         }
 
         canExecute(): boolean {
@@ -30,19 +28,22 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
 
         private getSelectDatabaseDialogResponse(callback) {
             let url = window.top.location.origin + "/sitecore/shell/default.aspx";
-            if (this.token) {
-                var postData = "&__PARAMETERS=" + "ShowDatabases"
-                    + "&__ISEVENT=" + "1"
-                    + "&__CSRFTOKEN=" + this.token.__CSRFTOKEN
-                    + "&__VIEWSTATE=" + this.token.__VIEWSTATE;
-            }
-            new Http.HttpRequest(url, Http.Method.POST, callback).execute(postData);
+            this.tokenService.getToken().then((token) => {
+                if (token) {
+                    var postData = "&__PARAMETERS=" + "ShowDatabases"
+                        + "&__ISEVENT=" + "1"
+                        + "&__CSRFTOKEN=" + token.__CSRFTOKEN
+                        + "&__VIEWSTATE=" + token.__VIEWSTATE;
+                }
+                new Http.HttpRequest(url, Http.Method.POST, callback).execute(postData);
+            });
         }
 
         private handleErrorAndRetry(): void {
-            if (this.retryCount-- < 0) return;
-            this.tokenService.invalidateToken((token) => {
-                this.token = token;
+            if (this.retryCount-- < 0) {
+                return;
+            }
+            this.tokenService.invalidateToken().then(() => {
                 this.init();
             });
         }

@@ -11,7 +11,7 @@ namespace SitecoreExtensions {
             for (var d in dataset) {
                 element.dataset[d] = dataset[d];
             }
-            return <any> element;
+            return <any>element;
         }
         static injectScript(scriptElement) {
             (document.head || document.documentElement).appendChild(scriptElement);
@@ -80,7 +80,11 @@ namespace SitecoreExtensions {
             while (node && node.tagName && node.tagName != "BODY" && !predicate(node)) {
                 node = node.parentElement;
             }
-            return node;
+            if (node.tagName != "BODY") {
+                return node;
+            } else {
+                return null;
+            }
         }
 
         static postponeAction(predicate: any, action: any, delay: number, ticks: number) {

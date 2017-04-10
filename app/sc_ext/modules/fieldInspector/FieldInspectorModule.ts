@@ -26,6 +26,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                 this.setInnerHTML(this.getValue(ViewMode.FieldName));
                 this.setActiveMode(ViewMode.FieldName);
                 this.currentElement.classList.add("sc-ext-getfieldName-value");
+                this.currentElement.classList.add("sc-ext-contentButton");
             }
         }
 
@@ -34,6 +35,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                 this.setInnerHTML(this.getValue(ViewMode.Title));
                 this.setActiveMode(ViewMode.Title);
                 this.currentElement.classList.remove("sc-ext-getfieldName-value");
+                this.currentElement.classList.remove("sc-ext-contentButton");
             }
         }
 
@@ -75,6 +77,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
         classSectionInitialized: string = "sc-ext-gotofield-sections-initialized";
         classFieldIDsInitialized: string = "sc-ext-gotofield-fieldIDs-initialized";
         classFieldNameSpan: string = "sc-ext-getfieldName";
+        tokenService: ShortcutsRunner.TokenService;
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
@@ -93,6 +96,9 @@ namespace SitecoreExtensions.Modules.FieldInspector {
             this.database = SitecoreExtensions.Context.Database();
             this.lang = SitecoreExtensions.Context.Language();
             this.idParser = new IdParser();
+
+            var url = window.top.location.origin + "/sitecore/shell/default.aspx?xmlcontrol=ResetFields";
+            this.tokenService = new ShortcutsRunner.TokenService(url);
         }
 
         addTreeNodeHandlers(className: string): void {
@@ -129,7 +135,38 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                         let sectionName = this.getSectionName(sectionElement);
                         label.dataset["sectionid"] = sectionName + "-" + j;
 
-                        let spanGoToField = HTMLHelpers.createElement("a", { class: "sc-ext-gotofield scContentButton" }) as HTMLSpanElement;
+
+                        let spanResetToStandardValues = HTMLHelpers.createElement("a", { class: "sc-ext-resetfield scContentButton sc-ext-contentButton" }) as HTMLSpanElement;
+                        spanResetToStandardValues.innerText = "Reset Field";
+                        spanResetToStandardValues.onclick = (e) => {
+                            this.ensureFieldsInitialized();
+
+                            this.getFieldID(this.getActiveNodeID(), sectionName, j, (fieldID) => {
+                                var url = window.top.location.origin + "/sitecore/shell/default.aspx?xmlcontrol=ResetFields&id=" + Context.ItemID() + "&la=en&vs=1";
+                                let req = new Http.HttpRequest(url, Http.Method.POST, (e) => {
+                                    let contentTree = new PageObjects.ContentTree();
+                                    contentTree.loadItem(Context.ItemID());
+                                });
+
+                                let formattedFieldId = fieldID.replace(/-/g, "").replace(/{/g, "").replace(/}/g, "");
+
+                                this.tokenService.getToken().then((token) => {
+                                    let postData =
+                                        "&__EVENTTARGET=" + "OK"
+                                        + "&__EVENTTYPE=" + "click"
+                                        + "&__CONTEXTMENU=" + ""
+                                        + "&__MODIFIED=" + ""
+                                        + "&__ISEVENT=" + "1"
+                                        + "&__CSRFTOKEN=" + token.__CSRFTOKEN
+                                        + "&__VIEWSTATE=" + token.__VIEWSTATE
+                                        + "&Reset_" + formattedFieldId + "=" + "1";
+                                    req.execute(postData);
+                                });
+
+                            }, e);
+                        };
+
+                        let spanGoToField = HTMLHelpers.createElement("a", { class: "sc-ext-gotofield scContentButton sc-ext-contentButton" }) as HTMLSpanElement;
                         spanGoToField.innerText = "Go to field";
                         spanGoToField.onclick = (e) => {
                             this.ensureFieldsInitialized();
@@ -137,13 +174,13 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                                 this.getFieldID(this.getActiveNodeID(), sectionName, j, (fieldID) => {
                                     var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + fieldID;
                                     new Launcher.Providers.NavigationCommand(null, null, url).execute(e);
-                                });
+                                }, e);
 
                             } else {
                                 this.getFieldID(this.getActiveNodeID(), sectionName, j, (fieldID) => {
                                     let contentTree = new PageObjects.ContentTree();
                                     contentTree.loadItem(fieldID);
-                                });
+                                }, e);
                             }
 
                         };
@@ -172,6 +209,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                         label.innerHTML = "";
                         label.appendChild(spanGetFieldName);
                         label.appendChild(spanGoToField);
+                        label.appendChild(spanResetToStandardValues);
                     }
                 }
             }
@@ -207,7 +245,13 @@ namespace SitecoreExtensions.Modules.FieldInspector {
             });
         }
 
-        private getFieldID(itemID: string, sectionName: string, index: number, callback: GetFieldIDCallback) {
+        private getFieldID(itemID: string, sectionName: string, index: number, callback: GetFieldIDCallback, e: MouseEvent) {
+            let fieldId = HTMLHelpers.getElement(e.getSrcElement(), (e) => { return e.dataset['fieldid'] != null; }) as HTMLDivElement;
+            if (fieldId) {
+                callback(fieldId.dataset['fieldid']);
+                return;
+            }
+
             var request = new Http.HttpRequest(this.buildEndpointURL(itemID), Http.Method.GET, (e) => {
                 var data = e.currentTarget.responseText;
                 var parser = new DOMParser();
@@ -266,7 +310,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
                 let allSections = doc.querySelector(".FieldsScroller").querySelectorAll("td.FieldSection,td.FieldLabel .ItemPathTemplate");
                 let currentSection;
-                for (var index = 0; index < allSections.length; ) {
+                for (var index = 0; index < allSections.length;) {
                     var section = allSections[index] as HTMLTableDataCellElement;
 
                     if (section.className == "FieldSection") {

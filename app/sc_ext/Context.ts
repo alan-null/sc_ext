@@ -8,7 +8,7 @@ namespace SitecoreExtensions {
         itemID: string;
         constructor() { }
 
-        static IsValid(): Promise<boolean> {
+        static async IsValid(): Promise<boolean> {
             return new Promise<boolean>(async returnValue => {
                 let validUrl = window.location.pathname.indexOf('/sitecore/') == 0;
                 let isEE = Context.Location() == Location.ExperienceEditor;
@@ -131,7 +131,7 @@ namespace SitecoreExtensions {
             }
         }
 
-        public IsSitecoreInstance(): Promise<boolean> {
+        public async IsSitecoreInstance(): Promise<boolean> {
             return new Promise<boolean>(returnValue => {
                 if (this.validationUrl == null) {
                     returnValue(false);

@@ -6,13 +6,11 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
 
     export class ShortcutRunner {
         private tokenService: TokenService;
-        private token: Token;
         private cacheKey: string = 'sc_ext::request_token';
         private baseUrl: string = window.top.location.origin + "/sitecore/shell/default.aspx";
 
         constructor() {
             this.tokenService = new TokenService();
-            this.token = this.tokenService.getToken();
         }
 
         public runShortcutCommand(shortcutId: string, evt?: KeyboardEvent): void {
@@ -38,21 +36,22 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
         }
 
         private handleErrorAndRetry(shortcutId: string): void {
-            this.tokenService.invalidateToken((token) => {
-                this.token = token;
+            this.tokenService.invalidateToken().then((token) => {
                 this.runShortcutCommand(shortcutId);
             });
         }
 
         private getShortcutUrl(callback: Function, shortcutId: string): void {
             var req = new HttpRequest(this.baseUrl, Method.POST, callback);
-            if (this.token) {
-                var postData = "&__PARAMETERS=" + "RunShortcut%28%26quot%3B%7B" + shortcutId + "%7D%26quot%3B%29"
-                    + "&__ISEVENT=" + "1"
-                    + "&__CSRFTOKEN=" + this.token.__CSRFTOKEN
-                    + "&__VIEWSTATE=" + this.token.__VIEWSTATE;
-            }
-            req.execute(postData);
+            let token = this.tokenService.getToken().then((token: ShortcutsRunner.Token) => {
+                if (token) {
+                    var postData = "&__PARAMETERS=" + "RunShortcut%28%26quot%3B%7B" + shortcutId + "%7D%26quot%3B%29"
+                        + "&__ISEVENT=" + "1"
+                        + "&__CSRFTOKEN=" + token.__CSRFTOKEN
+                        + "&__VIEWSTATE=" + token.__VIEWSTATE;
+                }
+                req.execute(postData);
+            });
         }
     }
 }
