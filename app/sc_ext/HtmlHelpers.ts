@@ -80,7 +80,7 @@ namespace SitecoreExtensions {
             while (node && node.tagName && node.tagName != "BODY" && !predicate(node)) {
                 node = node.parentElement;
             }
-            if (node.tagName != "BODY") {
+            if (node && node.tagName != "BODY") {
                 return node;
             } else {
                 return null;
