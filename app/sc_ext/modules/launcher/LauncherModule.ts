@@ -316,6 +316,9 @@ namespace SitecoreExtensions.Modules.Launcher {
                     mock.command = this.getCommandByName('__no_results');
                     mock.highlightedTerm = "Nothing found";
                     var li = this.buildCommandHtml(mock);
+                    while (this.searchResultsElement.firstChild != null) {
+                        this.searchResultsElement.removeChild(this.searchResultsElement.firstChild);
+                    }
                     this.searchResultsElement.appendChild(li);
                 }
             });

@@ -19,17 +19,11 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addInvokeCommand('Change wallpaper', 'Select a desktop background.', 'preferences:changewallpaper', canExecute);
             this.addInvokeCommand('Content Carousel', 'Presents content items as a carousel', 'carousel:home', canExecute);
             this.addInvokeCommand('Customize My Toolbar', 'Add or remove commands from My Toolbar.', 'ribbon:customize', canExecute);
-            this.addInvokeCommand('Access Viewer', 'Get an overview of the access rights assigned to each account for each item in the content tree', 'shell:accessviewer', canExecute);
-            this.addInvokeCommand('Domain Manager', 'Use the Domain Manager to create and manage domains', 'shell:domainmanager', canExecute);
-            this.addInvokeCommand('Role Manager', 'Create and manage the roles that you want to assign the users of your system', 'shell:rolemanager', canExecute);
-            this.addInvokeCommand('User Manager', 'Create and manage the users that have access to the system', 'shell:usermanager', canExecute);
-            this.addInvokeCommand('Security Editor', 'Manage the access rights that roles and users have to the items in Sitecore', 'shell:securityeditor', canExecute);
             this.addInvokeCommand('User Options', 'Application Options', 'shell:useroptions', canExecute);
 
             this.addInvokeCommand('Add a new language', 'Choose a predefined language code or enter a language identifier and a country/region code for the new language.', 'system:addlanguage', canExecute);
             this.addInvokeCommand('Delete a Language', 'Select the languages that you want to delete.', 'system:deletelanguage', canExecute);
             this.addInvokeCommand('Database Usage', 'Database usage stastistics', 'system:databaseusage', canExecute);
-            this.addInvokeCommand('Install Package', 'Package installation window', 'system:installpackage', canExecute);
             this.addInvokeCommand('Rebuild Link Databases', 'Rebuild Link Databases', 'system:rebuildlinkdatabase', canExecute);
             this.addInvokeCommand('About', 'Show license details window', 'system:showabout', canExecute);
             this.addInvokeCommand('Licenses', 'Show installed licenses', 'system:showlicenses', canExecute);
