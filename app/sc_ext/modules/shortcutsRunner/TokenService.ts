@@ -19,7 +19,6 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
                 this.getRequestToken((t) => {
                     this.token = t;
                     this.storeTokenInCache(this.cacheKey, t);
-                    console.log('Storing in cache');
                 });
             }
         }
@@ -32,7 +31,6 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
                     this.getRequestToken((t) => {
                         this.token = t;
                         this.storeTokenInCache(this.cacheKey, t);
-                        console.log('Storing in cache');
                         returnValue(t);
                     });
                 }
