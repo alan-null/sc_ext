@@ -32,7 +32,11 @@ namespace SitecoreExtensions.PageObjects {
         }
 
         public onActiveTreeNodeChanged(callback: Function) {
-            let previousId = this.getActiveTreeNode().id;
+            let activeNode = this.getActiveTreeNode();
+            if (activeNode == null) {
+                return;
+            }
+            let previousId = activeNode.id;
             HTMLHelpers.postponeAction(_ => {
                 let activeTreeNode = this.getActiveTreeNode();
                 if (activeTreeNode && activeTreeNode.id) {
