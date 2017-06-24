@@ -8,7 +8,12 @@
 			<span class="text-danger">After you click reset button, all your personal settings will be changed to default.</span>
 			</br>
 			</br>
-			<button ng-click="vm.reset()" class="btn  btn-danger">Reset</button>
+			<button ng-click="vm.reset()" class="btn btn-danger">Reset</button>
+			<h3>Export settings:</h3>
+			<button ng-click="vm.exportFile()" class="btn btn-success">Export</button>
+			<h3>Import settings:</h3>
+			<input type="file" id="file" accept=".json" name="file" class="btn" enctype="multipart/form-data " />
+			<button id="ImportFile" ng-click="vm.importFile()" class="btn btn-warning disabled">Import</button>
 		</div>
 	</div>
 </div>
