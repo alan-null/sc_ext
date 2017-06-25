@@ -3,6 +3,7 @@
     "command": "gulp",
     "isShellCommand": true,
     "showOutput": "always",
+    "runner": "terminal",
     "tasks": [{
             "taskName": "watch"
         },
