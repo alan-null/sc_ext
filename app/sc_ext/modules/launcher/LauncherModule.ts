@@ -32,7 +32,14 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         canExecute(): boolean {
-            return true && this.options.enabled;
+            return true && this.options.enabled && this.isValidContext();
+        }
+
+        private isValidContext(): boolean {
+            if (window.frameElement){
+                return window.frameElement.id != 'Editor_contentIframe';
+            }
+            return true;
         }
 
         initialize(): void {
