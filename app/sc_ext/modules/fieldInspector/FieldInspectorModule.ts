@@ -146,9 +146,15 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                             this.getFieldID(this.getActiveNodeID(), sectionName, j, (fieldID) => {
                                 (e.getSrcElement() as HTMLSpanElement).innerText = resetFieldText;
                                 var url = window.top.location.origin + "/sitecore/shell/default.aspx?xmlcontrol=ResetFields&id=" + Context.ItemID() + "&la=en&vs=1";
-                                let req = new Http.HttpRequest(url, Http.Method.POST, (e) => {
-                                    let contentTree = new PageObjects.ContentTree();
-                                    contentTree.loadItem(Context.ItemID());
+                                let req = new Http.HttpRequest(url, Http.Method.POST, (e: ProgressEvent) => {
+                                    if ((e.target as XMLHttpRequest).status === 500) {
+                                        this.tokenService.invalidateToken().then((t) => {
+                                            spanResetToStandardValues.click();
+                                        });
+                                    } else {
+                                        let contentTree = new PageObjects.ContentTree();
+                                        contentTree.loadItem(Context.ItemID());
+                                    }
                                 });
 
                                 let formattedFieldId = fieldID.replace(/-/g, "").replace(/{/g, "").replace(/}/g, "");

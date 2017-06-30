@@ -35,13 +35,6 @@ namespace SitecoreExtensions.Modules.Launcher {
             return true && this.options.enabled && this.isValidContext();
         }
 
-        private isValidContext(): boolean {
-            if (window.frameElement){
-                return window.frameElement.id != 'Editor_contentIframe';
-            }
-            return true;
-        }
-
         initialize(): void {
             this.injectlauncherHtml();
             this.registerGlobalShortcuts();
@@ -244,6 +237,13 @@ namespace SitecoreExtensions.Modules.Launcher {
                     }
                 }
             }
+        }
+
+        private isValidContext(): boolean {
+            if (window.frameElement) {
+                return window.frameElement.id != 'Editor_contentIframe';
+            }
+            return true;
         }
 
         private selectFirstResult(): void {
