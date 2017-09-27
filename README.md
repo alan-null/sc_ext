@@ -70,6 +70,24 @@ Run watch task if you want dynamic code rebuild in the background
 gulp watch
 ```
 
+## Development - one click
+If you are tired of downloading all those modules there is a quicker way.
+
+Open **PowerShell Console** and run following code:
+
+```powershell
+@powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))" && SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
+choco install nodejs.install -y
+choco install git.install -y
+choco install visualstudiocode -y
+choco install googlechrome -y
+
+git clone https://github.com/alan-null/sc_ext.git
+npm install -g gulp
+npm install
+```
+
+*If needed remove unnecessary choco packages.*
 
 ## License
 [MIT](LICENSE)
