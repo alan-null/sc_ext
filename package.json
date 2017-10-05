@@ -4,6 +4,10 @@
   "engines": {
     "node": ">=0.8.0"
   },
+  "scripts": {
+    "watch": "gulp watch",
+    "build": "gulp build"
+  },
   "devDependencies": {
     "del": "^2.2.0",
     "gulp": "^3.9.1",
@@ -25,21 +29,5 @@
     "gulp-concat": "2.6.0",
     "gulp-string-replace": "0.4.0",
     "sass-lint": "1.11.1"
-  },
-  "eslintConfig": {
-    "env": {
-      "node": true,
-      "browser": true
-    },
-    "globals": {
-      "chrome": true
-    },
-    "rules": {
-      "eol-last": 0,
-      "quotes": [
-        2,
-        "single"
-      ]
-    }
   }
 }
