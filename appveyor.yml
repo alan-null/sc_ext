@@ -3,13 +3,12 @@ init:
 environment:
   matrix:
     - nodejs_version: "5"
-install:  
+install:
   - npm install -g npm
-  - npm install -g gulp
   - npm install
 test_script:
   - node --version && npm --version
-  - cmd: gulp build
+  - cmd: npm run build
 build: off
 matrix:
   fast_finish: true

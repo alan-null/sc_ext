@@ -47,10 +47,6 @@ Install **nodejs**
 ```
 https://nodejs.org/en/download/
 ```
-Install **gulp**
-```
-npm install -g gulp
-```
 
 #### Environment setup
 Clone repository
@@ -63,11 +59,11 @@ npm install
 ```
 Build project
 ```
-gulp build
+npm run build
 ```
 Run watch task if you want dynamic code rebuild in the background
 ```
-gulp watch
+npm run watch
 ```
 
 ## Development - one click
@@ -83,7 +79,6 @@ choco install visualstudiocode -y
 choco install googlechrome -y
 
 git clone https://github.com/alan-null/sc_ext.git
-npm install -g gulp
 npm install
 ```
 
