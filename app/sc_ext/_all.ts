@@ -60,6 +60,7 @@
 /// <reference path='modules/treeScope/_all.ts'/>
 /// <reference path='modules/treeAutoExpand/_all.ts'/>
 /// <reference path='modules/scrollToItem/_all.ts'/>
+/// <reference path='modules/favouriteItems/_all.ts'/>
 
 
 // Status
