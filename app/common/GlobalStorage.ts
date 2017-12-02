@@ -11,7 +11,7 @@ namespace SitecoreExtensions.Common {
                     if (items.sc_ext_globalStorage) {
                         returnValue(items.sc_ext_globalStorage[key]);
                     }
-                    returnValue({});
+                    returnValue(null);
                 });
             });
         }
