@@ -40,7 +40,8 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addCommand("Role Manager", "Create and manage the roles that you want to assign the users of your system", "/sitecore/shell/Applications/Security/Role%20Manager.aspx?sc_bw=1");
             this.addCommand("Security Editor", "Manage the access rights that roles and users have to the items in Sitecore", "/sitecore/shell/Applications/Security/Security%20Editor.aspx?sc_bw=1");
             this.addCommand("User Manager", "Create and manage the users that have access to the system", "/sitecore/shell/Applications/Security/User%20Manager.aspx?sc_bw=1");
-            this.addCommand("Xpath Builder", "Test Sitecore query", "/sitecore/shell/default.aspx?xmlcontrol=IDE.XPath.Builder");
+            this.addCommand("XPath Builder", "Test Sitecore query", "/sitecore/shell/default.aspx?xmlcontrol=IDE.XPath.Builder");
+            this.addCommand("File Explorer", "Browse your web application files.", "/sitecore/shell/default.aspx?xmlcontrol=FileExplorer");
         }
 
         private addCommand(name: string, description: string, url: string): void {
