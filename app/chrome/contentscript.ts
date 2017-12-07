@@ -5,6 +5,14 @@
 
 'use strict';
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.sc_ext_setVersion_request) {
+        if (chrome.storage) {
+            SitecoreExtensions.Common.GlobalStorage.set("sc-ext::version", request.version);
+        }
+    }
+});
+
 window.addEventListener('message', function (event) {
     var Communication = SitecoreExtensions.Common.Communication;
     var OptionsProvider = SitecoreExtensions.Options.OptionsProvider;
@@ -75,9 +83,20 @@ window.addEventListener('message', function (event) {
     if (event.data.sc_ext_enabled) {
         if (event.data.sc_ext_seticon_request) {
             chrome.runtime.sendMessage({
+                sc_ext_setIcon_request: true,
+                sc_ext_setBadgeText_request: true,
                 newIconPath: 'chrome/images/icon-128.png',
                 modulesCount: event.data.sc_ext_badgetext
             });
+        }
+        if (chrome.storage) {
+            (async () => {
+                let currentVersion = await SitecoreExtensions.Common.GlobalStorage.get("sc-ext::version");
+                chrome.runtime.sendMessage({
+                    sc_ext_checkVersion_request: true,
+                    version: currentVersion
+                });
+            })();
         }
     }
 });
