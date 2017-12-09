@@ -25,7 +25,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addInvokeCommand('Delete a Language', 'Select the languages that you want to delete.', 'system:deletelanguage', canExecute);
             this.addInvokeCommand('Database Usage', 'Database usage stastistics', 'system:databaseusage', canExecute);
             this.addInvokeCommand('Rebuild Link Databases', 'Rebuild Link Databases', 'system:rebuildlinkdatabase', canExecute);
-            this.addInvokeCommand('About', 'Show license details window', 'system:showabout', canExecute);
+            this.addInvokeCommand('License Details', 'Show license details window', 'system:showabout', canExecute);
             this.addInvokeCommand('Licenses', 'Show installed licenses', 'system:showlicenses', canExecute);
 
             this.addInvokeCommand('Indexing Manager (rebuild serach index)', 'Select the search indexes that you want to rebuild.', 'indexing:runmanager', canExecute);

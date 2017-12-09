@@ -17,7 +17,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner.Providers {
         }
 
         private createCommands() {
-            this.addCommand("About", "License Details", "{70EEF2F0-4A17-427B-99A1-5069658EAE7A}");
+            this.addCommand("License Details", "About License Details", "{70EEF2F0-4A17-427B-99A1-5069658EAE7A}");
             this.addCommand("Access Viewer", "Get an overview of the access rights assigned to each account for each item in the content tree", "{D2D8EF5D-ABA7-485B-ACA6-CEDCD495AB5D}");
             this.addCommand("Archive", "See archived items", "{ABF5E348-B8C1-4796-8100-8F012AE4713E}");
             this.addCommand("Content Editor", "Manage your website content.", "{E28353A0-FB68-455B-9B2E-99AD280EF64E}");
