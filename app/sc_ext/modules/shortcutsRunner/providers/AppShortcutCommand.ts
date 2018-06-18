@@ -3,18 +3,12 @@
 namespace SitecoreExtensions.Modules.ShortcutsRunner.Providers {
     import ICommand = Launcher.ICommand;
 
-    export class AppShortcutCommand implements ICommand {
-        id: number;
-        name: string;
-        description: string;
+    export class AppShortcutCommand extends Launcher.Providers.BaseCommand implements ICommand {
         runner: ShortcutRunner;
         shortcutID: string;
 
         constructor(name: string, description: string, runner: ShortcutRunner, shortcutID: string) {
-            this.id = 0;
-            this.runner = runner;
-            this.name = name;
-            this.description = description;
+            super(name, description, "");
             this.shortcutID = shortcutID;
         }
 

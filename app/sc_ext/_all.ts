@@ -45,15 +45,15 @@
 /// <reference path='modules/ModuleBase.ts'/>
 /// <reference path='modules/ISitecoreExtensionsModule.ts'/>
 
-/// <reference path='modules/shortcutsRunner/_all.ts'/>
 /// <reference path='modules/databaseColor/_all.ts'/>
 /// <reference path='modules/databaseName/_all.ts'/>
-/// <reference path='modules/databaseSelector/_all.ts'/>
 /// <reference path='modules/fieldInspector/_all.ts'/>
 /// <reference path='modules/fieldSearch/_all.ts'/>
 /// <reference path='modules/goToDatasource/_all.ts'/>
 /// <reference path='modules/lastLocation/_all.ts'/>
 /// <reference path='modules/launcher/_all.ts'/>
+/// <reference path='modules/shortcutsRunner/_all.ts'/>
+/// <reference path='modules/databaseSelector/_all.ts'/>
 /// <reference path='modules/sectionSwitches/_all.ts'/>
 /// <reference path='modules/toggleRibbon/_all.ts'/>
 /// <reference path='modules/treelistField/_all.ts'/>

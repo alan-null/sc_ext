@@ -54,7 +54,7 @@ function typescript(src, dest, concatFile) {
         }))
         .pipe(tslint.report({ emitError: false }))
         .pipe(sourcemaps.init())
-        .pipe(ts({ outFile: concatFile }));
+        .pipe(ts({ outFile: concatFile, target: "es5" }));
 
     concatFile = (concatFile || '|');
     return tsResult.js

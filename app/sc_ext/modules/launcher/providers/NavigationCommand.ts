@@ -6,17 +6,9 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
         ctrlKey: boolean;
     }
 
-    export class NavigationCommand implements ICommand {
-        id: number;
-        name: string;
-        description: string;
-        url: string;
-
+    export class NavigationCommand extends BaseCommand implements ICommand {
         constructor(name: string, description: string, url: string) {
-            this.id = 0;
-            this.name = name;
-            this.description = description;
-            this.url = url;
+            super(name, description, url);
         }
 
         canExecute(): boolean {

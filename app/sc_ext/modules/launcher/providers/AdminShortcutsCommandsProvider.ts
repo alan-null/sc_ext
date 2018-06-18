@@ -17,6 +17,16 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
         createCommands(): void {
             this.addCommand('Administration Tools.aspx', 'List of all administrative tools', 'default');
             this.addCommand('Cache.aspx', 'Caches overview.', 'cache');
+            if (Context.Location() == Enums.Location.ContentEditor) {
+                let command = new DynamicCommand("DB Browser.aspx?id=CurrentItem", "The interface for various item manipulations.", "");
+                command.executeCallback = (cmd: DynamicCommand, evt: UserActionEvent) => {
+                    let tempCommand = new NavigationCommand("", "", "/sitecore/admin/dbbrowser.aspx?db=" + cmd.Database + "&lang=" + cmd.Lang + "&id=" + cmd.ItemId);
+                    tempCommand.execute(evt);
+                };
+                command.canExecuteCallback = () => { return Context.Location() == Enums.Location.ContentEditor; };
+                command.descriptionGetter = (cmd: DynamicCommand) => { return "Browse '" + cmd.ItemId + "' item"; };
+                this.commands.push(command);
+            }
             this.addCommand('DB Browser.aspx', 'The interface for various item manipulations.', 'dbbrowser');
             this.addCommand('Database Cleanup.aspx', 'Perform various cleanup operations on specific databases.', 'DbCleanup');
             this.addCommand('Dependency Injection Configuration.aspx', 'Shows the configured services. For detailed information use details=1 query.', 'ShowServicesConfig');

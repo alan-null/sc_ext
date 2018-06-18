@@ -9,7 +9,9 @@
 /// <reference path='ICommand.ts'/>
 /// <reference path='providers/ICommandsProvider.ts'/>
 /// <reference path='providers/BaseCommandsProvider.ts'/>
+/// <reference path='providers/BaseCommand.ts'/>
 /// <reference path='providers/NavigationCommand.ts'/>
+/// <reference path='providers/DynamicCommand.ts'/>
 /// <reference path='providers/ContentEditorRibbonCommandsProvider.ts'/>
 /// <reference path='providers/ContentEditorCommandsProvider.ts'/>
 /// <reference path='providers/ShellCommandsProvider.ts'/>

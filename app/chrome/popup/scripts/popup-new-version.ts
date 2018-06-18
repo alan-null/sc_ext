@@ -10,7 +10,7 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     chrome.tabs.sendMessage(activeTab.id, {
         sc_ext_setVersion_request: true,
         version: chrome.runtime.getManifest().version
-    },()=>{
+    }, () => {
         document.getElementById("link").click();
     });
 });
