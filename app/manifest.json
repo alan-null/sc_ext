@@ -58,7 +58,6 @@
     },
     "web_accessible_resources": [
         "common/optionsProvider.js",
-        "sc_ext/Application.js",
-        "sc_ext/images/ic_close_black_24dp_1x-b.png"
+        "sc_ext/Application.js"
     ]
 }
