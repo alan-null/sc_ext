@@ -28,7 +28,7 @@ namespace SitecoreExtensions.Modules.TreeScope {
             let buttonHeight = this.popupElement.clientHeight / numberOfExistingButtons;
 
             let value = buttonHeight * count;
-            this.popupElement.style.height = (this.parseStyleInt(this.popupElement.style.height) + value) + "px";
+            this.popupElement.style.maxHeight = (this.parseStyleInt(this.popupElement.style.maxHeight) + value) + "px";
 
             let bottomOffset = this.popupElement.offsetParent.clientHeight - (this.popupElement.offsetHeight + this.popupElement.offsetTop);
             if (bottomOffset < 0) {
