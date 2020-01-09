@@ -241,7 +241,7 @@ namespace SitecoreExtensions.Modules.Launcher {
 
         private isValidContext(): boolean {
             if (window.frameElement) {
-                return window.frameElement.id != 'Editor_contentIframe';
+                return window.frameElement.id != 'Editor_contentIframe' && window.frameElement.id != 'holder';
             }
             return true;
         }
