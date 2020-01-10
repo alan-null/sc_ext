@@ -11,6 +11,6 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
         sc_ext_setVersion_request: true,
         version: chrome.runtime.getManifest().version
     }, () => {
-        document.getElementById("link").click();
+        chrome.tabs.create({ url: "https://alan-null.github.io/redirect/sc-ext-update" });
     });
 });
