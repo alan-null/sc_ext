@@ -18,6 +18,14 @@ module SitecoreExtensions.Options {
                         label: 'Enabled'
                     }
                 },
+                {
+                    key: 'fieldName.highlightText',
+                    type: 'checkbox',
+                    defaultValue: true,
+                    templateOptions: {
+                        label: 'Highlight field name'
+                    }
+                },
             ];
         }
     }

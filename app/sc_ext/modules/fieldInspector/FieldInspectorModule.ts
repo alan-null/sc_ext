@@ -6,7 +6,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
     }
 
     interface GetFieldNameCallback {
-        (fieldNema: string): void;
+        (fieldName: string): void;
     }
 
     enum ViewMode {
@@ -16,9 +16,11 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
     class FieldNameElement {
         currentElement: HTMLSpanElement;
+        highlightText: boolean;
 
-        constructor(element: HTMLSpanElement) {
+        constructor(element: HTMLSpanElement, highlightText: boolean) {
             this.currentElement = element;
+            this.highlightText = highlightText;
         }
 
         public setFieldName(): void {
@@ -27,6 +29,10 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                 this.setActiveMode(ViewMode.FieldName);
                 this.currentElement.classList.add("sc-ext-getfieldName-value");
                 this.currentElement.classList.add("sc-ext-contentButton");
+
+                if (this.highlightText) {
+                    HTMLHelpers.selectNodeContent(this.currentElement);
+                }
             }
         }
 
@@ -78,9 +84,11 @@ namespace SitecoreExtensions.Modules.FieldInspector {
         classFieldIDsInitialized: string = "sc-ext-gotofield-fieldIDs-initialized";
         classFieldNameSpan: string = "sc-ext-getfieldName";
         tokenService: ShortcutsRunner.TokenService;
+        options: FieldInspectorOptions;
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
+            this.options = new FieldInspectorOptions(rawOptions);
         }
 
         canExecute(): boolean {
@@ -202,7 +210,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                         spanGetFieldName.onclick = (e) => {
                             let currentElement = this.getFirstElementWithClass(e.getSrcElement(), this.classFieldNameSpan);
 
-                            let fieldNameElement = new FieldNameElement(currentElement as HTMLSpanElement);
+                            let fieldNameElement = new FieldNameElement(currentElement as HTMLSpanElement, this.options.fieldName.highlightText);
                             if (!fieldNameElement.IsInitialized()) {
 
                                 let initialized = this.ensureFieldsInitialized(() => { this.writeDownFieldName(e, sectionElement, j); });
@@ -251,7 +259,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
             let sectionName = this.getSectionName(sectionElement);
             this.getFieldName(fieldID, sectionName, j, (fieldName) => {
                 let node = this.getFirstElementWithClass(e.getSrcElement(), this.classFieldNameSpan) as HTMLDivElement;
-                let currentElement = new FieldNameElement(node);
+                let currentElement = new FieldNameElement(node, this.options.fieldName.highlightText);
                 currentElement.Initialize(fieldName);
                 currentElement.setFieldName();
             });
