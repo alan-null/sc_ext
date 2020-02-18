@@ -34,18 +34,21 @@ class LinkItemViewModel extends LinkItem {
 
         elLi.appendChild(elAnchor);
 
-        let connector = this.url.startsWith('/') ? "" : '/';
-        let href = connector + this.url;
+        let url = this.url;
         let mode = this.mode;
         elLi.onclick = () => {
             chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
                 let tab = tabs[0];
-                var tablink = tab.url;
-                var origin = tablink.match(/^[\w-]+:\/*\[?([\w\.:-]+)\]?(?::\d+)?/)[0];
+                if (!url.startsWith('http')) {
+                    var tablink = tab.url;
+                    var origin = tablink.match(/^[\w-]+:\/*\[?([\w\.:-]+)\]?(?::\d+)?/)[0];
+                    let connector = url.startsWith('/') ? "" : '/';
+                    url = origin + connector + url;
+                }
                 if (mode == 'newtab') {
-                    chrome.tabs.create({ url: origin + href });
+                    chrome.tabs.create({ url: url });
                 } else {
-                    chrome.tabs.update(tab.id, { url: origin + href });
+                    chrome.tabs.update(tab.id, { url: url });
                 }
             });
         };

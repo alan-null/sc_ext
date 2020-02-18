@@ -3,8 +3,11 @@
 namespace SitecoreExtensions.Modules.Launcher.Providers {
     class UserDefinedLink extends NavigationCommand implements ICommand {
         constructor(name: string, description: string, url: string) {
-            let connector = url.startsWith('/') ? "" : '/';
-            super(name, description, window.top.location.origin + connector + url);
+            if (!url.startsWith('http')) {
+                let connector = url.startsWith('/') ? "" : '/';
+                url = window.top.location.origin + connector + url;
+            }
+            super(name, description, url);
         }
     }
 
