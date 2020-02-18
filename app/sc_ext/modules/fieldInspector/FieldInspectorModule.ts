@@ -45,6 +45,14 @@ namespace SitecoreExtensions.Modules.FieldInspector {
             }
         }
 
+        public setLoadingText(): void {
+            if (!this.IsInitialized()) {
+                let element = HTMLHelpers.createElement("span", { class: "sc-ext-getfieldName sc-ext-getfieldName-value sc-ext-contentButton" }) as HTMLSpanElement;
+                element.innerHTML = "Loading ...";
+                this.setInnerHTML(element.outerHTML);
+            }
+        }
+
         public IsInitialized(): boolean {
             return this.currentElement.dataset['field'] != null;
         }
@@ -151,7 +159,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                             (e.getSrcElement() as HTMLSpanElement).innerText = "Resetting ...";
                             this.ensureFieldsInitialized();
 
-                            this.getFieldID(this.getActiveNodeID(), sectionName, j, (fieldID) => {
+                            this.getFieldID(Context.ItemID(), sectionName, j, (fieldID) => {
                                 (e.getSrcElement() as HTMLSpanElement).innerText = resetFieldText;
                                 var url = window.top.location.origin + "/sitecore/shell/default.aspx?xmlcontrol=ResetFields&id=" + Context.ItemID() + "&la=en&vs=1";
                                 let req = new Http.HttpRequest(url, Http.Method.POST, (e: ProgressEvent) => {
@@ -189,14 +197,14 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                             (e.getSrcElement() as HTMLSpanElement).innerText = "Loading ...";
                             this.ensureFieldsInitialized();
                             if (e.ctrlKey) {
-                                this.getFieldID(this.getActiveNodeID(), sectionName, j, (fieldID) => {
+                                this.getFieldID(Context.ItemID(), sectionName, j, (fieldID) => {
                                     (e.getSrcElement() as HTMLSpanElement).innerText = goToFieldText;
                                     var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + fieldID;
                                     new Launcher.Providers.NavigationCommand(null, null, url).execute(e);
                                 }, e);
 
                             } else {
-                                this.getFieldID(this.getActiveNodeID(), sectionName, j, (fieldID) => {
+                                this.getFieldID(Context.ItemID(), sectionName, j, (fieldID) => {
                                     (e.getSrcElement() as HTMLSpanElement).innerText = goToFieldText;
                                     let contentTree = new PageObjects.ContentTree();
                                     contentTree.loadItem(fieldID);
@@ -211,6 +219,8 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                             let currentElement = this.getFirstElementWithClass(e.getSrcElement(), this.classFieldNameSpan);
 
                             let fieldNameElement = new FieldNameElement(currentElement as HTMLSpanElement, this.options.fieldName.highlightText);
+
+                            fieldNameElement.setLoadingText();
                             if (!fieldNameElement.IsInitialized()) {
 
                                 let initialized = this.ensureFieldsInitialized(() => { this.writeDownFieldName(e, sectionElement, j); });
@@ -243,12 +253,8 @@ namespace SitecoreExtensions.Modules.FieldInspector {
             return true;
         }
 
-        private getActiveNodeID(): string {
-            return document.querySelector(".scContentTreeContainer .scContentTreeNodeActive").id.substring(10);
-        }
-
         private initFieldIDs(callback?: any) {
-            this.getItemFields(this.getActiveNodeID(), callback);
+            this.getItemFields(Context.ItemID(), callback);
             let sectionsRoot = document.querySelector(".scEditorSections");
             sectionsRoot.classList.add(this.classFieldIDsInitialized);
         }
@@ -364,7 +370,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
                         let label = document.querySelector("[data-sectionid='" + id + "']") as HTMLAnchorElement;
 
-                        label.dataset["fieldid"] = this.idParser.extractID(section.attributes['href'].value);
+                            label.dataset["fieldid"] = this.idParser.extractID(section.attributes['href'].value);
                         section = allSections[++index] as HTMLTableDataCellElement;
                     }
                 }
