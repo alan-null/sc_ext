@@ -57,5 +57,10 @@
     "web_accessible_resources": [
         "common/optionsProvider.js",
         "sc_ext/Application.js"
-    ]
+    ],
+    "applications": {
+        "gecko": {
+            "update_url": "https://raw.githubusercontent.com/alan-null/sc_ext.firefox/master/update.json"
+        }
+    }
 }
