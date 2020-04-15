@@ -1,7 +1,7 @@
 {
     "name": "__MSG_appName__",
     "short_name": "__MSG_appShortName__",
-    "version": "3.3.0",
+    "version": "3.3.0.0",
     "manifest_version": 2,
     "description": "__MSG_appDescription__",
     "icons": {
@@ -56,7 +56,8 @@
     },
     "web_accessible_resources": [
         "common/optionsProvider.js",
-        "sc_ext/Application.js"
+        "sc_ext/Application.js",
+        "sitecore/shell/Themes/Standard/images/hamburgermenu_default.png"
     ],
     "applications": {
         "gecko": {
