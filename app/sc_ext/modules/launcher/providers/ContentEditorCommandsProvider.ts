@@ -27,6 +27,21 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addInvokeCommand('New media folder', 'Create new Media/Media folder', 'media:newfolder', canExecute);
             this.addInvokeCommand('Download media', 'Download attached media file', 'media:download', canExecute);
             this.addInvokeCommand('View media', 'View attached media file', 'media:view', canExecute);
+            this.addDeepLinkCommand();
+        }
+
+        private addDeepLinkCommand() {
+            let command = new DynamicCommand("Deep link", "Stores url to the current item into clipboard.", "");
+            command.executeCallback = (cmd: DynamicCommand, evt: UserActionEvent) => {
+                var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1";
+                let id = cmd.ItemId;
+                if (id) {
+                    url += "&fo=" + id;
+                    HTMLHelpers.copyTextToClipboard(url);
+                }
+            };
+            command.canExecuteCallback = () => { return Context.Location() == Enums.Location.ContentEditor; };
+            this.commands.push(command);
         }
     }
 }

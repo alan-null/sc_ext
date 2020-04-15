@@ -5,16 +5,18 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
         executeCallback: CommandExecuteCallback;
         canExecuteCallback: CommandCanExecuteCallback;
         descriptionGetter: CommandDescriptionCallback;
+        staticDescription: string;
 
         get description(): string {
             if (this.descriptionGetter == null) {
-                return this.description;
+                return this.staticDescription;
             } else {
                 return this.descriptionGetter(this);
             }
         }
         constructor(name: string, description: string, url: string) {
             super(name, description, url);
+            this.staticDescription = description;
         }
         canExecute(): boolean {
             if (this.canExecuteCallback) {
