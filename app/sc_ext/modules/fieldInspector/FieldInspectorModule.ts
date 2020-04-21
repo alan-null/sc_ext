@@ -220,9 +220,16 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
                             let fieldNameElement = new FieldNameElement(currentElement as HTMLSpanElement, this.options.fieldName.highlightText);
 
+                            if (fieldNameElement.currentElement.innerText == "Loading ...") {
+                                SitecoreExtensions.Notification.Instance.info({
+                                    message: '<b>Field Inspector:</b></br>Fetching field name in the background.</br>Please wait.',
+                                    position: 'topRight', backgroundColor: 'rgba(157,222,255,0.97)', progressBar: false
+                                });
+                                return;
+                            }
+
                             fieldNameElement.setLoadingText();
                             if (!fieldNameElement.IsInitialized()) {
-
                                 let initialized = this.ensureFieldsInitialized(() => { this.writeDownFieldName(e, sectionElement, j); });
                                 if (initialized) {
                                     this.writeDownFieldName(e, sectionElement, j);
@@ -336,7 +343,8 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
                 let allSections = doc.querySelector(".FieldsScroller").querySelectorAll("td.FieldSection,td.FieldLabel .ItemPathTemplate");
                 let currentSection;
-                for (var index = 0; index < allSections.length; ) {
+                // tslint:disable-next-line:whitespace
+                for (var index = 0; index < allSections.length;) {
                     var section = allSections[index] as HTMLTableDataCellElement;
 
                     if (section.className == "FieldSection") {
@@ -370,7 +378,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
                         let label = document.querySelector("[data-sectionid='" + id + "']") as HTMLAnchorElement;
 
-                            label.dataset["fieldid"] = this.idParser.extractID(section.attributes['href'].value);
+                        label.dataset["fieldid"] = this.idParser.extractID(section.attributes['href'].value);
                         section = allSections[++index] as HTMLTableDataCellElement;
                     }
                 }
