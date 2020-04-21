@@ -132,11 +132,18 @@ gulp.task('cleanup_dev', () => {
 
 gulp.task('cleanup_release', del.bind(null, ['.tmp', 'dist']));
 
+gulp.task('copy_lib', () => {
+    return copy([
+        'node_modules/izitoast/dist/js/iziToast.js',
+        'node_modules/izitoast/dist/css/iziToast.css',
+    ], './app/sc_ext/libraries');
+});
+
 gulp.task('set_mode', () => {
     mode = "watch";
 });
 
-gulp.task('watch', ['set_mode', 'typescript_all', 'sass_all'], () => {
+gulp.task('watch', ['set_mode', 'typescript_all', 'sass_all', 'copy_lib'], () => {
     livereload.listen();
 
     gulp.watch('app/sc_ext/**/*.ts', ['typescript_sc_ext']);

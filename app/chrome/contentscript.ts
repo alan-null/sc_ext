@@ -89,6 +89,9 @@ window.addEventListener('message', function (event) {
                 modulesCount: event.data.sc_ext_badgetext
             });
         }
+        if (event.data.sc_ext_load_lib_request) {
+            injectScripts([createScriptElement(event.data.sc_ext_lib)]);
+        }
         if (chrome.storage) {
             (async () => {
                 let currentVersion = await SitecoreExtensions.Common.GlobalStorage.get("sc-ext::version");

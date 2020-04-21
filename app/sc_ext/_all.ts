@@ -1,7 +1,7 @@
 // Typings
 /// <reference path='typings/sitecore.d.ts'/>
 /// <reference path='Extensions.ts'/>
-
+/// <reference path='typings/IziToast.ts'/>
 
 // Options Page
 /// <reference path='../options/providers/OptionsProvider.ts'/>
@@ -24,6 +24,7 @@
 /// <reference path='page objects/_all.ts'/>
 
 // Other
+/// <reference path='Notification.ts'/>
 /// <reference path='enums/Location.ts'/>
 /// <reference path='Context.ts'/>
 /// <reference path='ExtensionsManager.ts'/>

@@ -38,7 +38,8 @@
             "sc_ext/styles/treelistField.css",
             "sc_ext/styles/fieldInspector.css",
             "sc_ext/styles/toggleRibbon.css",
-            "sc_ext/styles/treeScope.css"
+            "sc_ext/styles/treeScope.css",
+            "sc_ext/libraries/iziToast.css"
         ],
         "run_at": "document_end",
         "all_frames": true
@@ -56,6 +57,7 @@
     },
     "web_accessible_resources": [
         "common/optionsProvider.js",
-        "sc_ext/Application.js"
+        "sc_ext/Application.js",
+        "sc_ext/libraries/iziToast.js"
     ]
 }

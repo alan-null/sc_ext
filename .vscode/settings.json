@@ -10,7 +10,9 @@
             "when": "$(basename).scss"
         },
         "app/common/*.js": true,
-        "app/common/*.js.map": true
+        "app/common/*.js.map": true,
+        "app/sc_ext/libraries/*.js": true,
+        "app/sc_ext/libraries/*.css": true,
     },
     "files.trimTrailingWhitespace": true,
     "search.exclude": {
