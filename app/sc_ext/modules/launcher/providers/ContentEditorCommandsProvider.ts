@@ -38,6 +38,10 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
                 if (id) {
                     url += "&fo=" + id;
                     HTMLHelpers.copyTextToClipboard(url);
+                    SitecoreExtensions.Notification.Instance.info({
+                        message: `<b>Deep link:</b></br>Link to the current item has been copied to a clipboard</br>ID: <code>${id}</code>`,
+                        position: 'topRight', backgroundColor: 'rgba(157,222,255,0.97)', progressBar: false
+                    });
                 }
             };
             command.canExecuteCallback = () => { return Context.Location() == Enums.Location.ContentEditor; };
