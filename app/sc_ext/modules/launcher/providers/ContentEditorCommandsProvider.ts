@@ -27,16 +27,27 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addInvokeCommand('New media folder', 'Create new Media/Media folder', 'media:newfolder', canExecute);
             this.addInvokeCommand('Download media', 'Download attached media file', 'media:download', canExecute);
             this.addInvokeCommand('View media', 'View attached media file', 'media:view', canExecute);
-            this.addDeepLinkCommand();
+            this.addDeepLinkCommand("Deep link", "Stores url to the current item into clipboard.", canExecute);
+            this.addOpenInNewTab("Open item in new tab", "Opens Content Editor with current item in a new tab", canExecute);
+        }
+        private addOpenInNewTab(name: string, description: string, canExecute: Function) {
+            let command = new DynamicCommand(name, description, "");
+            command.executeCallback = (cmd: DynamicCommand, evt: UserActionEvent) => {
+                if (cmd.ItemId) {
+                    let tempCommand = new NavigationCommand("", "", "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo" + cmd.ItemId);
+                    tempCommand.execute({ ctrlKey: true } as UserActionEvent);
+                }
+            };
+            command.canExecuteCallback = () => { return canExecute(); };
+            this.commands.push(command);
         }
 
-        private addDeepLinkCommand() {
-            let command = new DynamicCommand("Deep link", "Stores url to the current item into clipboard.", "");
+        private addDeepLinkCommand(name: string, description: string, canExecute: Function) {
+            let command = new DynamicCommand(name, description, "");
             command.executeCallback = (cmd: DynamicCommand, evt: UserActionEvent) => {
-                var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1";
                 let id = cmd.ItemId;
                 if (id) {
-                    url += "&fo=" + id;
+                    var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1" + "&fo=" + id;
                     HTMLHelpers.copyTextToClipboard(url);
                     SitecoreExtensions.Notification.Instance.info({
                         message: `<b>Deep link:</b></br>Link to the current item has been copied to a clipboard</br>ID: <code>${id}</code>`,
@@ -44,7 +55,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
                     });
                 }
             };
-            command.canExecuteCallback = () => { return Context.Location() == Enums.Location.ContentEditor; };
+            command.canExecuteCallback = () => { return canExecute(); };
             this.commands.push(command);
         }
     }
