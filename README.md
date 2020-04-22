@@ -4,22 +4,24 @@
 
 Sitecore Extensions is a google chrome/firefox extension which provides small improvements for Sitecore CMS.
 
-## Supported versions:
+## Supported Sitecore versions
+
 - Sitecore.NET 8.0 and newer (full)
 - Sitecore.NET 7.5 (partial)
 - Sitecore.NET 7.2 (partial)
 - Sitecore.NET 7.1 (partial)
 - Sitecore.NET 7.0 (partial)
 
-## Downloads:
+## Supported browsers
 
 - [Chrome](https://chrome.google.com/webstore/detail/sitecore-extensions/aoclhcccfdkjddgpaaajldgljhllhgmd)
-- [Vivaldi](https://chrome.google.com/webstore/detail/sitecore-extensions/aoclhcccfdkjddgpaaajldgljhllhgmd)
+- [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/dcbilinfbmohfdhjdekgpgpkcbhmfipl?hl=en-US)
 - [Firefox](https://github.com/alan-null/sc_ext.firefox)
 - [Opera](https://addons.opera.com/pl/extensions/details/sitecore-extensions-2/?display=en)
+- [Vivaldi](https://chrome.google.com/webstore/detail/sitecore-extensions/aoclhcccfdkjddgpaaajldgljhllhgmd)
 
+## Features
 
-## Features:
 - Launcher - launch Sitecore commands using command omnibox,
 - Collapse all sections - you can collapse all opened sections in Content Editor with just one click,
 - Expand all sections - you can expand all opened sections in Content Editor with just one click,
@@ -36,35 +38,49 @@ Sitecore Extensions is a google chrome/firefox extension which provides small im
 More information about all available feature with `gif` demos can be found [here](https://github.com/alan-null/sc_ext/wiki)
 
 ## Contributing
+
 If you are interested in fixing issues and contributing directly to the code base, please see the document [How to Contribute](.github/CONTRIBUTING.md)
 
 ## Development
+
 Follow steps below if you want to start coding.
-#### Prerequisites
+
+### Prerequisites
+
 Install **nodejs**
-```
+
+```cmd
 https://nodejs.org/en/download/
 ```
 
-#### Environment setup
+### Environment setup
+
 Clone repository
-```
+
+```cmd
 git clone https://github.com/alan-null/sc_ext.git
 ```
+
 Install node modules
-```
+
+```cmd
 npm install
 ```
+
 Build project
-```
+
+```cmd
 npm run build
 ```
+
 Run watch task if you want dynamic code rebuild in the background
-```
+
+```cmd
 npm run watch
 ```
 
 ## Development - one click
+
 If you are tired of downloading all those modules there is a quicker way.
 
 Open **PowerShell Console** and run following code:
@@ -83,5 +99,6 @@ npm install
 *If needed remove unnecessary choco packages.*
 
 ## License
+
 [MIT](LICENSE)
 [![Analytics](https://ga-beacon.appspot.com/UA-74179201-4/sc_ext?pixel)](https://github.com/igrigorik/ga-beacon)
