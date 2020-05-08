@@ -1,9 +1,14 @@
 /// <reference path='../../../_all.ts'/>
 
 namespace SitecoreExtensions.Modules.Launcher.Providers {
+    import DatabaseChangeEventArgs = Events.DatabaseChangeEventArgs;
+
     export class ContentEditorCommandsProvider extends BaseCommandsProvider {
+        databaseName: string;
         constructor() {
             super();
+            this.databaseName = null;
+            new Events.EventHandler("onDatabaseChange", (args: DatabaseChangeEventArgs) => { this.onDatabaseChange(args); });
         }
 
         createCommands(): void {
@@ -30,6 +35,11 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addDeepLinkCommand("Deep link", "Stores url to the current item into clipboard.", canExecute);
             this.addOpenInNewTab("Open item in new tab", "Opens Content Editor with current item in a new tab", canExecute);
         }
+
+        onDatabaseChange(args: DatabaseChangeEventArgs) {
+            this.databaseName = args.databaseName;
+        }
+
         private addOpenInNewTab(name: string, description: string, canExecute: Function) {
             let command = new DynamicCommand(name, description, "");
             command.executeCallback = (cmd: DynamicCommand, evt: UserActionEvent) => {
@@ -47,7 +57,17 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             command.executeCallback = (cmd: DynamicCommand, evt: UserActionEvent) => {
                 let id = cmd.ItemId;
                 if (id) {
-                    var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1" + "&fo=" + id;
+                    if (this.databaseName != null) {
+                        SitecoreExtensions.Notification.Instance.info({
+                            message: `<b>Deep link:</b></br>Database has been changed in the background, refreshing the item first`,
+                            position: 'topRight', backgroundColor: 'rgba(157,222,255,0.97)', progressBar: false
+                        });
+                        this.databaseName = null;
+                        let contentTree = new PageObjects.ContentTree();
+                        contentTree.loadItem(id);
+                    }
+
+                    var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1" + "&fo=" + id + "&la=" + cmd.Lang + "&sc_content=" + cmd.Database;
                     HTMLHelpers.copyTextToClipboard(url);
                     SitecoreExtensions.Notification.Instance.info({
                         message: `<b>Deep link:</b></br>Link to the current item has been copied to a clipboard</br>ID: <code>${id}</code>`,
