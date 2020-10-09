@@ -1,5 +1,4 @@
 var gulp = require('gulp');
-var livereload = require('gulp-livereload');
 var ts = require('gulp-typescript');
 var tslint = require('gulp-tslint');
 var sourcemaps = require('gulp-sourcemaps');
@@ -13,7 +12,6 @@ var uglify = require('gulp-uglify')
 var htmlmin = require('gulp-htmlmin')
 var zip = require('gulp-zip')
 var size = require('gulp-size')
-var jsonEditor = require('gulp-json-editor')
 var replace = require('gulp-string-replace');
 
 var mode = "build"
@@ -144,8 +142,6 @@ gulp.task('set_mode', () => {
 });
 
 gulp.task('watch', ['set_mode', 'typescript_all', 'sass_all', 'copy_lib'], () => {
-    livereload.listen();
-
     gulp.watch('app/sc_ext/**/*.ts', ['typescript_sc_ext']);
     gulp.watch('app/sc_ext/styles/**/*.scss', ['sass_sc_ext']);
     gulp.watch('app/chrome/popup/**/*.scss', ['sass_popup']);
@@ -166,12 +162,6 @@ gulp.task('extras', () => {
 
 gulp.task('chromeManifest', () => {
     gulp.src("app/manifest.json")
-        .pipe(jsonEditor(function (json) {
-            var bgJS = json.background.scripts;
-            var index = bgJS.indexOf('chrome/chromereload.js');
-            bgJS.splice(index, 1);
-            return json;
-        }))
         .pipe(gulp.dest("dist"));
 });
 
