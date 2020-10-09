@@ -17,7 +17,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         recentCommandsStore: RecentCommandsStore;
         idParser: IdParser;
         options: Models.LauncherOptions;
-
+        private selectedTermClass: string = 'sc-ext-selected-term';
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description);
@@ -45,7 +45,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.modalElement = <HTMLDivElement>document.getElementById('sc-ext-modal');
             this.searchBoxElement = <HTMLInputElement>document.getElementById('sc-ext-searchBox');
             this.searchResultsElement = <HTMLUListElement>document.getElementById('sc-ext-searchResults');
-            this.selectedCommand = document.getElementsByClassName('selected') as HTMLCollection;
+            this.selectedCommand = document.getElementsByClassName(this.selectedTermClass) as HTMLCollection;
 
             this.fuzzy.highlighting.before = "<span class='term'>";
             this.fuzzy.highlighting.after = '</span>';
@@ -200,39 +200,39 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         changeSelectedCommand(newSelected): void {
-            var oldSelected = <HTMLLIElement>this.searchResultsElement.querySelector('.selected');
+            var oldSelected = <HTMLLIElement>this.searchResultsElement.querySelector('.' + this.selectedTermClass);
             if (oldSelected) {
                 oldSelected.removeAttribute('class');
-                newSelected.setAttribute('class', 'selected');
+                newSelected.setAttribute('class', this.selectedTermClass);
             }
         }
 
         commandSelectionEvent(evt: KeyboardEvent): void {
             var commands = this.searchResultsElement.querySelectorAll('li');
             if (commands.length > 0) {
-                var selected = <HTMLLIElement>this.searchResultsElement.querySelector('.selected');
+                var selected = <HTMLLIElement>this.searchResultsElement.querySelector('.' + this.selectedTermClass);
                 if (selected == undefined) selected = <HTMLLIElement>this.searchResultsElement.querySelector('li');
 
                 if (evt.keyCode == this.options.keyBindings.selectPrevResult && commands[0] != selected) {
-                    if (selected.className == 'selected') {
+                    if (selected.className == this.selectedTermClass) {
                         this.changeSelectedCommand(selected.previousSibling);
                     }
                 }
 
                 if (evt.keyCode == this.options.keyBindings.selectNextResult && commands.length != 0) {
-                    if (selected.className == 'selected' && commands[commands.length - 1] !== selected) {
+                    if (selected.className == this.selectedTermClass && commands[commands.length - 1] !== selected) {
                         this.changeSelectedCommand(selected.nextSibling);
                     }
                 }
 
                 if (evt.keyCode == this.options.keyBindings.selectLastResult && commands.length != 0) {
-                    if (selected.className == 'selected' && commands[commands.length - 1] !== selected) {
+                    if (selected.className == this.selectedTermClass && commands[commands.length - 1] !== selected) {
                         this.changeSelectedCommand(commands[commands.length - 1]);
                     }
                 }
 
                 if (evt.keyCode == this.options.keyBindings.selectFirstResult && commands.length != 0) {
-                    if (selected.className == 'selected' && commands[0] !== selected) {
+                    if (selected.className == this.selectedTermClass && commands[0] !== selected) {
                         this.changeSelectedCommand(commands[0]);
                     }
                 }
@@ -248,7 +248,7 @@ namespace SitecoreExtensions.Modules.Launcher {
 
         private selectFirstResult(): void {
             if (this.searchResultsElement.children.length > 0) {
-                (<HTMLLIElement>this.searchResultsElement.firstChild).setAttribute('class', 'selected');
+                (<HTMLLIElement>this.searchResultsElement.firstChild).setAttribute('class', this.selectedTermClass);
             }
         }
         private canBeExecuted(command: ICommand, index: number, array: ICommand[]): boolean {
