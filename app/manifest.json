@@ -12,7 +12,6 @@
     "default_locale": "en",
     "background": {
         "scripts": [
-            "chrome/chromereload.js",
             "chrome/background.js"
         ]
     },
