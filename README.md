@@ -29,11 +29,12 @@ Sitecore Extensions is a google chrome/firefox extension which provides small im
 - Database colour - Change the global header colour depending on current database,
 - Icon colour - changes colour to red when using Sitecore on current tab, otherwise will be grayed,
 - Field Search - quickly find a field or section in the Content view in Content Editor,
-- Restore Last Location - restores last opened item in Content Editor
-- Toggle Ribbon - small button which allows you to hide whole ribbon while working in Experience Editor.
-- Tree Auto Expand - it will automatically expand tree structure if there is only one child under expanded item.
-- Tree Scope - give an ability to scope a content tree to the currently selected item
-- Field Inspector - go to field, inspect field name, reset value to `__Standard values`
+- Restore Last Location - restores last opened item in Content Editor,
+- Toggle Ribbon - small button which allows you to hide whole ribbon while working in Experience Editor,
+- Tree Auto Expand - it will automatically expand tree structure if there is only one child under expanded item,
+- Tree Scope - give an ability to scope a content tree to the currently selected item,
+- Field Inspector - go to field, inspect field name, reset value to `__Standard values`,
+- Add Here - extends AddHere button in ExperienceEditor with placeholder name
 
 More information about all available feature with `gif` demos can be found [here](https://github.com/alan-null/sc_ext/wiki)
 
