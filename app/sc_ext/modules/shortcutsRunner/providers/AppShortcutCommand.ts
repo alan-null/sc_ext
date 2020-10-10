@@ -10,6 +10,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner.Providers {
         constructor(name: string, description: string, runner: ShortcutRunner, shortcutID: string) {
             super(name, description, "");
             this.shortcutID = shortcutID;
+            this.runner = runner;
         }
 
         public canExecute(): boolean {
