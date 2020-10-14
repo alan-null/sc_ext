@@ -390,7 +390,12 @@ namespace SitecoreExtensions.Modules.FieldInspector {
         }
 
         private getSectionName(section: HTMLElement): string {
-            return section.onclick.toString().match(/,(.)*(?='\))/)[0].substring(2);
+            let str = section.onclick.toString();
+            if (str.indexOf("scForm") > 0) {
+                return str.match(/ToggleSection\(\"(.)*(?=\",\")/)[0].substring("ToggleSection(\"".length);
+            } else {
+                return str.match(/,(.)*(?='\))/)[0].substring(2);
+            }
         }
 
         private getFirstElementWithClass(parent: any, className: string): Node {
