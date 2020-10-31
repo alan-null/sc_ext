@@ -52,13 +52,13 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addCommand('Serialization.aspx', 'Serialize and revert databases', 'serialization');
             this.addCommand('Set Application Center Endpoint.aspx', 'Change Application Center endpoint address', 'SetSACEndpoint');
             this.addCommand('Show Config.aspx', 'Merge configuration files.', 'ShowConfig');
-            this.addCommand('Sitecore Support Package Generator.aspx', 'Sending such package to Sitecore Support reduces the time it takes to diagnose and resolve Sitecore issues.', 'supportpackage');
+            this.commands.push(new NavigationCommand('Sitecore Support Package Generator.aspx', 'Sending such package to Sitecore Support reduces the time it takes to diagnose and resolve Sitecore issues.', window.top.location.origin + '/sitecore/admin/supportpackage'));
             this.addCommand('Sql Shell.aspx', 'Execute sql sripts using the specific connection strings.', 'SqlShell');
             this.addCommand('Unlock Admin.aspx', 'Unlock Admin user.', 'unlock_admin');
             this.addCommand('Update Installation Wizard.aspx', 'Install Sitecore updates.', 'UpdateInstallationWizard');
             this.addCommand('User Info.aspx', 'Logged in user details.', 'UserInfo');
+            this.addCommand('Config Layers.aspx', 'Merge configuration files depending on configuration layers and roles', 'ShowConfigLayers');
         }
-
 
         addCommand(name: string, description: string, aspx: string): void {
             this.commands.push(new ShortcutCommand(name, description, aspx));
