@@ -10,7 +10,7 @@ chrome.runtime.onInstalled.addListener(details => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.sc_ext_setBadgeText_request) {
-    chrome.browserAction.setBadgeText({ tabId: sender.tab.id, text: request.modulesCount, });
+    chrome.browserAction.setBadgeText({ tabId: sender.tab.id, text: request.modulesCount });
   }
   if (request.sc_ext_setIcon_request) {
     chrome.browserAction.setIcon({
