@@ -44,7 +44,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             let command = new DynamicCommand(name, description, "");
             command.executeCallback = (cmd: DynamicCommand, evt: UserActionEvent) => {
                 if (cmd.ItemId) {
-                    let tempCommand = new NavigationCommand("", "", "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo" + cmd.ItemId);
+                    let tempCommand = new NavigationCommand("", "", "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + cmd.ItemId);
                     tempCommand.execute({ ctrlKey: true } as UserActionEvent);
                 }
             };
