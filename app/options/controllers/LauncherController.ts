@@ -16,7 +16,7 @@ module SitecoreExtensions.Options {
             return {
                 key: key,
                 className: 'col-lg-3 center-text',
-                type: 'input',
+                type: 'number',
                 defaultValue: defaultValue,
             };
         }
