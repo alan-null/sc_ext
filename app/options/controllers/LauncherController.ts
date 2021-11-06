@@ -21,6 +21,14 @@ module SitecoreExtensions.Options {
             };
         }
 
+        buildModuleOptions(): ModuleOptionsBase {
+            for (let key of Object.keys(this.model.keyBindings)) {
+                this.model.keyBindings[key] = +this.model.keyBindings[key];
+            }
+            this.model.searchResultsCount = +this.model.searchResultsCount;
+            return super.buildModuleOptions();
+        }
+
         getFields() {
             return [
                 this.buildHeader('<h3>General</h3>', 'col-lg-12'),
