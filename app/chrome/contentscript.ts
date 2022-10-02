@@ -106,7 +106,7 @@ window.addEventListener('message', function (event) {
 
 function createScriptElement(src: string): HTMLScriptElement {
     var script = <HTMLScriptElement>document.createElement("script");
-    script.src = chrome.extension.getURL(src);
+    script.src = chrome.runtime.getURL(src);
     return script;
 }
 
