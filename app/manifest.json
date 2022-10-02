@@ -2,7 +2,7 @@
     "name": "__MSG_appName__",
     "short_name": "__MSG_appShortName__",
     "version": "3.4.0",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "description": "__MSG_appDescription__",
     "icons": {
         "16": "chrome/images/icon-16.png",
@@ -11,39 +11,41 @@
     },
     "default_locale": "en",
     "background": {
-        "scripts": [
-            "chrome/background.js"
-        ]
+        "service_worker": "chrome/background.js"
     },
     "permissions": [
         "activeTab",
-        "http://*/*",
-        "https://*/*",
         "storage"
     ],
-    "content_scripts": [{
-        "matches": [
-            "http://*/*",
-            "https://*/*"
-        ],
-        "js": [
-            "chrome/contentscript.js",
-            "common/optionsProvider.js"
-        ],
-        "css": [
-            "sc_ext/styles/launcher.css",
-            "sc_ext/styles/databaseName.css",
-            "sc_ext/styles/fieldSearch.css",
-            "sc_ext/styles/treelistField.css",
-            "sc_ext/styles/fieldInspector.css",
-            "sc_ext/styles/toggleRibbon.css",
-            "sc_ext/styles/treeScope.css",
-            "sc_ext/libraries/iziToast.css"
-        ],
-        "run_at": "document_end",
-        "all_frames": true
-    }],
-    "browser_action": {
+    "host_permissions": [
+        "http://*/*",
+        "https://*/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "js": [
+                "chrome/contentscript.js",
+                "common/optionsProvider.js"
+            ],
+            "css": [
+                "sc_ext/styles/launcher.css",
+                "sc_ext/styles/databaseName.css",
+                "sc_ext/styles/fieldSearch.css",
+                "sc_ext/styles/treelistField.css",
+                "sc_ext/styles/fieldInspector.css",
+                "sc_ext/styles/toggleRibbon.css",
+                "sc_ext/styles/treeScope.css",
+                "sc_ext/libraries/iziToast.css"
+            ],
+            "run_at": "document_end",
+            "all_frames": true
+        }
+    ],
+    "action": {
         "default_icon": {
             "19": "chrome/images/icon-disabled-128.png",
             "38": "chrome/images/icon-disabled-128.png"
@@ -51,12 +53,21 @@
         "default_popup": "chrome/popup/popup.html"
     },
     "options_ui": {
-        "page": "options/options.html",
-        "chrome_style": true
+        "page": "options/options.html"
     },
     "web_accessible_resources": [
-        "common/optionsProvider.js",
-        "sc_ext/Application.js",
-        "sc_ext/libraries/iziToast.js"
+        {
+            "resources": [
+                "common/optionsProvider.js",
+                "sc_ext/Application.js",
+                "sc_ext/libraries/iziToast.js"
+            ],
+            "matches": [
+                "https://*/*"
+            ],
+            "extension_ids": [
+                "aoclhcccfdkjddgpaaajldgljhllhgmd"
+            ]
+        }
     ]
 }
