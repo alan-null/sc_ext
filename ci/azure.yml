@@ -1,0 +1,19 @@
+pool:
+  name: Azure Pipelines
+steps:
+  - task: NodeTool@0
+    displayName: "Use Node 8.2.1"
+    inputs:
+      versionSpec: 8.2.1
+
+  - powershell: |
+      npm install
+      npm -g install gulp-cli
+      gulp package
+    displayName: Main
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish artifacts"
+    inputs:
+      PathtoPublish: package
+      ArtifactName: package

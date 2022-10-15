@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/4nag8qas7dk96nme/branch/master?svg=true)](https://ci.appveyor.com/project/alannull/sc-ext/branch/master)
+[![Build status](https://alan-null.visualstudio.com/Sitecore%20Extensions/_apis/build/status/sc_ext)](https://alan-null.visualstudio.com/Sitecore%20Extensions/_build?definitionId=11)
 
 # Sitecore Extensions
 

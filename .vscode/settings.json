@@ -18,5 +18,8 @@
     "search.exclude": {
         "**/dist": true
     },
-    "files.defaultLanguage": "typescript"
+    "files.defaultLanguage": "typescript",
+    "files.associations": {
+        "**/ci/*.yml": "azure-pipelines"
+    },
 }
