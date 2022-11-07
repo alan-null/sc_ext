@@ -6,7 +6,8 @@
   },
   "scripts": {
     "watch": "gulp watch",
-    "build": "gulp build"
+    "build": "gulp build",
+    "package": "gulp package"
   },
   "devDependencies": {
     "del": "^2.2.0",

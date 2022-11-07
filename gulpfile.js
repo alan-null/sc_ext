@@ -246,7 +246,7 @@ gulp.task('publish_all', (callback) => {
 
 gulp.task('build', ['cleanup_release'], (callback) => {
     runSequence(
-        'typescript_all', 'sass_all',
+        'typescript_all', 'sass_all', 'copy_lib',
         'extras', 'chromeManifest',
         'publish_all',
         'get_package_size', callback);
