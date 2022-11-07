@@ -1,0 +1,7 @@
+version: "3"
+services:
+  localdev:
+    image: alpl/sc_ext
+    build: .
+    volumes:
+      - ./../:/data/app

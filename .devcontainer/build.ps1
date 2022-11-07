@@ -1,0 +1,1 @@
+docker build -t alpl/sc_ext .

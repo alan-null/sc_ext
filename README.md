@@ -1,4 +1,4 @@
-[![Build status](https://alan-null.visualstudio.com/Sitecore%20Extensions/_apis/build/status/sc_ext)](https://alan-null.visualstudio.com/Sitecore%20Extensions/_build?definitionId=11)
+[![Build Status](https://alan-null.visualstudio.com/Sitecore%20Extensions/_apis/build/status/sc_ext?branchName=master)](https://alan-null.visualstudio.com/Sitecore%20Extensions/_build/latest?definitionId=11&branchName=master)
 
 # Sitecore Extensions
 
@@ -48,9 +48,11 @@ Follow steps below if you want to start coding.
 
 ### Prerequisites
 
+**If you want avoid nodejs on your machine use [docker](#docker) to build project inside container.**
+
 Install **nodejs**
 
-```cmd
+```bash
 https://nodejs.org/en/download/
 ```
 
@@ -58,25 +60,25 @@ https://nodejs.org/en/download/
 
 Clone repository
 
-```cmd
+```bash
 git clone https://github.com/alan-null/sc_ext.git
 ```
 
 Install node modules
 
-```cmd
+```bash
 npm install
 ```
 
 Build project
 
-```cmd
+```bash
 npm run build
 ```
 
 Run watch task if you want dynamic code rebuild in the background
 
-```cmd
+```bash
 npm run watch
 ```
 
@@ -98,6 +100,30 @@ npm install
 ```
 
 *If needed remove unnecessary choco packages.*
+
+## <a name="docker" href="#docker"></a> Development - docker
+
+### Prerequisites
+
+Install **docker**
+
+### Build
+
+Connect to a node container
+
+```bash
+.\.devcontainer\run.ps1
+```
+
+Run build command inside container
+
+```bash
+node@21dc36488c7b:/data/app$ npm run build
+```
+
+`node_modules` *are shared between host and container. Container was introduced only to exclude need of having node installed.*
+
+Image available on [**docker**hub](https://hub.docker.com/r/alpl/sc_ext)
 
 ## License
 
