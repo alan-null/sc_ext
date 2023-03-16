@@ -22,10 +22,12 @@ namespace SitecoreExtensions.Modules.Launcher.Models {
 
         searchResultsCount: number = 8;
         storageType: StorageType = StorageType.LocalStorage;
+        autocomplete: boolean = false;
         constructor(wrapper: any) {
             super();
             if (wrapper != null) {
                 this.enabled = wrapper.model.enabled;
+                this.autocomplete = wrapper.model.autocomplete;
                 this.keyBindings.show = wrapper.model.keyBindings.show;
                 this.keyBindings.hide = wrapper.model.keyBindings.hide;
                 this.keyBindings.selectNextResult = wrapper.model.keyBindings.selectNextResult;

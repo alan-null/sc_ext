@@ -40,6 +40,14 @@ module SitecoreExtensions.Options {
                         label: 'Enabled'
                     }
                 },
+                {
+                    key: 'autocomplete',
+                    type: 'checkbox',
+                    defaultValue: false,
+                    templateOptions: {
+                        label: 'Autocomplete (autofill)'
+                    }
+                },
                 this.buildHeader('<h3>Recent commands:</h3>', 'col-lg-12'),
                 {
                     key: "storageType",

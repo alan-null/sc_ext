@@ -93,7 +93,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         injectlauncherHtml(): void {
             var modal = HTMLHelpers.createElement<HTMLDivElement>('div', { class: 'launcher-modal', id: 'sc-ext-modal' });
             var div = HTMLHelpers.createElement<HTMLDivElement>('div', { class: 'launcher-modal-content' });
-            var input = HTMLHelpers.createElement<HTMLInputElement>('input', { class: 'search-field', id: 'sc-ext-searchBox' });
+            var input = HTMLHelpers.createElement<HTMLInputElement>('input', { class: 'search-field', id: 'sc-ext-searchBox', autocomplete: this.options.autocomplete ?  "on" : "off" });
 
             var ul = HTMLHelpers.createElement<HTMLUListElement>('ul', { class: 'term-list hidden', id: 'sc-ext-searchResults' });
             input.onkeyup = (e) => this.inputKeyUpEvent(e);
