@@ -31,6 +31,7 @@ namespace SitecoreExtensions {
             var scrollToItem = new Modules.ScrollToItem.ScrollToItemModule('Scroll To Item', 'Scrolls to the active tree node in a Content Editor', wrapper.getModuleOptions('Scroll To Item'));
             var addHere = new Modules.AddHere.AddHereModule('Add Here', 'Extends AddHere button in ExperienceEditor with placeholder name', wrapper.getModuleOptions('Add Here'));
             var placeholder = new Modules.Placeholder.PlaceholderModule('Placeholder', 'Placeholder extensions', wrapper.getModuleOptions('Placeholder'));
+            var headerQuickInfoExtender = new Modules.HeaderQuickInfoExtender.HeaderQuickInfoExtenderModule('HeaderQuickInfoExtender', 'Additional buttons for quick info section in Content Editor', wrapper.getModuleOptions('HeaderQuickInfoExtender'));
 
 
             scExtManager.addModule(sectionSwitchesModule);
@@ -49,6 +50,7 @@ namespace SitecoreExtensions {
             scExtManager.addModule(scrollToItem);
             scExtManager.addModule(addHere);
             scExtManager.addModule(placeholder);
+            scExtManager.addModule(headerQuickInfoExtender);
 
             scExtManager.initModules();
 

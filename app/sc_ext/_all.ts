@@ -63,6 +63,7 @@
 /// <reference path='modules/scrollToItem/_all.ts'/>
 /// <reference path='modules/addHere/_all.ts'/>
 /// <reference path='modules/placeholder/_all.ts'/>
+/// <reference path='modules/headerQuickInfoExtender/_all.ts'/>
 
 
 // Status

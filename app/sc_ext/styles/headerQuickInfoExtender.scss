@@ -1,0 +1,28 @@
+.sc-ext-quickInfoExtender {
+    position: relative;
+    display: inline-block;
+    width: 250px !important;
+
+    input {
+        padding-right: 0 !important;
+        box-sizing: content-box !important;
+    }
+
+    span {
+        cursor: pointer;
+        margin-left: 5px;
+    }
+
+    .sc-ext-quickInfoExtender-svg-icon {
+        width: 15px;
+        height: 100%;
+        margin-bottom: -3px;
+        color: #131313;
+    }
+}
+
+// override default Sitecore button inline style
+input.scEditorHeaderQuickInfoInputID,
+input.scEditorHeaderQuickInfoInput {
+    width: 16rem !important;
+}
