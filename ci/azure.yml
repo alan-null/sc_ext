@@ -8,7 +8,7 @@ steps:
 
   - powershell: |
       npm install
-      npm -g install gulp-cli
+      npm -g install gulp-cli@2.3.0
       gulp package
     displayName: Main
 
