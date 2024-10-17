@@ -11,6 +11,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             SitecoreExtensions.Common.GlobalStorage.set("sc-ext::version", request.version);
         }
     }
+
+    if (request.sc_ext_getStatusInfo) {
+        // forward the request to Application.js
+        window.postMessage({ sc_ext_enabled: true, sc_ext_getStatusInfo: true }, "*");
+        const messageHandler = (event) => {
+            if (event.source !== window || !event.data || !event.data.sc_ext_statusInfo) {
+                return;
+            }
+            // Send the data back to popup.js
+            sendResponse({ data: event.data.data });
+            window.removeEventListener("message", messageHandler);
+        };
+        window.addEventListener("message", messageHandler);
+        // required for asynchronous response
+        return true;
+    }
 });
 
 window.addEventListener('message', function (event) {

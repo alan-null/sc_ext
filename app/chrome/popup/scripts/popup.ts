@@ -57,6 +57,17 @@ class LinkItemViewModel extends LinkItem {
 }
 
 
+chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+    var tabId = tabs[0].id as number;
+    chrome.tabs.sendMessage(tabId, { sc_ext_getStatusInfo: true, }, (response) => {
+        let modulesSpan = document.getElementById('sc_ext_modules_count') as HTMLSpanElement;
+        let commandsSpan = document.getElementById('sc_ext_commands_count') as HTMLSpanElement;
+
+        modulesSpan.innerHTML = response.data.modules_count;
+        commandsSpan.innerHTML = response.data.commands_count;
+    });
+});
+
 new SitecoreExtensions.Options.OptionsProvider().getModuleOptions("Links", (options: SitecoreExtensions.Options.IModuleOptions) => {
     let links = options.model as Array<LinkItem>;
     links = links.sort((a: LinkItem, b: LinkItem) => a.order - b.order);

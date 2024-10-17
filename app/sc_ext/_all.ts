@@ -71,3 +71,4 @@
 /// <reference path='status/CommandsStatusProvider.ts'/>
 /// <reference path='status/ModulesStatusProvider.ts'/>
 /// <reference path='status/IStatusProvider.ts'/>
+/// <reference path='status/StatusInfoWrapper.ts'/>

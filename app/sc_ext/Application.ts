@@ -4,6 +4,7 @@
 namespace SitecoreExtensions {
     import StatusType = SitecoreExtensions.Status.StatusType;
     export var scExtManager;
+    export var infoWrapper = StatusInfoWrapper.getInstance();
 
     (async () => {
         if (await SitecoreExtensions.Context.IsValid()) {
@@ -69,13 +70,30 @@ namespace SitecoreExtensions {
             if (scExtOptions.badge.enabled) {
                 var statusProvider = getStatusProvider(scExtOptions.badge.statusType);
                 var status = statusProvider.getStatus();
-                window.onfocus = () => { updateExtensionIcon(status); };
+                window.onfocus = () => {
+                    infoWrapper.update();
+                    updateExtensionIcon(status);
+                };
                 if (window.frameElement == null || SitecoreExtensions.Context.Location() == SitecoreExtensions.Enums.Location.ExperienceEditor) {
+                    infoWrapper.update();
                     updateExtensionIcon(status);
                 }
             } else {
                 updateExtensionIcon("");
             }
+
+            window.addEventListener('message', function (event) {
+                if (event.data.sc_ext_enabled && event.data.sc_ext_getStatusInfo) {
+                    if (infoWrapper.status) {
+                        window.postMessage({
+                            sc_ext_enabled: true,
+                            sc_ext_statusInfo: true,
+                            data: infoWrapper.status
+                        }, '*');
+                        infoWrapper.clear();
+                    }
+                }
+            });
         }
     })();
 
