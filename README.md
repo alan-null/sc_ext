@@ -6,6 +6,7 @@ Sitecore Extensions is a google chrome/firefox extension which provides small im
 
 ## Supported Sitecore versions
 
+- Sitecore XMCloud
 - Sitecore.NET 8.0 and newer (full)
 - Sitecore.NET 7.5 (partial)
 - Sitecore.NET 7.2 (partial)
@@ -26,15 +27,20 @@ Sitecore Extensions is a google chrome/firefox extension which provides small im
 - Collapse all sections - you can collapse all opened sections in Content Editor with just one click,
 - Expand all sections - you can expand all opened sections in Content Editor with just one click,
 - Database name - Displays current database name in the Content Editor header,
-- Database colour - Change the global header colour depending on current database,
-- Icon colour - changes colour to red when using Sitecore on current tab, otherwise will be grayed,
+- Database color - Change the global header color depending on current database,
+- Icon color - changes color to red when using Sitecore on current tab, otherwise will be grayed,
 - Field Search - quickly find a field or section in the Content view in Content Editor,
 - Restore Last Location - restores last opened item in Content Editor,
 - Toggle Ribbon - small button which allows you to hide whole ribbon while working in Experience Editor,
 - Tree Auto Expand - it will automatically expand tree structure if there is only one child under expanded item,
 - Tree Scope - give an ability to scope a content tree to the currently selected item,
 - Field Inspector - go to field, inspect field name, reset value to `__Standard values`,
-- Add Here - extends AddHere button in ExperienceEditor with placeholder name
+- Add Here - extends AddHere button in ExperienceEditor with placeholder name,
+- Treelist Field - extension adds path of the item inside treelist field,
+- Go to item - quickly navigate to an item selected in link fields (`DropLink`, `Name Lookup Value List`, `TreeList`, `MultiList`),
+- Placeholder - remove all renderings from the placeholder with one click,
+- Quick Info Extender - additional buttons for quick info section in Content Editor,
+- Scroll To Item - automatically scrolls to the active tree node in Content Editor upon item change
 
 More information about all available feature with `gif` demos can be found [here](https://github.com/alan-null/sc_ext/wiki)
 
