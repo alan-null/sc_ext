@@ -7,7 +7,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
     export class TokenService {
         private token: Token;
         private cacheKey: string = 'sc_ext::request_token';
-        private baseUrl: string = window.top.location.origin + "/sitecore/shell/default.aspx";
+        private baseUrl: string = window.top!.location.origin + "/sitecore/shell/default.aspx";
 
         constructor(baseUrl?: string) {
             if (baseUrl) {

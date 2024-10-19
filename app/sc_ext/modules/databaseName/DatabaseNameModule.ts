@@ -27,11 +27,12 @@ namespace SitecoreExtensions.Modules.DatabaseName {
         }
 
         addDbNameToHeader(dbName: string): void {
-            var dbnameDiv = HTMLHelpers.createElement<HTMLDivElement>('div', { class: 'sc-ext-dbName' });
-            dbnameDiv.innerText = dbName;
-
             let destination = document.querySelector('.sc-globalHeader');
-            destination.insertBefore(dbnameDiv, destination.firstChild);
+            if (destination != null) {
+                var dbNameDiv = HTMLHelpers.createElement<HTMLDivElement>('div', { class: 'sc-ext-dbName' });
+                dbNameDiv.innerText = dbName;
+                destination.insertBefore(dbNameDiv, destination.firstChild);
+            }
         }
 
         removeDbNameFromHeader(): void {

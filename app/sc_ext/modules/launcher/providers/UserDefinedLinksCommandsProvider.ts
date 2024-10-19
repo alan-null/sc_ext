@@ -5,7 +5,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
         constructor(name: string, description: string, url: string) {
             if (!url.startsWith('http')) {
                 let connector = url.startsWith('/') ? "" : '/';
-                url = window.top.location.origin + connector + url;
+                url = window.top!.location.origin + connector + url;
             }
             super(name, description, url);
         }

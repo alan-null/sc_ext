@@ -20,7 +20,7 @@ namespace SitecoreExtensions {
                 .forEach(m => { this.initModule(m); });
         }
 
-        getModule(type: any): ISitecoreExtensionsModule {
+        getModule(type: any): ISitecoreExtensionsModule | null {
             for (var index = 0; index < this.modules.length; index++) {
                 var m = this.modules[index];
                 if (m.constructor === type) {
@@ -30,7 +30,7 @@ namespace SitecoreExtensions {
             return null;
         }
 
-        getModuleByName(name: string): ISitecoreExtensionsModule {
+        getModuleByName(name: string): ISitecoreExtensionsModule | null {
             for (var index = 0; index < this.modules.length; index++) {
                 var m = this.modules[index];
                 if (m.moduleName === name) {

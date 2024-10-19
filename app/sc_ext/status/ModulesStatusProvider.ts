@@ -13,14 +13,14 @@ namespace SitecoreExtensions.Status {
         }
 
         public saveState() {
-            var globalModules = window.top[this.globalModulesKey] || new Array<ISitecoreExtensionsModule>();
+            var globalModules = window.top![this.globalModulesKey] || new Array<ISitecoreExtensionsModule>();
             for (let i = 0; i < this.globalModulesNames.length; i++) {
                 let m = SitecoreExtensions.scExtManager.getModuleByName(this.globalModulesNames[i]);
                 if (m != null && m.canExecute()) {
                     globalModules.push(m);
                 }
             }
-            window.top[this.globalModulesKey] = globalModules;
+            window.top![this.globalModulesKey] = globalModules;
         }
 
         public getStatus(): string {
@@ -39,7 +39,7 @@ namespace SitecoreExtensions.Status {
 
         private getActiveModules(): ISitecoreExtensionsModule[] {
             var activeModules = SitecoreExtensions.scExtManager.modules.filter(m => { return m.canExecute(); });
-            var globalModules = window.top[this.globalModulesKey] || new Array<ISitecoreExtensionsModule>();
+            var globalModules = window.top![this.globalModulesKey] || new Array<ISitecoreExtensionsModule>();
             for (var index = 0; index < globalModules.length; index++) {
                 activeModules.push(globalModules[index]);
             }

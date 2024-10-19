@@ -280,7 +280,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         private searchItems(phrase: string) {
-            var searchEndpointUrl = window.top.location.origin + "/sitecore/shell/applications/search/instant/instantsearch.aspx";
+            var searchEndpointUrl = window.top!.location.origin + "/sitecore/shell/applications/search/instant/instantsearch.aspx";
             var request = new Http.HttpRequest(searchEndpointUrl + "?q=" + phrase + "&v=1", Http.Method.POST, (e) => {
                 var data = e.currentTarget.responseText;
                 var parser = new DOMParser();

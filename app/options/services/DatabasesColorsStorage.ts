@@ -36,7 +36,7 @@ module SitecoreExtensions.Options {
         }
 
         getDefaultStorageValue(): DatabaseColorMapping[] {
-            let links = [];
+            let links: DatabaseColorMapping[] = []
             links.push(new DatabaseColorMapping("WEB", "DC291E", 0));
             return links;
         }

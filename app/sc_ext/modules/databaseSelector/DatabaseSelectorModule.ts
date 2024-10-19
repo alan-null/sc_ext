@@ -27,15 +27,15 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
         }
 
         private getSelectDatabaseDialogResponse(callback) {
-            let url = window.top.location.origin + "/sitecore/shell/default.aspx";
+            let url = window.top!.location.origin + "/sitecore/shell/default.aspx";
             this.tokenService.getToken().then((token) => {
                 if (token) {
                     var postData = "&__PARAMETERS=" + "ShowDatabases"
                         + "&__ISEVENT=" + "1"
                         + "&__CSRFTOKEN=" + token.__CSRFTOKEN
                         + "&__VIEWSTATE=" + token.__VIEWSTATE;
+                    new Http.HttpRequest(url, Http.Method.POST, callback).execute(postData);
                 }
-                new Http.HttpRequest(url, Http.Method.POST, callback).execute(postData);
             });
         }
 

@@ -90,7 +90,7 @@ namespace SitecoreExtensions.Modules.GoToDatasource.Fields {
                 spanGoToDatasource.onclick = (e) => {
                     let id = this.idParser.extractID(selectedValue);
                     if (e.ctrlKey) {
-                        var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + id;
+                        var url = window.top!.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + id;
                         new Launcher.Providers.NavigationCommand(null, null, url).execute(e);
                     } else {
                         let contentTree = new PageObjects.ContentTree();

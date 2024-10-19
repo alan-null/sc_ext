@@ -36,12 +36,12 @@ namespace SitecoreExtensions {
             this.invokeLibFun((s) => { iziToast.settings(s); }, settings);
         }
 
-        public progress(settings: IziToastSettings, toast: HTMLDivElement, callback?: () => void): IziToastProgress { return null; }
+        public progress(settings: IziToastSettings, toast: HTMLDivElement, callback?: () => void): IziToastProgress | null { return null; }
 
         public hide(settings: IziToastSettings, toast: HTMLDivElement | string, closedBy?: string): void { }
 
         public destroy(): void {
-            this.invokeLibFun((s) => { iziToast.destroy(); }, null);
+            this.invokeLibFun((s) => { iziToast.destroy(); }, {});
         }
 
         protected invokeLibFun(fun: IziToastFunction, settings: IziToastSettings): void {
@@ -61,7 +61,7 @@ namespace SitecoreExtensions {
             }, '*');
         }
 
-        public static get Instance(): IziToast {
+        public static get Instance(): Notification {
             return this.instance || (this.instance = new this());
         }
     }

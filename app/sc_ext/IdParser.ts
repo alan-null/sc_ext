@@ -12,7 +12,7 @@ namespace SitecoreExtensions {
             }
         }
 
-        public match(id: string): RegExpMatchArray {
+        public match(id: string): RegExpMatchArray | null {
             return id.match(this.idPattern);
         }
     }

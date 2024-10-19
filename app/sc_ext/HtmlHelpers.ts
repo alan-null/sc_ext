@@ -26,16 +26,16 @@ namespace SitecoreExtensions {
             }
         }
         static triggerEventOnElement(element, event) {
-            var evnt = element[event];
-            if (typeof (evnt) == 'function') {
-                evnt.call(element);
+            var event = element[event];
+            if (typeof (event) == 'function') {
+                event.call(element);
             }
         }
         /**
          * Observe DOM element and waits until specific criteria are meet, then execute callback
          * @param {Element} parent element to observe changes
-         * @param {Number} ticksCount determines number of miliseconds per each tick
-         * @param {Number} count is a numbeer of 10ms ticks between each check
+         * @param {Number} ticksCount determines number of milliseconds per each tick
+         * @param {Number} count is a number of 10ms ticks between each check
          * @param {Function} predicate determines whether certain criteria are meet. If true callback function will be executed
          * @param  {Function} callback called when predicate returns true
          **/
@@ -137,7 +137,7 @@ namespace SitecoreExtensions {
         }
 
         private static logError(error: any) {
-            console.log("An error occured in the proxy function.");
+            console.log("An error occurred in the proxy function.");
             console.log("Please report it here: https://github.com/alan-null/sc_ext/issues/new");
             console.log(error);
         }
@@ -176,6 +176,10 @@ namespace SitecoreExtensions {
                 range.select();
             } else if (window.getSelection) {
                 const selection = window.getSelection();
+                if (selection == null) {
+                    console.warn("Could not get selection");
+                    return;
+                }
                 const range = document.createRange();
                 range.selectNodeContents(node);
                 selection.removeAllRanges();

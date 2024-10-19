@@ -23,7 +23,7 @@ namespace SitecoreExtensions {
             return element.value;
         }
 
-        static Database(): string {
+        static Database(): string | null {
             var pageMode = this.Location();
             if (pageMode == Location.ContentEditor) {
                 var value = this.GetCurrentItem();
@@ -63,13 +63,17 @@ namespace SitecoreExtensions {
             return match && decodeURIComponent(match[1].replace(/\+/g, " "));
         }
 
-        static Language(): string {
+        static Language(): string | null {
             var pageMode = this.Location();
             if (pageMode == Location.ContentEditor) {
                 return this.getQueryStringValue(this.GetCurrentItem(), "lang");
             }
             if (pageMode == Location.Desktop) {
-                return document.querySelector("[lang]").attributes['lang'].value;
+                let langForm = document.querySelector("[lang]");
+                if (langForm == null) {
+                    return null;
+                }
+                return langForm.attributes['lang'].value;
             }
             if (pageMode == Location.ExperienceEditor) {
                 var webEditRibbonIFrame = (document.querySelector('#scWebEditRibbon') as HTMLIFrameElement);
@@ -121,11 +125,11 @@ namespace SitecoreExtensions {
 
     export class ContextService {
         private localStorageKey: string = "sc_ext::context_service";
-        private validationUrl: string = null;
+        private validationUrl: string | null = null;
 
         constructor() {
             try {
-                this.validationUrl = window.top.location.origin + "/sitecore/images/blank.gif";
+                this.validationUrl = window.top!.location.origin + "/sitecore/images/blank.gif";
             } catch (error) {
                 // cross-origin frame detected
             }

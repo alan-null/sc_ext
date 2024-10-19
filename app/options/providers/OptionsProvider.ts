@@ -1,7 +1,7 @@
 /// <reference path='../../../typings/chrome/chrome.d.ts'/>
 /// <reference path='../../../typings/es6-shim/es6-shim.d.ts'/>
 
-module SitecoreExtensions.Options {
+namespace SitecoreExtensions.Options {
     'use strict';
 
     export interface IModuleOptions {

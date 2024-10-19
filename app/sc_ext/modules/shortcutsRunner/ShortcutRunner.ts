@@ -7,7 +7,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
     export class ShortcutRunner {
         private tokenService: TokenService;
         private cacheKey: string = 'sc_ext::request_token';
-        private baseUrl: string = window.top.location.origin + "/sitecore/shell/default.aspx";
+        private baseUrl: string = window.top!.location.origin + "/sitecore/shell/default.aspx";
 
         constructor() {
             this.tokenService = new TokenService();
@@ -29,7 +29,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
             var iFrame = data.commands[lastCommandIndex].value;
             var urls = iFrame.match(/\/sitecore\/shell(.)*png/);
             if (urls) {
-                var url = window.top.location.origin + urls[0];
+                var url = window.top!.location.origin + urls[0];
                 var command = new Launcher.Providers.NavigationCommand(null, null, url);
                 command.execute(evt);
             }

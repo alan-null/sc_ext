@@ -42,11 +42,11 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
                         name: 'Change database: ' + databaseName,
                         description: 'Change current database to ' + databaseName,
                         execute: (e: KeyboardEvent) => {
-                            let url = window.top.location.origin + "/sitecore/shell/default.aspx?sc_content=" + dbs[index];
+                            let url = window.top!.location.origin + "/sitecore/shell/default.aspx?sc_content=" + dbs[index];
                             new Http.HttpRequest(url, Http.Method.GET, null).execute();
                             if (e.ctrlKey) {
-                                let location = window.top.location;
-                                new Launcher.Providers.NavigationCommand(null, null, location.href).execute(e);
+                                let location = window.top!.location;
+                                new Launcher.Providers.NavigationCommand("", "", location.href).execute(e);
                             }
 
                             let args = new Events.DatabaseChangeEventArgs(dbs[index]);

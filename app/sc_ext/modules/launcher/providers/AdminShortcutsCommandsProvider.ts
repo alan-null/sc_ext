@@ -3,7 +3,7 @@
 namespace SitecoreExtensions.Modules.Launcher.Providers {
     class ShortcutCommand extends NavigationCommand implements ICommand {
         constructor(name: string, description: string, aspx: string) {
-            super(name, description, window.top.location.origin + '/sitecore/admin/' + aspx + '.aspx');
+            super(name, description, window.top!.location.origin + '/sitecore/admin/' + aspx + '.aspx');
         }
     }
     export class AdminShortcutsCommandsProvider implements ICommandsProvider {
@@ -52,7 +52,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addCommand('Serialization.aspx', 'Serialize and revert databases', 'serialization');
             this.addCommand('Set Application Center Endpoint.aspx', 'Change Application Center endpoint address', 'SetSACEndpoint');
             this.addCommand('Show Config.aspx', 'Merge configuration files.', 'ShowConfig');
-            this.commands.push(new NavigationCommand('Sitecore Support Package Generator.aspx', 'Sending such package to Sitecore Support reduces the time it takes to diagnose and resolve Sitecore issues.', window.top.location.origin + '/sitecore/admin/supportpackage'));
+            this.commands.push(new NavigationCommand('Sitecore Support Package Generator.aspx', 'Sending such package to Sitecore Support reduces the time it takes to diagnose and resolve Sitecore issues.', window.top!.location.origin + '/sitecore/admin/supportpackage'));
             this.addCommand('Sql Shell.aspx', 'Execute sql sripts using the specific connection strings.', 'SqlShell');
             this.addCommand('Unlock Admin.aspx', 'Unlock Admin user.', 'unlock_admin');
             this.addCommand('Update Installation Wizard.aspx', 'Install Sitecore updates.', 'UpdateInstallationWizard');

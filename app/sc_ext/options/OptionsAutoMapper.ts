@@ -8,7 +8,7 @@ namespace SitecoreExtensions.Options {
     export class OptionsAutoMapper implements IOptionsMapper {
         mapOptions<T>(rawOptions: ModuleOptionsBase, options: T): T {
             for (var f in rawOptions.model) {
-                if (options.hasOwnProperty(f)) {
+                if ((options as any).hasOwnProperty(f)) {
                     options[f] = rawOptions.model[f];
                 }
             }

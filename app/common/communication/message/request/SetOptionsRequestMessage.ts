@@ -4,7 +4,7 @@ import OptionsWrapper = SitecoreExtensions.Options.OptionsWrapper;
 
 namespace SitecoreExtensions.Common.Communication {
     export class SetOptionsRequestMessage extends MessageBase {
-        options: IModuleOptions[] = null;
+        options: IModuleOptions[] | null = null;
         constructor(options: IModuleOptions[]) {
             super();
             this.options = options;

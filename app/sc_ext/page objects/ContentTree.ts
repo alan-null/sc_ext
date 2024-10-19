@@ -6,7 +6,10 @@ namespace SitecoreExtensions.PageObjects {
         private element: HTMLElement;
 
         constructor() {
-            this.element = document.getElementById("ContentTreeInnerPanel");
+            const panel = document.getElementById("ContentTreeInnerPanel");
+            if (panel != null) {
+                this.element = panel;
+            }
         }
 
         public getActiveTreeNode(): HTMLElement {

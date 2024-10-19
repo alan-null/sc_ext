@@ -67,7 +67,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
                         contentTree.loadItem(id);
                     }
 
-                    var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1" + "&fo=" + id + "&la=" + cmd.Lang + "&sc_content=" + cmd.Database;
+                    var url = window.top!.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1" + "&fo=" + id + "&la=" + cmd.Lang + "&sc_content=" + cmd.Database;
                     HTMLHelpers.copyTextToClipboard(url);
                     SitecoreExtensions.Notification.Instance.info({
                         message: `<b>Deep link:</b></br>Link to the current item has been copied to a clipboard</br>ID: <code>${id}</code>`,

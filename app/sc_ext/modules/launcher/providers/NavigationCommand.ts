@@ -24,7 +24,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
         }
 
         private openInCurrentTab(): void {
-            window.top.document.location.href = this.url;
+            window.top!.document.location.href = this.url;
         }
 
         private openInNewTab(): void {

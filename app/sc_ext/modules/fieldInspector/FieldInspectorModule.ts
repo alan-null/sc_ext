@@ -78,15 +78,19 @@ namespace SitecoreExtensions.Modules.FieldInspector {
             this.currentElement.innerHTML = value;
         }
 
-        private getValue(mode: ViewMode) {
+        private getValue(mode: ViewMode):string {
             let fieldName = (mode == ViewMode.FieldName) ? "field" : "default";
-            return this.currentElement.dataset[fieldName];
+            const value = this.currentElement.dataset[fieldName];
+            if (value === undefined) {
+                return '';
+            }
+            return value;
         }
     }
 
     export class FieldInspectorModule extends ModuleBase implements ISitecoreExtensionsModule {
-        database: string;
-        lang: string;
+        database: string | null;
+        lang: string | null;
         idParser: IdParser;
         classSectionInitialized: string = "sc-ext-gotofield-sections-initialized";
         classFieldIDsInitialized: string = "sc-ext-gotofield-fieldIDs-initialized";
@@ -111,9 +115,14 @@ namespace SitecoreExtensions.Modules.FieldInspector {
             HTMLHelpers.addProxy(scForm, 'resume', () => { this.refreshControls(); });
             this.database = SitecoreExtensions.Context.Database();
             this.lang = SitecoreExtensions.Context.Language();
+
+            if (this.database == null || this.lang == null) {
+                console.log("Database and language mustn't be null");
+            }
+
             this.idParser = new IdParser();
 
-            var url = window.top.location.origin + "/sitecore/shell/default.aspx?xmlcontrol=ResetFields";
+            var url = window.top!.location.origin + "/sitecore/shell/default.aspx?xmlcontrol=ResetFields";
             this.tokenService = new ShortcutsRunner.TokenService(url);
         }
 
@@ -161,7 +170,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
                             this.getFieldID(Context.ItemID(), sectionName, j, (fieldID) => {
                                 (e.getSrcElement() as HTMLSpanElement).innerText = resetFieldText;
-                                var url = window.top.location.origin + "/sitecore/shell/default.aspx?xmlcontrol=ResetFields&id=" + Context.ItemID() + "&la=en&vs=1";
+                                var url = window.top!.location.origin + "/sitecore/shell/default.aspx?xmlcontrol=ResetFields&id=" + Context.ItemID() + "&la=en&vs=1";
                                 let req = new Http.HttpRequest(url, Http.Method.POST, (e: ProgressEvent) => {
                                     if ((e.target as XMLHttpRequest).status === 500) {
                                         this.tokenService.invalidateToken().then((t) => {
@@ -199,7 +208,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                             if (e.ctrlKey) {
                                 this.getFieldID(Context.ItemID(), sectionName, j, (fieldID) => {
                                     (e.getSrcElement() as HTMLSpanElement).innerText = goToFieldText;
-                                    var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + fieldID;
+                                    var url = window.top!.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + fieldID;
                                     new Launcher.Providers.NavigationCommand(null, null, url).execute(e);
                                 }, e);
 
@@ -318,7 +327,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
         }
 
         private buildEndpointURL(id: string): string {
-            var endpoint = window.top.location.origin + "/sitecore/admin/dbbrowser.aspx";
+            var endpoint = window.top!.location.origin + "/sitecore/admin/dbbrowser.aspx";
             return endpoint + "?db=" + this.database + "&lang=" + this.lang + "&id=" + id;
         }
 
