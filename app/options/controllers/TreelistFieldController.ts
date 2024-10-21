@@ -7,6 +7,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Treelist Field');
             $scope.vm.title = 'Treelist Field module';
+            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Treelist-Field';
         }
 
         getFields() {

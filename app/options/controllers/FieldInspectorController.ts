@@ -6,6 +6,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Field Inspector');
             $scope.vm.title = 'Field Inspector module';
+            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Field-Inspector';
         }
 
         getFields() {

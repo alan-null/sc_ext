@@ -6,6 +6,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Database Selector');
             $scope.vm.title = 'Database Selector module';
+            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Database-Selector';
         }
 
         getFields() {

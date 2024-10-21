@@ -7,6 +7,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Field Search');
             $scope.vm.title = 'Field Search module';
+            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Field-Search';
         }
 
         getFields() {

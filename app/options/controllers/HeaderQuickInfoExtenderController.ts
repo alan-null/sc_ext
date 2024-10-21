@@ -6,6 +6,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Header QuickInfo Extender');
             $scope.vm.title = 'Header QuickInfo Extender module';
+            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Header-QuickInfo-Extender';
         }
 
         getFields() {

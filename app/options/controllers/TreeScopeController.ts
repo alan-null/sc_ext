@@ -6,6 +6,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Tree Scope');
             $scope.vm.title = 'Tree Scope module';
+            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Tree-Scope';
         }
 
         getFields() {

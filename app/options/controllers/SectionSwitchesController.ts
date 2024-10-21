@@ -7,6 +7,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Section Switches');
             $scope.vm.title = 'Section Switches module';
+            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Section-Switches';
         }
 
         getFields() {

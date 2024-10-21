@@ -6,6 +6,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Launcher');
             $scope.vm.title = 'Launcher module';
+            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Launcher';
         }
 
         buildHeader(template: string, className: string) {

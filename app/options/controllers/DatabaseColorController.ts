@@ -11,6 +11,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, private dbColorStorage: IDatabasesColorsStorage, formlyVersion: string) {
             super($scope, formlyVersion, 'Database Colour');
             $scope.vm.title = 'Database Color module';
+            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Database-Color';
 
             this.dbColors = $scope.dbColors = dbColorStorage.get((model) => {
                 if (model.colors) {

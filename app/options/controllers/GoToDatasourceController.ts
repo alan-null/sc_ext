@@ -6,6 +6,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Go To Datasource');
             $scope.vm.title = 'Go To Datasource module';
+            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Go-To-Datasource';
         }
 
         getFields() {
