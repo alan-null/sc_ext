@@ -70,16 +70,19 @@ namespace SitecoreExtensions {
             if (scExtOptions.badge.enabled) {
                 var statusProvider = getStatusProvider(scExtOptions.badge.statusType);
                 var status = statusProvider.getStatus();
-                window.onfocus = () => {
-                    infoWrapper.update();
-                    updateExtensionIcon(status);
-                };
+                window.onfocus = () => { updateExtensionIcon(status); };
                 if (window.frameElement == null || SitecoreExtensions.Context.Location() == SitecoreExtensions.Enums.Location.ExperienceEditor) {
-                    infoWrapper.update();
                     updateExtensionIcon(status);
                 }
             } else {
                 updateExtensionIcon("");
+            }
+
+            if (scExtOptions.statusInfo.enabled) {
+                window.onfocus = () => { infoWrapper.update(); };
+                if (window.frameElement == null || SitecoreExtensions.Context.Location() == SitecoreExtensions.Enums.Location.ExperienceEditor) {
+                    infoWrapper.update();
+                }
             }
 
             window.addEventListener('message', function (event) {
@@ -88,7 +91,7 @@ namespace SitecoreExtensions {
                         window.postMessage({
                             sc_ext_enabled: true,
                             sc_ext_statusInfo: true,
-                            data: infoWrapper.status
+                            data: scExtOptions.statusInfo.enabled ? infoWrapper.status : {}
                         }, '*');
                         infoWrapper.clear();
                     }

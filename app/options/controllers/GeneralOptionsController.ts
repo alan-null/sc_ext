@@ -47,7 +47,16 @@ module SitecoreExtensions.Options {
                         ]
                     },
                     hideExpression: '!model.badge.enabled'
-                }
+                },
+                { template: '<h3>Extension status information</h3>', noFormControl: true },
+                {
+                    key: 'statusInfo.enabled',
+                    type: 'checkbox',
+                    defaultValue: false,
+                    templateOptions: {
+                        label: 'Enabled'
+                    },
+                },
             ];
         }
     }
