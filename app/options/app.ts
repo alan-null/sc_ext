@@ -21,6 +21,7 @@ module SitecoreExtensions.Options {
         .controller('ToggleRibbonController', ToggleRibbonController)
         .controller('TreeAutoExpandController', TreeAutoExpandController)
         .controller('ScrollToItemController', ScrollToItemController)
+        .controller('HeaderQuickInfoExtenderController', HeaderQuickInfoExtenderController)
         .directive('navigation', NavigationDirective)
         .controller('LinksController', LinksController)
         .service('linkStorage', LinkStorage)

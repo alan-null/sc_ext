@@ -1,9 +1,10 @@
-'use strict';
+/// <reference path="../_all.ts"/>
+
 namespace SitecoreExtensions {
     export class StatusInfoWrapper {
         private static instance: StatusInfoWrapper;
-        private _moduleStatusProvider: Status.ModulesStatusProvider | null = null;
-        private _commandStatusProvider: Status.CommandsStatusProvider | null = null;
+        private moduleStatusProviderInstance: Status.ModulesStatusProvider | null = null;
+        private commandStatusProviderInstance: Status.CommandsStatusProvider | null = null;
 
         private constructor() { }
 
@@ -26,17 +27,17 @@ namespace SitecoreExtensions {
         }
 
         public get moduleStatusProvider(): Status.ModulesStatusProvider {
-            if (!this._moduleStatusProvider) {
-                this._moduleStatusProvider = new Status.ModulesStatusProvider();
+            if (!this.moduleStatusProviderInstance) {
+                this.moduleStatusProviderInstance = new Status.ModulesStatusProvider();
             }
-            return this._moduleStatusProvider;
+            return this.moduleStatusProviderInstance;
         }
 
         public get commandStatusProvider(): Status.CommandsStatusProvider {
-            if (!this._commandStatusProvider) {
-                this._commandStatusProvider = new Status.CommandsStatusProvider();
+            if (!this.commandStatusProviderInstance) {
+                this.commandStatusProviderInstance = new Status.CommandsStatusProvider();
             }
-            return this._commandStatusProvider;
+            return this.commandStatusProviderInstance;
         }
 
         get status(): any { // Replace `any` with the actual type of statusInfo
