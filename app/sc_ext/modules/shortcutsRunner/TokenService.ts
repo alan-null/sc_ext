@@ -5,74 +5,114 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
     import Method = Http.Method;
 
     export class TokenService {
-        private token: Token;
+        private token: Token | undefined;
         private cacheKey: string = 'sc_ext::request_token';
         private baseUrl: string = window.top.location.origin + "/sitecore/shell/default.aspx";
+        private initializationKey: string = 'sc_ext::initialization_in_progress';
 
         constructor(baseUrl?: string) {
             if (baseUrl) {
                 this.baseUrl = baseUrl;
             }
-            this.cacheKey = this.cacheKey + this.baseUrl.replace(window.location.origin, '');
+            const relativePath = this.baseUrl.replace(window.location.origin, '');
+
+            this.cacheKey = this.cacheKey + relativePath;
+            this.initializationKey = this.initializationKey + relativePath;
+
             this.token = this.getTokenFromCache(this.cacheKey);
-            if (this.token == undefined) {
-                this.getRequestToken((t) => {
-                    this.token = t;
-                    this.storeTokenInCache(this.cacheKey, t);
-                });
+
+            if (!this.token && !this.isInitializationInProgress()) {
+                this.initializeToken().catch((error) => { console.error('[TokenService] Failed to initialize token:', error); });
             }
         }
 
         public async getToken(): Promise<Token> {
-            return new Promise<Token>(returnValue => {
-                if (this.token) {
-                    returnValue(this.token);
-                } else {
-                    this.getRequestToken((t) => {
-                        this.token = t;
-                        this.storeTokenInCache(this.cacheKey, t);
-                        returnValue(t);
-                    });
-                }
-            });
+            if (this.token) {
+                return this.token;
+            }
+
+            if (this.isInitializationInProgress()) {
+                return this.waitForInitialization();
+            }
+
+            return this.initializeToken();
         }
 
         public async invalidateToken(): Promise<Token> {
             localStorage.clear();
-            return new Promise<Token>(returnValue => {
-                this.getRequestToken((t) => {
-                    this.token = t;
-                    returnValue(t);
-                    this.storeTokenInCache(this.cacheKey, t);
-                });
-            });
+            this.token = undefined;
+            this.setInitializationStatus(false);
+            return this.getToken();
         }
 
-        private getRequestToken(callback: Function): void {
-            new HttpRequest(this.baseUrl, Method.GET, (e) => {
-                var data = e.currentTarget.responseText;
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(data, "text/html");
+        private async initializeToken(): Promise<Token> {
+            this.setInitializationStatus(true);
 
-                let csrfElement = (doc.querySelector('#__CSRFTOKEN') as HTMLInputElement);
-                let viewstateElement = (doc.querySelector('#__VIEWSTATE') as HTMLInputElement);
-                if (csrfElement && viewstateElement) {
-                    var __CSRFTOKEN = csrfElement.attributes['value'].value;
-                    var __VIEWSTATE = viewstateElement.attributes['value'].value;
-                    callback(new Token(__CSRFTOKEN, __VIEWSTATE));
-                }
-            }).execute();
-        }
-
-        private getTokenFromCache(key: string): Token {
-            var cached = localStorage[key];
-            if (cached != undefined) {
-                return JSON.parse(cached);
+            try {
+                const token = await this.requestToken();
+                this.token = token;
+                this.storeTokenInCache(this.cacheKey, token);
+                return token;
+            } finally {
+                this.setInitializationStatus(false);
             }
         }
 
-        private storeTokenInCache(key: string, value: any): void {
-            localStorage[key] = JSON.stringify(value);
+        private waitForInitialization(): Promise<Token> {
+            return new Promise<Token>((resolve) => {
+                const interval = setInterval(() => {
+                    if (!this.isInitializationInProgress() && this.token) {
+                        clearInterval(interval);
+                        resolve(this.token);
+                    }
+                }, 50);
+            });
+        }
+
+        private requestToken(): Promise<Token> {
+            return new Promise<Token>((resolve, reject) => {
+                new HttpRequest(this.baseUrl, Method.GET, (e) => {
+                    try {
+                        const responseText = e.currentTarget.responseText;
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(responseText, "text/html");
+
+                        const csrfElement = doc.querySelector('#__CSRFTOKEN') as HTMLInputElement | null;
+                        const viewstateElement = doc.querySelector('#__VIEWSTATE') as HTMLInputElement | null;
+
+                        if (csrfElement && viewstateElement) {
+                            const csrfToken = csrfElement.value;
+                            const viewState = viewstateElement.value;
+                            resolve(new Token(csrfToken, viewState));
+                        } else {
+                            reject(new Error('CSRF token or VIEWSTATE not found in the response'));
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                }).execute();
+            });
+        }
+
+        private getTokenFromCache(key: string): Token | undefined {
+            const cached = localStorage.getItem(key);
+            return cached ? JSON.parse(cached) : undefined;
+        }
+
+        private storeTokenInCache(key: string, value: Token): void {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
+        private isInitializationInProgress(): boolean {
+            return localStorage.getItem(this.initializationKey) === 'true';
+        }
+
+        private setInitializationStatus(value: boolean): void {
+            if (value === false) {
+                localStorage.removeItem(this.initializationKey);
+            } else {
+                localStorage.setItem(this.initializationKey, value.toString());
+            }
         }
     }
 }

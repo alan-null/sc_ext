@@ -50,7 +50,6 @@ namespace SitecoreExtensions.Modules.DatabaseSelector {
 
         private init() {
             this.getSelectDatabaseDialogResponse((e) => {
-                this.handleErrorAndRetry();
                 if (e.currentTarget.status == 500) {
                     this.handleErrorAndRetry();
                 } else {
