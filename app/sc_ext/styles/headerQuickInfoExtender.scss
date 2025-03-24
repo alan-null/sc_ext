@@ -21,8 +21,10 @@
     }
 }
 
-// override default Sitecore button inline style
-input.scEditorHeaderQuickInfoInputID,
-input.scEditorHeaderQuickInfoInput {
-    width: 16rem !important;
+// Override default Sitecore button inline style
+.sc-ext-quickInfoExtender[data-item-id] {
+    input.scEditorHeaderQuickInfoInput,
+    input.scEditorHeaderQuickInfoInputID {
+        width: 16rem !important;
+    }
 }
