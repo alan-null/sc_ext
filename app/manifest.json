@@ -61,6 +61,7 @@
             "resources": [
                 "common/optionsProvider.js",
                 "sc_ext/Application.js",
+                "sc_ext/Application.js.map",
                 "sc_ext/libraries/iziToast.js"
             ],
             "matches": [
