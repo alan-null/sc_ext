@@ -23,23 +23,23 @@ Sitecore Extensions is a google chrome/firefox extension which provides small im
 
 ## Features
 
-- Launcher - launch Sitecore commands using command omnibox,
-- Collapse all sections - you can collapse all opened sections in Content Editor with just one click,
-- Expand all sections - you can expand all opened sections in Content Editor with just one click,
-- Database name - Displays current database name in the Content Editor header,
-- Database color - Change the global header color depending on current database,
+- [Launcher](https://github.com/alan-null/sc_ext/wiki/Launcher) - launch Sitecore commands using command omnibox,
+- [Collapse all sections](https://github.com/alan-null/sc_ext/wiki/Section-Switches) - you can collapse all opened sections in Content Editor with just one click,
+- [Expand all sections](https://github.com/alan-null/sc_ext/wiki/Section-Switches) - you can expand all opened sections in Content Editor with just one click,
+- [Database name](https://github.com/alan-null/sc_ext/wiki/Database-Name) - Displays current database name in the Content Editor header,
+- [Database color](https://github.com/alan-null/sc_ext/wiki/Database-Color) - Change the global header color depending on current database,
 - Icon color - changes color to red when using Sitecore on current tab, otherwise will be grayed,
-- Field Search - quickly find a field or section in the Content view in Content Editor,
-- Restore Last Location - restores last opened item in Content Editor,
-- Toggle Ribbon - small button which allows you to hide whole ribbon while working in Experience Editor,
-- Tree Auto Expand - it will automatically expand tree structure if there is only one child under expanded item,
-- Tree Scope - give an ability to scope a content tree to the currently selected item,
-- Field Inspector - go to field, inspect field name, reset value to `__Standard values`,
-- Add Here - extends AddHere button in ExperienceEditor with placeholder name,
-- Treelist Field - extension adds path of the item inside treelist field,
-- Go to item - quickly navigate to an item selected in link fields (`DropLink`, `Name Lookup Value List`, `TreeList`, `MultiList`),
-- Placeholder - remove all renderings from the placeholder with one click,
-- Quick Info Extender - additional buttons for quick info section in Content Editor,
+- [Field Search](https://github.com/alan-null/sc_ext/wiki/Field-Search) - quickly find a field or section in the Content view in Content Editor,
+- [Restore Last Location](https://github.com/alan-null/sc_ext/wiki/Restore-Last-Location) - restores last opened item in Content Editor,
+- [Toggle Ribbon](https://github.com/alan-null/sc_ext/wiki/Toggle-Ribbon) - small button which allows you to hide whole ribbon while working in Experience Editor,
+- [Tree Auto Expand](https://github.com/alan-null/sc_ext/wiki/Tree-Auto-Expand) - it will automatically expand tree structure if there is only one child under expanded item,
+- [Tree Scope](https://github.com/alan-null/sc_ext/wiki/Tree-Scope) - give an ability to scope a content tree to the currently selected item,
+- [Field Inspector](https://github.com/alan-null/sc_ext/wiki/Field-Inspector) - go to field, inspect field name, reset value to `__Standard values`,
+- [Add Here](https://github.com/alan-null/sc_ext/wiki/Add-Here) - extends AddHere button in ExperienceEditor with placeholder name,
+- [Treelist Field](https://github.com/alan-null/sc_ext/wiki/Treelist-Field) - extension adds path of the item inside treelist field,
+- [Go to item](https://github.com/alan-null/sc_ext/wiki/Go-To-Datasource) - quickly navigate to an item selected in link fields (`DropLink`, `Name Lookup Value List`, `TreeList`, `MultiList`),
+- [Placeholder](https://github.com/alan-null/sc_ext/wiki/Empty-Placeholder) - remove all renderings from the placeholder with one click,
+- [Quick Info Extender](https://github.com/alan-null/sc_ext/wiki/Header-QuickInfo-Extender) - additional buttons for quick info section in Content Editor,
 - Scroll To Item - automatically scrolls to the active tree node in Content Editor upon item change
 
 More information about all available feature with `gif` demos can be found [here](https://github.com/alan-null/sc_ext/wiki)
@@ -134,4 +134,3 @@ Image available on [**docker**hub](https://hub.docker.com/r/alpl/sc_ext)
 ## License
 
 [MIT](LICENSE)
-[![Analytics](https://ga-beacon.appspot.com/UA-74179201-4/sc_ext?pixel)](https://github.com/igrigorik/ga-beacon)
