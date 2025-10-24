@@ -8,7 +8,7 @@ namespace SitecoreExtensions.Modules.Placeholder {
 
         public static removeRenderings(placeholderID: string) {
             let phChrome = [].find.call(Sitecore.PageModes.DesignManager.placeholders(), function (chrome) {
-                return chrome.isEnabled() && chrome._originalDOMElement.context.attributes.key.value == placeholderID;
+                return chrome.isEnabled() && new PlaceholderChrome(chrome).getPlaceholderId() == placeholderID;
             });
             [].forEach.call(phChrome.getChildChromes(), (renderingChrome) => { phChrome.type.deleteControl(renderingChrome); });
             [].forEach.call(this.getStaleRenderings(placeholderID), (r: Rendering) => { r.remove(); });
