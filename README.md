@@ -131,6 +131,7 @@ node@21dc36488c7b:/data/app$ npm run build
 
 Image available on [**docker**hub](https://hub.docker.com/r/alpl/sc_ext)
 
-## License
+## Legal
 
-[MIT](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Privacy Policy](https://img.shields.io/badge/Privacy-Policy-green.svg)](PRIVACY_POLICY.md)
