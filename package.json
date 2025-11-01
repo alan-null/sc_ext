@@ -2,7 +2,7 @@
   "name": "sc-ext",
   "private": true,
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=v8.2.1"
   },
   "scripts": {
     "watch": "gulp watch",
