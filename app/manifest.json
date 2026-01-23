@@ -1,6 +1,6 @@
 {
     "name": "__MSG_appName__",
-    "short_name": "__MSG_appShortName__",
+    "short_name": "sc_ext",
     "version": "4.1.0",
     "manifest_version": 3,
     "description": "__MSG_appDescription__",
