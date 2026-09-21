@@ -51,21 +51,28 @@ namespace SitecoreExtensions.Modules.HeaderQuickInfoExtender {
             wrapper.innerHTML = column2nd.innerHTML;
 
             // copy button
-            let container = HTMLHelpers.createElement("span") as HTMLSpanElement;
-            container.innerHTML = svgCopy;
-            container.onclick = (e) => this.copyId(e);
-            wrapper.appendChild(container);
+            wrapper.appendChild(this.createIconButton(svgCopy, (e) => this.copyId(e)));
 
             // navigate to button
             if (Context.ItemID() != itemId) {
-                let container2 = HTMLHelpers.createElement("span") as HTMLSpanElement;
-                container2.innerHTML = svgNavigate;
-                container2.onclick = (e) => this.navigateToItem(e);
-                wrapper.appendChild(container2);
+                wrapper.appendChild(this.createIconButton(svgNavigate, (e) => this.navigateToItem(e)));
             }
 
             column2nd.innerHTML = '';
             column2nd.appendChild(wrapper);
+        }
+
+        private createIconButton(svg: string, onclick: (e: MouseEvent) => void): HTMLSpanElement {
+            let container = HTMLHelpers.createElement("span") as HTMLSpanElement;
+            container.innerHTML = svg;
+
+            let icon = container.firstElementChild;
+            if (icon != null) {
+                icon.setAttribute("pointer-events", "none");
+            }
+
+            container.onclick = onclick;
+            return container;
         }
 
         private copyId(evt: MouseEvent): void {
