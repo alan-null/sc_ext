@@ -1,12 +1,14 @@
 /// <reference path='../../_all.ts'/>
 
 /// <reference path='StorageType.ts'/>
+/// <reference path='models/NestedItem.ts'/>
 /// <reference path='models/SearchResult.ts'/>
 /// <reference path='models/SitecoreSearchResults.ts'/>
 /// <reference path='models/LauncherOptions.ts'/>
 /// <reference path='RecentCommandsStore.ts'/>
-/// <reference path='LauncherModule.ts'/>
 /// <reference path='ICommand.ts'/>
+/// <reference path='INestedCommand.ts'/>
+/// <reference path='LauncherModule.ts'/>
 /// <reference path='providers/ICommandsProvider.ts'/>
 /// <reference path='providers/BaseCommandsProvider.ts'/>
 /// <reference path='providers/BaseCommand.ts'/>

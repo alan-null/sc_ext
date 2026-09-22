@@ -9,6 +9,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         modalElement: HTMLDivElement;
         searchResultsElement: HTMLUListElement;
         searchBoxElement: HTMLInputElement;
+        nestedBreadcrumbElement: HTMLSpanElement;
         selectedCommand: HTMLCollection;
         commands: ICommand[];
         fuzzy: Libraries.Fuzzy;
@@ -18,6 +19,9 @@ namespace SitecoreExtensions.Modules.Launcher {
         idParser: IdParser;
         options: Models.LauncherOptions;
         private selectedTermClass: string = 'sc-ext-selected-term';
+        private activeNestedCommand: INestedCommand = null;
+        private nestedItems: Models.NestedItem[] = [];
+        private nestedRequestToken: number = 0;
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description);
@@ -45,6 +49,7 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.modalElement = <HTMLDivElement>document.getElementById('sc-ext-modal');
             this.searchBoxElement = <HTMLInputElement>document.getElementById('sc-ext-searchBox');
             this.searchResultsElement = <HTMLUListElement>document.getElementById('sc-ext-searchResults');
+            this.nestedBreadcrumbElement = <HTMLSpanElement>document.getElementById('sc-ext-nestedBreadcrumb');
             this.selectedCommand = document.getElementsByClassName(this.selectedTermClass) as HTMLCollection;
 
             this.fuzzy.highlighting.before = "<span class='term'>";
@@ -79,6 +84,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         hideLauncher(): void {
+            this.exitNestedMode();
             this.modalElement.style.display = 'none';
             this.searchBoxElement.value = '';
             this.clearResults();
@@ -93,10 +99,13 @@ namespace SitecoreExtensions.Modules.Launcher {
         injectlauncherHtml(): void {
             var modal = HTMLHelpers.createElement<HTMLDivElement>('div', { class: 'launcher-modal', id: 'sc-ext-modal' });
             var div = HTMLHelpers.createElement<HTMLDivElement>('div', { class: 'launcher-modal-content' });
+            var breadcrumb = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'nested-breadcrumb hidden', id: 'sc-ext-nestedBreadcrumb' });
             var input = HTMLHelpers.createElement<HTMLInputElement>('input', { class: 'search-field', id: 'sc-ext-searchBox', autocomplete: this.options.autocomplete ?  "on" : "off" });
 
             var ul = HTMLHelpers.createElement<HTMLUListElement>('ul', { class: 'term-list hidden', id: 'sc-ext-searchResults' });
+            input.onkeydown = (e) => this.inputKeyDownEvent(e);
             input.onkeyup = (e) => this.inputKeyUpEvent(e);
+            div.appendChild(breadcrumb);
             div.appendChild(input);
             div.appendChild(ul);
             window.onclick = (e) => this.windowClickEvent(e);
@@ -117,7 +126,11 @@ namespace SitecoreExtensions.Modules.Launcher {
                     }
                     case this.options.keyBindings.hide: {
                         if (evt.target == this.searchBoxElement) {
-                            this.hideLauncher();
+                            if (this.activeNestedCommand != null) {
+                                this.exitNestedMode();
+                            } else {
+                                this.hideLauncher();
+                            }
                         }
                         break;
                     }
@@ -136,8 +149,19 @@ namespace SitecoreExtensions.Modules.Launcher {
 
         executeSelectedCommand(evt?: UserActionEvent): void {
             if (!this.selectedCommand[0]) return;
-            var id = (<HTMLLIElement>this.selectedCommand[0]).dataset['id'];
-            if (this.idParser.match(id)) {
+            var selected = <HTMLLIElement>this.selectedCommand[0];
+            var id = selected.dataset['id'];
+            var kind = selected.dataset['kind'];
+            if (kind == 'nested') {
+                var nestedItem = this.nestedItems.filter(item => item.key == id)[0];
+                if (!nestedItem) return;
+                nestedItem.execute(evt);
+                if (!nestedItem.keepLauncherOpen) {
+                    this.hideLauncher();
+                }
+                return;
+            }
+            if (kind == 'item') {
                 if (Context.Location() == Enums.Location.ContentEditor) {
                     let contentTree = new PageObjects.ContentTree();
                     contentTree.loadItem(id);
@@ -145,15 +169,27 @@ namespace SitecoreExtensions.Modules.Launcher {
                     new Providers.LaunchpadShortcutCommand("", "", "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + id).execute(evt);
                 }
 
-            } else {
+            } else if (kind == 'command') {
                 var selectedComandId = parseInt(id);
                 var command = <ICommand>this.commands.find((cmd: ICommand) => {
                     return cmd.id == selectedComandId;
                 });
+                if (!command) return;
+                if (isNestedCommand(command)) {
+                    this.enterNestedMode(command);
+                    return;
+                }
                 command.execute(evt);
                 this.recentCommandsStore.add(command);
             }
             this.hideLauncher();
+        }
+
+        inputKeyDownEvent(evt: KeyboardEvent): void {
+            if (this.activeNestedCommand != null && evt.keyCode == 8 && this.searchBoxElement.value.length == 0) {
+                this.exitNestedMode();
+                evt.preventDefault();
+            }
         }
 
         inputKeyUpEvent(evt: KeyboardEvent): void {
@@ -168,6 +204,10 @@ namespace SitecoreExtensions.Modules.Launcher {
                 this.commandSelectionEvent(evt);
             } else {
                 let phrase = this.searchBoxElement.value;
+                if (this.activeNestedCommand != null) {
+                    this.renderNestedItems(phrase);
+                    return;
+                }
                 if (phrase.length == 0) {
                     (async () => {
                         var recentResults = new Array<SearchResult>();
@@ -194,8 +234,21 @@ namespace SitecoreExtensions.Modules.Launcher {
 
         windowClickEvent(evt: MouseEvent): void {
             if (evt.target == this.modalElement) {
-                this.modalElement.style.display = 'none';
-                this.searchBoxElement.value = '';
+                this.hideLauncher();
+            }
+        }
+
+        openNested(commandName: string): void {
+            var command = this.getCommandByName(commandName);
+            if (isNestedCommand(command) && command.canExecute()) {
+                this.showLauncher();
+                this.enterNestedMode(command);
+            }
+        }
+
+        refreshNested(): void {
+            if (this.activeNestedCommand != null) {
+                this.renderNestedItems(this.searchBoxElement.value);
             }
         }
 
@@ -313,7 +366,13 @@ namespace SitecoreExtensions.Modules.Launcher {
 
                 if (results.length > 0) {
                     for (var i = 0; i < results.length && i < this.options.searchResultsCount; i++) {
-                        var li = this.buildItemHtml(results[i]);
+                        var li = this.buildResultHtml({
+                            key: results[i].id,
+                            kind: 'item',
+                            title: results[i].title,
+                            description: results[i].path,
+                            icon: results[i].img
+                        });
                         this.searchResultsElement.appendChild(li);
                     }
                     this.selectFirstResult();
@@ -322,7 +381,12 @@ namespace SitecoreExtensions.Modules.Launcher {
                     let mock = new SearchResult();
                     mock.command = this.getCommandByName('__no_results');
                     mock.highlightedTerm = "Nothing found";
-                    var li = this.buildCommandHtml(mock);
+                    var li = this.buildResultHtml({
+                        key: mock.command.id.toString(),
+                        kind: 'command',
+                        title: mock.highlightedTerm,
+                        description: mock.command.description
+                    });
                     while (this.searchResultsElement.firstChild != null) {
                         this.searchResultsElement.removeChild(this.searchResultsElement.firstChild);
                     }
@@ -358,6 +422,64 @@ namespace SitecoreExtensions.Modules.Launcher {
             return this.commands.filter(c => c.name == name)[0];
         }
 
+        private enterNestedMode(command: INestedCommand): void {
+            this.activeNestedCommand = command;
+            this.recentCommandsStore.add(command);
+            this.searchBoxElement.value = '';
+            this.nestedBreadcrumbElement.innerText = command.name + (command.placeholder ? ': ' + command.placeholder : '');
+            this.nestedBreadcrumbElement.className = 'nested-breadcrumb';
+            this.renderNestedItems('');
+        }
+
+        private exitNestedMode(): void {
+            this.activeNestedCommand = null;
+            this.nestedItems = [];
+            this.nestedRequestToken++;
+            if (this.nestedBreadcrumbElement) {
+                this.nestedBreadcrumbElement.className = 'nested-breadcrumb hidden';
+                this.nestedBreadcrumbElement.innerText = '';
+            }
+            if (this.searchBoxElement) {
+                this.searchBoxElement.value = '';
+            }
+            if (this.searchResultsElement) {
+                this.clearResults();
+            }
+        }
+
+        private renderNestedItems(query: string): void {
+            var command = this.activeNestedCommand;
+            var requestToken = ++this.nestedRequestToken;
+            this.nestedItems = [];
+            this.clearResults();
+            command.getNestedItems(query).then(items => {
+                if (requestToken != this.nestedRequestToken || command != this.activeNestedCommand) return;
+
+                var results = items.map(item => {
+                    var match = this.fuzzy.getScore(item.title, query);
+                    return { item: item, score: match.score, term: match.term, highlightedTerm: match.highlightedTerm };
+                });
+                if (query.length > 0) {
+                    results.sort(this.fuzzy.matchComparator);
+                }
+                this.nestedItems = results.slice(0, this.options.searchResultsCount).map(result => result.item);
+                this.nestedItems.forEach(item => {
+                    var match = this.fuzzy.getScore(item.title, query);
+                    this.searchResultsElement.appendChild(this.buildResultHtml({
+                        key: item.key,
+                        kind: 'nested',
+                        title: match.highlightedTerm,
+                        description: item.description,
+                        icon: item.icon
+                    }));
+                });
+                if (this.nestedItems.length > 0) {
+                    this.searchResultsElement.className = 'term-list';
+                    this.selectFirstResult();
+                }
+            });
+        }
+
         private registerModuleCommands(): void {
             this.registerProviderCommands(new Launcher.Providers.ShellCommandsProvider());
             this.registerProviderCommands(new Launcher.Providers.ContentEditorCommandsProvider());
@@ -370,7 +492,12 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.clearResults();
             if (sortedResults.length > 0) {
                 for (var i = 0; i < sortedResults.length && i < this.options.searchResultsCount; i++) {
-                    var li = this.buildCommandHtml(sortedResults[i]);
+                    var li = this.buildResultHtml({
+                        key: sortedResults[i].command.id.toString(),
+                        kind: 'command',
+                        title: sortedResults[i].highlightedTerm,
+                        description: sortedResults[i].command.description
+                    });
                     this.searchResultsElement.appendChild(li);
                 }
 
@@ -380,39 +507,17 @@ namespace SitecoreExtensions.Modules.Launcher {
             }
         }
 
-        private buildCommandHtml(sr: SearchResult): HTMLLIElement {
-            var li = HTMLHelpers.createElement<HTMLLIElement>('li', null, { id: sr.command.id });
+        private buildResultHtml(options: { key: string; kind: string; title: string; description: string; icon?: string }): HTMLLIElement {
+            var li = HTMLHelpers.createElement<HTMLLIElement>('li', null, { id: options.key, kind: options.kind });
             var spanName = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-name' });
-            spanName.innerHTML = sr.highlightedTerm;
+            spanName.innerHTML = options.title;
             var spanDescription = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-description' });
-            spanDescription.innerText = sr.command.description;
+            spanDescription.innerText = options.description;
 
-            li.appendChild(spanName);
-            li.appendChild(spanDescription);
-
-            li.onclick = (e) => {
-                var element = <Element>e.getSrcElement();
-                while (element.tagName != 'LI') {
-                    element = <Element>element.parentNode;
-                }
-                this.changeSelectedCommand(element);
-                this.searchBoxElement.focus();
-            };
-            li.ondblclick = (e: UserActionEvent) => {
-                this.executeSelectedCommand(e);
-            };
-            return li;
-        }
-
-        private buildItemHtml(sr: SitecoreSearchResults): HTMLLIElement {
-            var li = HTMLHelpers.createElement<HTMLLIElement>('li', null, { id: sr.id });
-            var spanName = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-name' });
-            spanName.innerHTML = sr.title;
-            var spanDescription = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-description' });
-            spanDescription.innerText = sr.path;
-
-            var img = HTMLHelpers.createElement<HTMLImageElement>('img', { src: sr.img, class: 'command-img' });
-            li.appendChild(img);
+            if (options.icon) {
+                var img = HTMLHelpers.createElement<HTMLImageElement>('img', { src: options.icon, class: 'command-img' });
+                li.appendChild(img);
+            }
             li.appendChild(spanName);
             li.appendChild(spanDescription);
 
