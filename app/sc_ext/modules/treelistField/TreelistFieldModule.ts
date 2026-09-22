@@ -15,9 +15,7 @@ namespace SitecoreExtensions.Modules.TreelistField {
         initialize(): void {
             window.addEventListener('load', () => this.addPathToTreelistField());
             this.addTreeNodeHandlers('scContentTree');
-            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => this.addPathToTreelistField());
-            HTMLHelpers.addProxy(scForm, 'invoke', () => this.addPathToTreelistField());
-            HTMLHelpers.addProxy(scForm, 'resume', () => this.addPathToTreelistField());
+            SitecorePageBridge.on('page:changed', () => this.addPathToTreelistField());
         }
 
         addPathToTreelistField(): void {

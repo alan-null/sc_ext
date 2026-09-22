@@ -28,8 +28,22 @@
                 "https://*/*"
             ],
             "js": [
+                "chrome/sitecoreBridge.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true,
+            "world": "MAIN"
+        },
+        {
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "js": [
                 "chrome/contentscript.js",
-                "common/optionsProvider.js"
+                "common/optionsProvider.js",
+                "sc_ext/libraries/iziToast.js",
+                "sc_ext/Application.js"
             ],
             "css": [
                 "sc_ext/styles/launcher.css",
@@ -55,20 +69,5 @@
     },
     "options_ui": {
         "page": "options/options.html"
-    },
-    "web_accessible_resources": [
-        {
-            "resources": [
-                "common/optionsProvider.js",
-                "sc_ext/Application.js",
-                "sc_ext/libraries/iziToast.js"
-            ],
-            "matches": [
-                "https://*/*"
-            ],
-            "extension_ids": [
-                "aoclhcccfdkjddgpaaajldgljhllhgmd"
-            ]
-        }
-    ]
+    }
 }

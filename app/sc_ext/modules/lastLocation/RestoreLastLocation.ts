@@ -13,8 +13,7 @@ namespace SitecoreExtensions.Modules.LastLocation {
 
         initialize(): void {
             this.addTreeNodeHandlers('scContentTree');
-            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.saveCurrentLocationAfterChange(); });
-            HTMLHelpers.addProxy(scForm, 'invoke', () => { this.saveCurrentLocationAfterChange(); });
+            SitecorePageBridge.on('page:changed', () => { this.saveCurrentLocationAfterChange(); });
         }
 
         private getElement(args: any): Element {
@@ -24,6 +23,9 @@ namespace SitecoreExtensions.Modules.LastLocation {
         }
 
         private updateLastLocation(parent: Element): void {
+            if (!parent) {
+                return;
+            }
             if ((parent as HTMLDivElement).classList.contains("scContentTreeNode")) {
                 parent = parent.querySelector("a");
             } else {

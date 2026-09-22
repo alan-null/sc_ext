@@ -16,9 +16,7 @@ namespace SitecoreExtensions.Modules.SectionSwitches {
         initialize(): void {
             window.addEventListener('load', () => this.refreshButtons());
             this.addTreeNodeHandlers('scContentTree');
-            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshButtons(); });
-            HTMLHelpers.addProxy(scForm, 'invoke', () => { this.refreshButtons(); });
-            HTMLHelpers.addProxy(scForm, 'resume', () => { this.refreshButtons(); });
+            SitecorePageBridge.on('page:changed', () => { this.refreshButtons(); });
         }
 
         closeOpenedSections() {

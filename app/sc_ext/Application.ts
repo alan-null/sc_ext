@@ -6,6 +6,23 @@ namespace SitecoreExtensions {
     export var scExtManager;
     export var infoWrapper = StatusInfoWrapper.getInstance();
 
+    export function getStatusInfo(): any {
+        let status = infoWrapper.status;
+        if (status) {
+            infoWrapper.clear();
+        }
+        return status;
+    }
+
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        if (request.sc_ext_getStatusInfo) {
+            let status = getStatusInfo();
+            if (status) {
+                sendResponse({ data: status });
+            }
+        }
+    });
+
     (async () => {
         if (await SitecoreExtensions.Context.IsValid()) {
             let serializedWrapper = await new Options.OptionsRepository().getOptions();
@@ -85,18 +102,6 @@ namespace SitecoreExtensions {
                 }
             }
 
-            window.addEventListener('message', function (event) {
-                if (event.data.sc_ext_enabled && event.data.sc_ext_getStatusInfo) {
-                    if (infoWrapper.status) {
-                        window.postMessage({
-                            sc_ext_enabled: true,
-                            sc_ext_statusInfo: true,
-                            data: scExtOptions.statusInfo.enabled ? infoWrapper.status : {}
-                        }, '*');
-                        infoWrapper.clear();
-                    }
-                }
-            });
         }
     })();
 
@@ -110,10 +115,11 @@ namespace SitecoreExtensions {
     }
 
     function updateExtensionIcon(text: string) {
-        window.postMessage({
-            sc_ext_enabled: true,
-            sc_ext_seticon_request: true,
-            sc_ext_badgetext: text
-        }, '*');
+        chrome.runtime.sendMessage({
+            sc_ext_setIcon_request: true,
+            sc_ext_setBadgeText_request: true,
+            newIconPath: 'chrome/images/icon-128.png',
+            modulesCount: text
+        });
     }
 }

@@ -12,8 +12,7 @@ namespace SitecoreExtensions.Modules.ScrollToItem {
         }
 
         initialize(): void {
-            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.scrollToActiveItemAfterChange(); });
-            HTMLHelpers.addProxy(scForm, 'invoke', () => { this.scrollToActiveItemAfterChange(); });
+            SitecorePageBridge.on('page:changed', () => { this.scrollToActiveItemAfterChange(); });
         }
 
         private scrollToActiveItemAfterChange() {

@@ -85,7 +85,12 @@ function sass(src, dst) {
 }
 
 gulp.task('typescript_sc_ext', () => {
-    return typescript(['app/sc_ext/**/*.ts', '!app/sc_ext/typings/*.ts'], 'app/sc_ext', 'Application.js');
+    return typescript(['app/sc_ext/**/*.ts', '!app/sc_ext/typings/*.ts', '!app/sc_ext/**/*.page.ts'], 'app/sc_ext', 'Application.js');
+});
+
+// Main world content script: bridge core first, then the page half of each module.
+gulp.task('typescript_page', () => {
+    return typescript(['app/sc_ext/page/*.page.ts', 'app/sc_ext/**/*.page.ts'], 'app/chrome', 'sitecoreBridge.js');
 });
 
 gulp.task('typescript_chrome', () => {
@@ -101,7 +106,7 @@ gulp.task('typescript_common', () => {
 });
 
 gulp.task('typescript_all', ['cleanup_dev'], (callback) => {
-    runSequence('typescript_sc_ext', 'typescript_chrome', 'typescript_options', 'typescript_common', callback);
+    runSequence('typescript_sc_ext', 'typescript_page', 'typescript_chrome', 'typescript_options', 'typescript_common', callback);
 });
 
 gulp.task('sass_sc_ext', () => {
@@ -142,7 +147,7 @@ gulp.task('set_mode', () => {
 });
 
 gulp.task('watch', ['set_mode', 'typescript_all', 'sass_all', 'copy_lib'], () => {
-    gulp.watch('app/sc_ext/**/*.ts', ['typescript_sc_ext']);
+    gulp.watch('app/sc_ext/**/*.ts', ['typescript_sc_ext', 'typescript_page']);
     gulp.watch('app/sc_ext/styles/**/*.scss', ['sass_sc_ext']);
     gulp.watch('app/chrome/popup/**/*.scss', ['sass_popup']);
     gulp.watch('app/chrome/**/*.ts', ['typescript_chrome']);

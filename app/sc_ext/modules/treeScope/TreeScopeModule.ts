@@ -16,21 +16,26 @@ namespace SitecoreExtensions.Modules.TreeScope {
         }
 
         initialize(): void {
-            HTMLHelpers.addProxy(scForm, 'invoke', (e) => { this.insertTreeScopeButton(e); });
+            document.addEventListener('contextmenu', (e: MouseEvent) => {
+                let treeNode = HTMLHelpers.getElement(e.target, (n: Element) => {
+                    return n.classList.contains("scContentTreeNode");
+                }) as Element;
+                if (!treeNode) {
+                    return;
+                }
+                let activeNodeID: string = this.getTreeNodeID(treeNode);
+                if (!activeNodeID) {
+                    return;
+                }
+                HTMLHelpers.postponeAction(() => {
+                    return document.querySelector(".scPopup") != null;
+                }, () => {
+                    this.insertTreeScopeButton(activeNodeID);
+                }, 10, 20);
+            }, true);
         }
 
-        private addTreeNodeHandlers(className: string): void {
-            var nodes = document.getElementsByClassName(className);
-            for (var i = 0; i < nodes.length; i++) {
-                nodes[i].addEventListener('click', (evt) => {
-                    setTimeout(() => {
-                        this.insertTreeScopeButton(evt);
-                    }, 10);
-                });
-            }
-        }
-
-        private insertTreeScopeButton(e): void {
+        private insertTreeScopeButton(activeNodeID: string): void {
             if (document.getElementsByClassName(this.treeScopeClass).length > 0) {
                 return;
             }
@@ -39,7 +44,6 @@ namespace SitecoreExtensions.Modules.TreeScope {
                 return;
             }
 
-            let activeNodeID = this.getActiveTreeNodeID(e[0]);
             if (!document.querySelector("#" + this.idScopedElement)) {
                 let scopeButton = new PopupButton(activeNodeID, (e) => {
                     this.scopeTreeCallback(e);
@@ -47,7 +51,11 @@ namespace SitecoreExtensions.Modules.TreeScope {
                 });
                 scopeButton.iconImage = "/~/icon/wordprocessing/32x32/increase_indent_h.png";
                 scopeButton.captionText = "Scope";
-                scopeButton.hotkeyImage = "/sitecore/images/blank.gif";
+                    let activeNodeElement = document.querySelector("#" + activeNodeID);
+                    if (!activeNodeElement || !activeNodeElement.parentNode) {
+                        return;
+                    }
+                    let activeNode = activeNodeElement.parentNode;
                 scopeButton.buttonClass = this.treeScopeClass;
                 popup.appendPopupButton(scopeButton, popup.getIndexOfElement("__Refresh"));
             } else {
@@ -64,7 +72,11 @@ namespace SitecoreExtensions.Modules.TreeScope {
         };
 
         private scopeTreeCallback(activeNodeID: string) {
-            let activeNode = document.querySelector("#" + activeNodeID).parentNode;
+            let activeNodeElement = document.querySelector("#" + activeNodeID);
+            if (!activeNodeElement || !activeNodeElement.parentNode) {
+                return;
+            }
+            let activeNode = activeNodeElement.parentNode;
             let tree = new ContentEditorTree();
             let nodeClode = activeNode.cloneNode(true) as HTMLDivElement;
             nodeClode.id = this.idScopedElement;
@@ -75,6 +87,9 @@ namespace SitecoreExtensions.Modules.TreeScope {
 
         private descopeTreeCallback(activeNodeID: string) {
             let scopedElement = document.querySelector("#" + this.idScopedElement);
+            if (!scopedElement) {
+                return;
+            }
             let tree = new ContentEditorTree();
 
             tree.show();
@@ -82,7 +97,13 @@ namespace SitecoreExtensions.Modules.TreeScope {
         }
 
         private getActiveTreeNodeID(value: string): string {
-            return value.match(/Tree_Node_[A-Z0-9]*/)[0];
+            let match = value && value.match(/Tree_Node_[A-Z0-9]*/);
+            return match ? match[0] : "";
+        }
+
+        private getTreeNodeID(treeNode: Element): string {
+            let anchor = treeNode.querySelector("a") as HTMLAnchorElement;
+            return anchor ? anchor.id : this.getActiveTreeNodeID(treeNode.id);
         }
     }
 }

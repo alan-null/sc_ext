@@ -1,4 +1,5 @@
 // Typings
+/// <reference path='../../typings/chrome/chrome.d.ts'/>
 /// <reference path='typings/sitecore.d.ts'/>
 /// <reference path='Extensions.ts'/>
 /// <reference path='typings/IziToast.ts'/>
@@ -24,6 +25,7 @@
 /// <reference path='page objects/_all.ts'/>
 
 // Other
+/// <reference path='SitecorePageBridge.ts'/>
 /// <reference path='Notification.ts'/>
 /// <reference path='enums/Location.ts'/>
 /// <reference path='Context.ts'/>

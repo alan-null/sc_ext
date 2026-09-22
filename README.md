@@ -52,6 +52,8 @@ If you are interested in fixing issues and contributing directly to the code bas
 
 Follow steps below if you want to start coding.
 
+Read [Architecture](docs/architecture.md) first - it explains the two execution worlds, the page bridge and how to add a new module.
+
 ### Prerequisites
 
 **If you want avoid nodejs on your machine use [docker](#docker) to build project inside container.**

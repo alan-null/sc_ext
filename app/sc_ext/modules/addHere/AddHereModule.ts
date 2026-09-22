@@ -11,9 +11,8 @@ namespace SitecoreExtensions.Modules.AddHere {
         }
 
         initialize(): void {
-            if (window["Sitecore"] != null && Sitecore.PageModes != null) {
-                HTMLHelpers.addProxy((Sitecore.PageModes.DesignManager as any), 'insertionStart', () => { this.refreshControls(); });
-            }
+            SitecorePageBridge.on('addHere:insertionStart', () => this.refreshControls());
+            SitecorePageBridge.invoke('addHere', 'initialize');
         }
 
         getAddHereButtons(): Array<AddHereButton> {

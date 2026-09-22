@@ -46,19 +46,10 @@ namespace SitecoreExtensions {
 
         protected invokeLibFun(fun: IziToastFunction, settings: IziToastSettings): void {
             if (window["iziToast"] != undefined) { fun(settings); } else {
-                this.loadLibrary();
                 HTMLHelpers.postponeAction(() => {
                     return window["iziToast"] != undefined;
                 }, () => { fun(settings); }, 200, 10);
             }
-        }
-
-        protected loadLibrary() {
-            window.postMessage({
-                sc_ext_enabled: true,
-                sc_ext_load_lib_request: true,
-                sc_ext_lib: "/sc_ext/libraries/iziToast.js"
-            }, '*');
         }
 
         public static get Instance(): IziToast {

@@ -8,3 +8,4 @@ package
 *.css
 *.js.map
 !app/options/libs/*
+!scripts/*.js

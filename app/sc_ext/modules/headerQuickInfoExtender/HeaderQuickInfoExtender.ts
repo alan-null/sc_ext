@@ -14,23 +14,47 @@ namespace SitecoreExtensions.Modules.HeaderQuickInfoExtender {
 
         initialize(): void {
             window.addEventListener('load', () => this.refreshButtons());
-            HTMLHelpers.addProxy(scSitecore, 'postEvent', () => { this.refreshButtons(); });
-            HTMLHelpers.addProxy(scForm, 'invoke', () => this.refreshButtons());
-            HTMLHelpers.addProxy(scForm, 'resume', () => this.refreshButtons());
-        }
-
-        private initialized(): boolean {
-            return document.getElementsByClassName(this.className).length != 0;
+            SitecorePageBridge.on('page:changed', () => { this.refreshButtons(); });
+            this.observeQuickInfo();
         }
 
         private refreshButtons(): void {
-            if (this.initialized()) {
+            let quickInfo = document.getElementsByClassName("scEditorQuickInfo")[0];
+            if (!quickInfo) {
                 return;
             }
-            let rows = document.getElementsByClassName("scEditorQuickInfo")[0].getElementsByTagName("tr");
-            this.addButtons(rows[0]);
-            this.addButtons(rows[3]);
-            this.addButtons(rows[4]);
+            let rows = quickInfo.getElementsByTagName("tr");
+            [0, 3, 4].forEach((index) => {
+                if (rows[index]) {
+                    this.addButtons(rows[index]);
+                }
+            });
+        }
+
+        private observeQuickInfo(): void {
+            if (!document.body || typeof MutationObserver == "undefined") {
+                return;
+            }
+            new MutationObserver((mutations) => {
+                let quickInfo = document.getElementsByClassName("scEditorQuickInfo")[0];
+                for (let i = 0; i < mutations.length; i++) {
+                    let mutation = mutations[i];
+                    if (quickInfo && quickInfo.contains(mutation.target)) {
+                        this.refreshButtons();
+                        return;
+                    }
+                    for (let j = 0; j < mutation.addedNodes.length; j++) {
+                        let node = mutation.addedNodes[j] as Element;
+                        if (node.nodeType == 1 && (node.classList.contains("scEditorQuickInfo") || node.querySelector(".scEditorQuickInfo"))) {
+                            this.refreshButtons();
+                            return;
+                        }
+                    }
+                }
+            }).observe(document.body, {
+                childList: true,
+                subtree: true
+            });
         }
 
         private addButtons(tr: Element): void {
@@ -44,7 +68,14 @@ namespace SitecoreExtensions.Modules.HeaderQuickInfoExtender {
             }
             let itemId = idInput.value;
 
-            let column2nd = tr.querySelectorAll("td")[1];
+            let columns = tr.querySelectorAll("td");
+            if (columns.length < 2) {
+                return;
+            }
+            let column2nd = columns[1] as HTMLElement;
+            if (column2nd.getElementsByClassName(this.className).length != 0) {
+                return;
+            }
 
             let wrapper = HTMLHelpers.createElement("div", { class: this.className }) as HTMLDivElement;
             wrapper.dataset['itemId'] = itemId;
