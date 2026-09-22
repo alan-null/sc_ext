@@ -8,9 +8,11 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
     }
     export class AdminShortcutsCommandsProvider implements ICommandsProvider {
         commands: ICommand[];
+        private contextService: ContextService;
 
         constructor() {
             this.commands = Array<ICommand>();
+            this.contextService = new ContextService();
             this.createCommands();
         }
 
@@ -20,14 +22,18 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             if (Context.Location() == Enums.Location.ContentEditor) {
                 let command = new DynamicCommand("DB Browser.aspx?id=CurrentItem", "The interface for various item manipulations.", "");
                 command.executeCallback = (cmd: DynamicCommand, evt: UserActionEvent) => {
-                    let tempCommand = new NavigationCommand("", "", "/sitecore/admin/dbbrowser.aspx?db=" + cmd.Database + "&lang=" + cmd.Lang + "&id=" + cmd.ItemId);
-                    tempCommand.execute(evt);
+                    this.openDbBrowser("/sitecore/admin/dbbrowser.aspx?db=" + cmd.Database + "&lang=" + cmd.Lang + "&id=" + cmd.ItemId, evt);
                 };
                 command.canExecuteCallback = () => { return Context.Location() == Enums.Location.ContentEditor; };
                 command.descriptionGetter = (cmd: DynamicCommand) => { return "Browse '" + cmd.ItemId + "' item"; };
                 this.commands.push(command);
             }
-            this.addCommand('DB Browser.aspx', 'The interface for various item manipulations.', 'dbbrowser');
+            let dbBrowserCommand = new DynamicCommand('DB Browser.aspx', 'The interface for various item manipulations.', '');
+            dbBrowserCommand.executeCallback = (cmd: DynamicCommand, evt: UserActionEvent) => {
+                this.openDbBrowser('/sitecore/admin/dbbrowser.aspx', evt);
+            };
+            dbBrowserCommand.canExecuteCallback = () => { return true; };
+            this.commands.push(dbBrowserCommand);
             this.addCommand('Database Cleanup.aspx', 'Perform various cleanup operations on specific databases.', 'DbCleanup');
             this.addCommand('Dependency Injection Configuration.aspx', 'Shows the configured services. For detailed information use details=1 query.', 'ShowServicesConfig');
             this.addCommand('EventQueue Statistics.aspx', 'Overview of the EventQueue processing.', 'EventQueueStats');
@@ -66,6 +72,29 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
 
         getCommands(): ICommand[] {
             return this.commands;
+        }
+
+        private openDbBrowser(url: string, evt: UserActionEvent): void {
+            if (this.contextService.GetDbBrowserSupport() === false) {
+                this.notifyDbBrowserUnavailable();
+                return;
+            }
+            new Http.HttpRequest(window.top.location.origin + url, Http.Method.GET, (e: ProgressEvent) => {
+                let request = e.currentTarget as XMLHttpRequest;
+                let response = request.responseText || "";
+                if (!this.contextService.AcceptDbBrowserResponse(request.status, response)) {
+                    this.notifyDbBrowserUnavailable();
+                    return;
+                }
+                new NavigationCommand("", "", url).execute(evt);
+            }, () => { this.notifyDbBrowserUnavailable(); }).execute();
+        }
+
+        private notifyDbBrowserUnavailable(): void {
+            SitecoreExtensions.Notification.Instance.warning({
+                message: "<b>DB Browser:</b></br>This feature is unavailable because this Sitecore version no longer supports DB Browser.aspx.",
+                position: 'topRight', backgroundColor: 'rgba(255,218,157,0.97)', progressBar: false
+            });
         }
     }
 }

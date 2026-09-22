@@ -121,6 +121,7 @@ namespace SitecoreExtensions {
 
     export class ContextService {
         private localStorageKey: string = "sc_ext::context_service";
+        private dbBrowserLocalStorageKey: string = "sc_ext::dbbrowser_support";
         private validationUrl: string = null;
 
         constructor() {
@@ -150,6 +151,23 @@ namespace SitecoreExtensions {
                     }
                 }
             });
+        }
+
+        public GetDbBrowserSupport(): boolean | null {
+            let storageValue = localStorage.getItem(this.dbBrowserLocalStorageKey);
+            return storageValue == null ? null : storageValue == "true";
+        }
+
+        public SetDbBrowserSupport(value: boolean): void {
+            localStorage.setItem(this.dbBrowserLocalStorageKey, value.toString());
+        }
+
+        public AcceptDbBrowserResponse(status: number, response: string): boolean {
+            let supported = status === 200 && response.indexOf("This page is deprecated and will be removed.") === -1;
+            if (status === 200 || status === 404) {
+                this.SetDbBrowserSupport(supported);
+            }
+            return supported;
         }
     }
 }

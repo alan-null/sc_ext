@@ -53,6 +53,12 @@ namespace SitecoreExtensions.Modules.FieldInspector {
             }
         }
 
+        public resetLoadingText(): void {
+            this.setInnerHTML(this.getValue(ViewMode.Title) || "");
+            this.currentElement.classList.remove("sc-ext-getfieldName-value");
+            this.currentElement.classList.remove("sc-ext-contentButton");
+        }
+
         public IsInitialized(): boolean {
             return this.currentElement.dataset['field'] != null;
         }
@@ -93,10 +99,12 @@ namespace SitecoreExtensions.Modules.FieldInspector {
         classFieldNameSpan: string = "sc-ext-getfieldName";
         tokenService: ShortcutsRunner.TokenService;
         options: FieldInspectorOptions;
+        private contextService: ContextService;
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
             this.options = new FieldInspectorOptions(rawOptions);
+            this.contextService = new ContextService();
         }
 
         canExecute(): boolean {
@@ -157,7 +165,6 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                         spanResetToStandardValues.innerText = resetFieldText;
                         spanResetToStandardValues.onclick = (e) => {
                             (e.getSrcElement() as HTMLSpanElement).innerText = "Resetting ...";
-                            this.ensureFieldsInitialized();
 
                             this.getFieldID(Context.ItemID(), sectionName, j, (fieldID) => {
                                 (e.getSrcElement() as HTMLSpanElement).innerText = resetFieldText;
@@ -187,7 +194,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                                         + "&Reset_" + formattedFieldId + "=" + "1";
                                     req.execute(postData);
                                 });
-                            }, e);
+                            }, e, () => { (e.getSrcElement() as HTMLSpanElement).innerText = resetFieldText; });
                         };
 
                         let spanGoToField = HTMLHelpers.createElement("a", { class: "sc-ext-gotofield scContentButton sc-ext-contentButton" }) as HTMLSpanElement;
@@ -195,20 +202,19 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                         spanGoToField.innerText = goToFieldText;
                         spanGoToField.onclick = (e) => {
                             (e.getSrcElement() as HTMLSpanElement).innerText = "Loading ...";
-                            this.ensureFieldsInitialized();
                             if (e.ctrlKey) {
                                 this.getFieldID(Context.ItemID(), sectionName, j, (fieldID) => {
                                     (e.getSrcElement() as HTMLSpanElement).innerText = goToFieldText;
                                     var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + fieldID;
                                     new Launcher.Providers.NavigationCommand(null, null, url).execute(e);
-                                }, e);
+                                }, e, () => { (e.getSrcElement() as HTMLSpanElement).innerText = goToFieldText; });
 
                             } else {
                                 this.getFieldID(Context.ItemID(), sectionName, j, (fieldID) => {
                                     (e.getSrcElement() as HTMLSpanElement).innerText = goToFieldText;
                                     let contentTree = new PageObjects.ContentTree();
                                     contentTree.loadItem(fieldID);
-                                }, e);
+                                }, e, () => { (e.getSrcElement() as HTMLSpanElement).innerText = goToFieldText; });
                             }
 
                         };
@@ -230,9 +236,11 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
                             fieldNameElement.setLoadingText();
                             if (!fieldNameElement.IsInitialized()) {
-                                let initialized = this.ensureFieldsInitialized(() => { this.writeDownFieldName(e, sectionElement, j); });
+                                let initialized = this.ensureFieldsInitialized(
+                                    () => { this.writeDownFieldName(e, sectionElement, j, () => { fieldNameElement.resetLoadingText(); }); },
+                                    () => { fieldNameElement.resetLoadingText(); });
                                 if (initialized) {
-                                    this.writeDownFieldName(e, sectionElement, j);
+                                    this.writeDownFieldName(e, sectionElement, j, () => { fieldNameElement.resetLoadingText(); });
                                 }
                             } else {
                                 if (fieldNameElement.getMode() == ViewMode.FieldName) {
@@ -252,21 +260,26 @@ namespace SitecoreExtensions.Modules.FieldInspector {
             }
         };
 
-        private ensureFieldsInitialized(callback?: any) {
+        private ensureFieldsInitialized(callback?: any, errorCallback?: () => void) {
             if (document.querySelector("." + this.classFieldIDsInitialized) == null) {
-                this.initFieldIDs(callback);
+                this.initFieldIDs(callback, errorCallback);
                 return false;
             }
             return true;
         }
 
-        private initFieldIDs(callback?: any) {
-            this.getItemFields(Context.ItemID(), callback);
+        private initFieldIDs(callback?: any, errorCallback?: () => void) {
             let sectionsRoot = document.querySelector(".scEditorSections");
             sectionsRoot.classList.add(this.classFieldIDsInitialized);
+            this.getItemFields(Context.ItemID(), callback, () => {
+                sectionsRoot.classList.remove(this.classFieldIDsInitialized);
+                if (errorCallback) {
+                    errorCallback();
+                }
+            });
         }
 
-        private writeDownFieldName(e, sectionElement, j) {
+        private writeDownFieldName(e, sectionElement, j, errorCallback?: () => void) {
             let elemenet = HTMLHelpers.getElement(e.getSrcElement(), (e) => { return e.dataset['fieldid'] != null; }) as HTMLDivElement;
             let fieldID = elemenet.dataset['fieldid'];
             let sectionName = this.getSectionName(sectionElement);
@@ -275,17 +288,26 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                 let currentElement = new FieldNameElement(node, this.options.fieldName.highlightText);
                 currentElement.Initialize(fieldName);
                 currentElement.setFieldName();
-            });
+            }, errorCallback);
         }
 
-        private getFieldID(itemID: string, sectionName: string, index: number, callback: GetFieldIDCallback, e: MouseEvent) {
+        private getFieldID(itemID: string, sectionName: string, index: number, callback: GetFieldIDCallback, e: MouseEvent, errorCallback?: () => void) {
             let fieldId = HTMLHelpers.getElement(e.getSrcElement(), (e) => { return e.dataset['fieldid'] != null; }) as HTMLDivElement;
             if (fieldId) {
                 callback(fieldId.dataset['fieldid']);
                 return;
             }
+            if (!this.canUseDbBrowser(errorCallback)) {
+                return;
+            }
 
             var request = new Http.HttpRequest(this.buildEndpointURL(itemID), Http.Method.GET, (e) => {
+                if (!this.acceptDbBrowserResponse(e)) {
+                    if (errorCallback) {
+                        errorCallback();
+                    }
+                    return;
+                }
                 var data = e.currentTarget.responseText;
                 var parser = new DOMParser();
                 var doc = parser.parseFromString(data, "text/html");
@@ -313,6 +335,11 @@ namespace SitecoreExtensions.Modules.FieldInspector {
 
                 let fieldID = this.idParser.extractID(fieldNode.attributes['href'].value);
                 callback(fieldID);
+            }, () => {
+                this.notifyDbBrowserUnavailable();
+                if (errorCallback) {
+                    errorCallback();
+                }
             });
             request.execute();
         }
@@ -322,8 +349,17 @@ namespace SitecoreExtensions.Modules.FieldInspector {
             return endpoint + "?db=" + this.database + "&lang=" + this.lang + "&id=" + id;
         }
 
-        private getFieldName(fieldID: string, sectionName: string, index: number, callback: GetFieldNameCallback) {
+        private getFieldName(fieldID: string, sectionName: string, index: number, callback: GetFieldNameCallback, errorCallback?: () => void) {
+            if (!this.canUseDbBrowser(errorCallback)) {
+                return;
+            }
             var request = new Http.HttpRequest(this.buildEndpointURL(fieldID), Http.Method.GET, (e) => {
+                if (!this.acceptDbBrowserResponse(e)) {
+                    if (errorCallback) {
+                        errorCallback();
+                    }
+                    return;
+                }
                 var data = e.currentTarget.responseText;
                 var parser = new DOMParser();
                 var doc = parser.parseFromString(data, "text/html");
@@ -331,12 +367,26 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                 let lastPathFragment = pathFragments[pathFragments.length - 1] as HTMLAnchorElement;
                 let fieldName = lastPathFragment.innerText;
                 callback(fieldName);
+            }, () => {
+                this.notifyDbBrowserUnavailable();
+                if (errorCallback) {
+                    errorCallback();
+                }
             });
             request.execute();
         }
 
-        private getItemFields(itemID: string, callback?: any) {
+        private getItemFields(itemID: string, callback?: any, errorCallback?: () => void) {
+            if (!this.canUseDbBrowser(errorCallback)) {
+                return;
+            }
             var request = new Http.HttpRequest(this.buildEndpointURL(itemID), Http.Method.GET, (e) => {
+                if (!this.acceptDbBrowserResponse(e)) {
+                    if (errorCallback) {
+                        errorCallback();
+                    }
+                    return;
+                }
                 var data = e.currentTarget.responseText;
                 var parser = new DOMParser();
                 var doc = parser.parseFromString(data, "text/html");
@@ -385,10 +435,42 @@ namespace SitecoreExtensions.Modules.FieldInspector {
                 if (callback) {
                     callback();
                 }
+            }, () => {
+                this.notifyDbBrowserUnavailable();
+                if (errorCallback) {
+                    errorCallback();
+                }
             });
             request.execute();
         }
 
+        private canUseDbBrowser(errorCallback?: () => void): boolean {
+            if (this.contextService.GetDbBrowserSupport() === false) {
+                this.notifyDbBrowserUnavailable();
+                if (errorCallback) {
+                    errorCallback();
+                }
+                return false;
+            }
+            return true;
+        }
+
+        private acceptDbBrowserResponse(event: ProgressEvent): boolean {
+            let request = event.currentTarget as XMLHttpRequest;
+            let response = request.responseText || "";
+            if (!this.contextService.AcceptDbBrowserResponse(request.status, response)) {
+                this.notifyDbBrowserUnavailable();
+                return false;
+            }
+            return true;
+        }
+
+        private notifyDbBrowserUnavailable(): void {
+            SitecoreExtensions.Notification.Instance.warning({
+                message: "<b>Field Inspector:</b></br>This feature is unavailable because this Sitecore version no longer supports DB Browser.aspx.",
+                position: 'topRight', backgroundColor: 'rgba(255,218,157,0.97)', progressBar: false
+            });
+        }
         private getSectionName(section: HTMLElement): string {
             let str = section.onclick.toString();
             if (str.indexOf("scForm") > 0) {
