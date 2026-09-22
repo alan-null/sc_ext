@@ -74,6 +74,7 @@ namespace SitecoreExtensions {
 
             launcher.registerProviderCommands(new Modules.SectionSwitches.SectionSwitchesCommandsProvider());
             launcher.registerProviderCommands(new Modules.LastLocation.RestoreLastLocationCommandProvider());
+            launcher.registerProviderCommands(new Modules.Guid.GuidCommandsProvider(wrapper.getModuleOptions('GUID')));
             launcher.registerProviderCommands(new Modules.ShortcutsRunner.Providers.SitecoreApplicationsCommandsProvider());
             launcher.registerProviderCommands(new Modules.Launcher.Providers.UserDefinedLinksCommandsProvider(wrapper.getModuleOptions('Links')));
 

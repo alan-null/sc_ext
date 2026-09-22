@@ -8,7 +8,7 @@
     "watch": "gulp watch",
     "build": "gulp build",
     "package": "gulp package",
-    "selfcheck": "node scripts/pageBridge.selfcheck.js"
+    "selfcheck": "node scripts/selfcheck.js"
   },
   "devDependencies": {
     "del": "^2.2.0",

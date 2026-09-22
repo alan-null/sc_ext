@@ -53,6 +53,7 @@
 /// <reference path='modules/fieldInspector/_all.ts'/>
 /// <reference path='modules/fieldSearch/_all.ts'/>
 /// <reference path='modules/goToDatasource/_all.ts'/>
+/// <reference path='modules/guid/_all.ts'/>
 /// <reference path='modules/lastLocation/_all.ts'/>
 /// <reference path='modules/launcher/_all.ts'/>
 /// <reference path='modules/shortcutsRunner/_all.ts'/>
