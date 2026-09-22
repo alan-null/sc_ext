@@ -2,8 +2,8 @@
 
 namespace SitecoreExtensions.Storage {
     export class GlobalStorage {
-        public static set(key: string, value: any): void {
-            SitecoreExtensions.Common.GlobalStorage.set(key, value);
+        public static set(key: string, value: any): Promise<void> {
+            return SitecoreExtensions.Common.GlobalStorage.set(key, value);
         }
 
         public static async get(key: string): Promise<any> {

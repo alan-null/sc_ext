@@ -11,6 +11,7 @@ module SitecoreExtensions.Options {
         .controller('DatabaseNameController', DatabaseNameController)
         .controller('SectionSwitchesController', SectionSwitchesController)
         .controller('FieldSearchController', FieldSearchController)
+        .controller('FavoritesController', FavoritesController)
         .controller('RestoreLastLocationController', RestoreLastLocationController)
         .controller('TreelistFieldController', TreelistFieldController)
         .controller('SettingsController', SettingsController)

@@ -17,6 +17,7 @@
 /// <reference path='controllers/TreelistFieldController.ts' />
 /// <reference path='controllers/RestoreLastLocationController.ts' />
 /// <reference path='controllers/FieldSearchController.ts' />
+/// <reference path='controllers/FavoritesController.ts' />
 /// <reference path='controllers/AboutController.ts' />
 /// <reference path='controllers/GeneralOptionsController.ts' />
 /// <reference path='controllers/SettingsController.ts' />

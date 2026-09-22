@@ -1,0 +1,41 @@
+.scEditorHeader.sc-ext-favorites-header {
+    position: relative;
+
+    .scEditorHeaderTitlePanel {
+        padding-right: 40px;
+    }
+}
+
+.sc-ext-favorites-star {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    width: 24px;
+    color: #777;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 24px;
+    text-align: center;
+    transform: translateY(-50%);
+}
+
+.sc-ext-favorites-star:before {
+    content: "\2606";
+}
+
+.sc-ext-favorites-star.saved {
+    color: #e0a800;
+}
+
+.sc-ext-favorites-star.saved:before {
+    content: "\2605";
+}
+
+.sc-ext-favorites-star:focus {
+    outline: 2px solid #006ed7;
+    outline-offset: 1px;
+}
+
+.sc-ext-favorites-ribbon-chunk {
+    min-width: 90px;
+}

@@ -24,6 +24,7 @@ Sitecore Extensions is a google chrome/firefox extension which provides small im
 ## Features
 
 - [Launcher](https://github.com/alan-null/sc_ext/wiki/Launcher) - launch Sitecore commands using command omnibox,
+- Favorites - save Content Editor items and return to them from the launcher,
 - GUID formats - copy the current item ID in common GUID formats or generate a new GUID,
 - [Collapse all sections](https://github.com/alan-null/sc_ext/wiki/Section-Switches) - you can collapse all opened sections in Content Editor with just one click,
 - [Expand all sections](https://github.com/alan-null/sc_ext/wiki/Section-Switches) - you can expand all opened sections in Content Editor with just one click,

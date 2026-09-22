@@ -50,6 +50,7 @@ namespace SitecoreExtensions {
             var addHere = new Modules.AddHere.AddHereModule('Add Here', 'Extends AddHere button in ExperienceEditor with placeholder name', wrapper.getModuleOptions('Add Here'));
             var placeholder = new Modules.Placeholder.PlaceholderModule('Placeholder', 'Placeholder extensions', wrapper.getModuleOptions('Placeholder'));
             var headerQuickInfoExtender = new Modules.HeaderQuickInfoExtender.HeaderQuickInfoExtenderModule('Header QuickInfo Extender', 'Additional buttons for quick info section in Content Editor', wrapper.getModuleOptions('Header QuickInfo Extender'));
+            var favorites = new Modules.Favorites.FavoritesModule('Favorites', 'Save and navigate to Content Editor items', wrapper.getModuleOptions('Favorites'));
 
 
             scExtManager.addModule(sectionSwitchesModule);
@@ -69,12 +70,14 @@ namespace SitecoreExtensions {
             scExtManager.addModule(addHere);
             scExtManager.addModule(placeholder);
             scExtManager.addModule(headerQuickInfoExtender);
+            scExtManager.addModule(favorites);
 
             scExtManager.initModules();
 
             launcher.registerProviderCommands(new Modules.SectionSwitches.SectionSwitchesCommandsProvider());
             launcher.registerProviderCommands(new Modules.LastLocation.RestoreLastLocationCommandProvider());
             launcher.registerProviderCommands(new Modules.Guid.GuidCommandsProvider(wrapper.getModuleOptions('GUID')));
+            launcher.registerProviderCommands(new Modules.Favorites.FavoritesCommandsProvider(favorites));
             launcher.registerProviderCommands(new Modules.ShortcutsRunner.Providers.SitecoreApplicationsCommandsProvider());
             launcher.registerProviderCommands(new Modules.Launcher.Providers.UserDefinedLinksCommandsProvider(wrapper.getModuleOptions('Links')));
 

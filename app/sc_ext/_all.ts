@@ -56,6 +56,7 @@
 /// <reference path='modules/guid/_all.ts'/>
 /// <reference path='modules/lastLocation/_all.ts'/>
 /// <reference path='modules/launcher/_all.ts'/>
+/// <reference path='modules/favorites/_all.ts'/>
 /// <reference path='modules/shortcutsRunner/_all.ts'/>
 /// <reference path='modules/databaseSelector/_all.ts'/>
 /// <reference path='modules/sectionSwitches/_all.ts'/>

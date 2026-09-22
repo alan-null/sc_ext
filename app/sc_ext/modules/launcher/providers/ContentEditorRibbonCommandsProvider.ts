@@ -34,7 +34,6 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addCommand('Navigate: Forward', 'Go to the next selected item.', () => { scForm.invoke('contenteditor:forward', 'click'); }, canExecute);
             this.addCommand('Navigate: Up', 'Go to the parent item.', () => { scForm.invoke('contenteditor:up', 'click'); }, canExecute);
             this.addCommand('Navigate: Home', 'Go to your home item. (Ctrl+Shift+Home)', () => { scForm.invoke('contenteditor:home', 'click'); }, canExecute);
-            this.addCommand('Add to favorites', 'Add current item to favourites', () => { scForm.postEvent(this, 'click', 'favorites:add(id=' + Context.ItemID() + ')'); }, canExecute);
             this.addCommand('Organize', 'Organize favorites', () => { scForm.postEvent(this, 'click', 'favorites:organize'); }, canExecute);
             this.addCommand('Search', 'Open the Search application. (Ctrl+Shift+F)', () => { scForm.invoke('shell:search', 'click'); }, canExecute);
 

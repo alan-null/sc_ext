@@ -20,9 +20,11 @@ namespace SitecoreExtensions.Common {
         public static async set(key: string, value: any): Promise<void> {
             let storage = await this.getStorage();
             storage[key] = value;
-            chrome.storage.local.set({
-                sc_ext_globalStorage: storage,
-            }, () => { });
+            await new Promise<void>(returnValue => {
+                chrome.storage.local.set({
+                    sc_ext_globalStorage: storage,
+                }, returnValue);
+            });
         }
         private static async getStorage(): Promise<any> {
             return new Promise<any>(returnValue => {
