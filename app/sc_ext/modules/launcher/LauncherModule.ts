@@ -186,6 +186,11 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         inputKeyDownEvent(evt: KeyboardEvent): void {
+            if (evt.keyCode == this.options.keyBindings.executeCommand) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                return;
+            }
             if (this.activeNestedCommand != null && evt.keyCode == 8 && this.searchBoxElement.value.length == 0) {
                 this.exitNestedMode();
                 evt.preventDefault();
