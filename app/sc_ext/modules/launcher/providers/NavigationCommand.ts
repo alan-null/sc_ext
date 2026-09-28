@@ -28,6 +28,15 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
         }
 
         private openInNewTab(): void {
+            if (typeof chrome != "undefined" && chrome.runtime) {
+                chrome.runtime.sendMessage({
+                    sc_ext_openTab_request: true,
+                    url: this.url,
+                    active: false
+                });
+                return;
+            }
+
             var virtualLink = HTMLHelpers.createElement("a", {
                 target: "_blank",
                 href: this.url

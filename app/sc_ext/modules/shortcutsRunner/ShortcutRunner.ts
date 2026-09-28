@@ -16,7 +16,7 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
         public runShortcutCommand(shortcutId: string, evt?: KeyboardEvent): void {
             this.getShortcutUrl((e) => {
                 if (e.currentTarget.status == 500) {
-                    this.handleErrorAndRetry(shortcutId);
+                    this.handleErrorAndRetry(shortcutId, evt);
                 } else {
                     var data = JSON.parse(e.currentTarget.responseText);
                     this.invokeCommand(data, evt);
@@ -35,9 +35,9 @@ namespace SitecoreExtensions.Modules.ShortcutsRunner {
             }
         }
 
-        private handleErrorAndRetry(shortcutId: string): void {
+        private handleErrorAndRetry(shortcutId: string, evt?: KeyboardEvent): void {
             this.tokenService.invalidateToken().then((token) => {
-                this.runShortcutCommand(shortcutId);
+                this.runShortcutCommand(shortcutId, evt);
             });
         }
 

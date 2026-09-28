@@ -13,6 +13,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log("Tab cannot be null");
     return;
   }
+  if (request.sc_ext_openTab_request) {
+    chrome.tabs.create({
+      url: request.url,
+      windowId: sender.tab.windowId,
+      index: sender.tab.index + 1,
+      active: request.active !== false
+    });
+    return;
+  }
   if (request.sc_ext_setBadgeText_request) {
     chrome.action.setBadgeText({ tabId: sender.tab.id, text: request.modulesCount });
   }

@@ -35,7 +35,6 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addCommand('Navigate: Up', 'Go to the parent item.', () => { scForm.invoke('contenteditor:up', 'click'); }, canExecute);
             this.addCommand('Navigate: Home', 'Go to your home item. (Ctrl+Shift+Home)', () => { scForm.invoke('contenteditor:home', 'click'); }, canExecute);
             this.addCommand('Organize', 'Organize favorites', () => { scForm.postEvent(this, 'click', 'favorites:organize'); }, canExecute);
-            this.addCommand('Search', 'Open the Search application. (Ctrl+Shift+F)', () => { scForm.invoke('shell:search', 'click'); }, canExecute);
 
             // Review
             this.addCommand('Spellcheck', 'Run the spellcheck on all text and HTML fields in th selected item.', () => { scForm.invoke('contenteditor:spellcheck', 'click'); }, canExecute);
@@ -105,8 +104,6 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             this.addCommand('Assign', 'Assign security rights for the selected item.', () => { scForm.invoke('item:openitemsecurityeditor', 'click'); }, canExecute);
             this.addCommand('Security Details', 'View assigned security rights for the selected item.', () => { scForm.invoke('contenteditor:opensecurity', 'click'); }, canExecute);
             this.addCommand('Change', 'Change of the ownership', () => { scForm.invoke('item:setowner', 'click'); }, canExecute);
-            this.addCommand('Access Viewer', 'Open the Access Viewer.', () => { scForm.postEvent(this, 'click', 'shell:accessviewer'); }, canExecute);
-            this.addCommand('User Manager', 'Open the User Manager.', () => { scForm.postEvent(this, 'click', 'shell:usermanager'); }, canExecute);
 
             // View
             this.addCommand('Content tree', 'Show or hide the content tree.', () => { scForm.postEvent(this, 'click', 'javascript:scContent.toggleFolders()'); }, canExecute);
