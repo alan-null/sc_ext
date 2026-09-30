@@ -1,3 +1,11 @@
+---
+layout: default
+title: Architecture
+parent: Contributing
+nav_order: 1
+permalink: /architecture/
+---
+
 # Architecture
 
 Context document for anyone (human or agent) touching this codebase. Read this before adding a module or
@@ -5,7 +13,7 @@ touching anything that talks to Sitecore.
 
 ## The two worlds
 
-Since Manifest V3 the extension runs in **two isolated JavaScript worlds** inside every Sitecore page:
+Since Manifest V3 the extension runs in **two JavaScript worlds** inside every Sitecore page:
 
 | World       | Bundle                     | Runs at          | Can touch                                              |
 | ----------- | -------------------------- | ---------------- | ------------------------------------------------------ |
@@ -15,6 +23,12 @@ Since Manifest V3 the extension runs in **two isolated JavaScript worlds** insid
 They share the DOM and nothing else. The isolated world **cannot** see `Sitecore` or `scForm`; the main world
 **cannot** see `chrome.storage` or the options. Referencing `Sitecore` from isolated code throws
 `ReferenceError: Sitecore is not defined`.
+
+The extension's Manifest V3 content-script configuration is the source of this
+split: `chrome/sitecoreBridge.js` is the MAIN-world entry point at
+`document_start`; `chrome/contentscript.js`, `common/optionsProvider.js`, the
+library bundle, and `sc_ext/Application.js` are isolated-world entry points at
+`document_end`. The background service worker is `chrome/background.js`.
 
 
 ## Modules own both halves
@@ -31,15 +45,15 @@ modules/placeholder/
 
 Gulp decides which bundle a file lands in purely by name:
 
-* `app/sc_ext/**/*.page.ts` → `app/chrome/sitecoreBridge.js` (main world), task `typescript_page`
-* every other `app/sc_ext/**/*.ts` → `app/sc_ext/Application.js` (isolated), task `typescript_sc_ext`
+* `app/sc_ext/page/*.page.ts` and `app/sc_ext/**/*.page.ts` → `app/chrome/sitecoreBridge.js` (main world), task `typescript_page`
+* every other `app/sc_ext/**/*.ts` except typings → `app/sc_ext/Application.js` (isolated), task `typescript_sc_ext`
 
 The two bundles are separate compilations: `*.page.ts` files cannot import isolated types and vice versa.
 Cross-world types are plain JSON, nothing else.
 
 ## The bridge
 
-[`app/sc_ext/page/PageBridge.page.ts`](../app/sc_ext/page/PageBridge.page.ts) is transport only and knows no
+[`app/sc_ext/page/PageBridge.page.ts`](https://github.com/alan-null/sc_ext/blob/master/app/sc_ext/page/PageBridge.page.ts) is transport only and knows no
 feature names. It offers three primitives to page-world code:
 
 ```ts
@@ -48,7 +62,7 @@ ScExtPage.emit(name, payload);            // page -> isolated notification
 ScExtPage.proxy(target, method, after);   // wrap a Sitecore function, run after it
 ```
 
-and [`app/sc_ext/SitecorePageBridge.ts`](../app/sc_ext/SitecorePageBridge.ts) is the isolated-world end:
+and [`app/sc_ext/SitecorePageBridge.ts`](https://github.com/alan-null/sc_ext/blob/master/app/sc_ext/SitecorePageBridge.ts) is the isolated-world end:
 
 ```ts
 SitecorePageBridge.invoke('placeholder', 'initialize', [args]);   // isolated -> page call
@@ -76,8 +90,8 @@ markup on every request.
    * `canExecute()` — options plus a `Context.Location()` check. It runs **outside** the manager's
      try/catch, so it must never throw and must never touch page globals.
    * `initialize()` — wire up DOM, events and bridge calls.
-3. Reference the folder's `_all.ts` from [`app/sc_ext/_all.ts`](../app/sc_ext/_all.ts).
-4. Construct and `addModule()` it in [`app/sc_ext/Application.ts`](../app/sc_ext/Application.ts), passing
+3. Reference the folder's `_all.ts` from [`app/sc_ext/_all.ts`](https://github.com/alan-null/sc_ext/blob/master/app/sc_ext/_all.ts).
+4. Construct and `addModule()` it in [`app/sc_ext/Application.ts`](https://github.com/alan-null/sc_ext/blob/master/app/sc_ext/Application.ts), passing
    `wrapper.getModuleOptions('<Display Name>')`. The display name string is the options key — it must match
    the options page.
 5. Add the module to the options page under `app/options/` if it has settings.
@@ -127,10 +141,12 @@ Rules that bite:
 ## Checks
 
 ```bash
-npm run build       # both bundles
-npm run selfcheck   # asserts bridge routing against the built main world bundle
+npm run build       # compile and publish development output
+npm run selfcheck   # run all self-check scripts
 ```
 
-`scripts/pageBridge.selfcheck.js` loads `app/chrome/sitecoreBridge.js` in a `vm` sandbox and verifies routing,
-own-property guarding, rejection of messages from other windows, event shape and proxy semantics. Run it after
-any change to the bridge core.
+`scripts/selfcheck.js` discovers every `scripts/*.selfcheck.js` file. The
+`pageBridge.selfcheck.js` check loads `app/chrome/sitecoreBridge.js` in a `vm`
+sandbox and verifies routing, own-property guarding, rejection of messages from
+other windows, event shape, and proxy semantics. Run `npm run build` first so
+the bundle exists.

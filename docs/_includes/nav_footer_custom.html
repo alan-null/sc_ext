@@ -1,0 +1,46 @@
+<div class="theme-switcher" data-theme-switcher>
+	<label for="theme-select">Theme</label>
+	<select id="theme-select" data-theme-select>
+		<option value="sitecore">Sitecore</option>
+		<option value="system">System</option>
+		<option value="light">Light</option>
+		<option value="dark">Dark</option>
+	</select>
+</div>
+
+<script>
+	(function () {
+		var storageKey = "sc-ext-docs-theme";
+		var select = document.querySelector("[data-theme-select]");
+		var systemQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+		if (!select || !window.jtd) {
+			return;
+		}
+
+		function resolvedTheme(theme) {
+			return theme === "system" && systemQuery.matches ? "dark" : theme === "system" ? "light" : theme;
+		}
+
+		function applyTheme(theme) {
+			window.jtd.setTheme(resolvedTheme(theme));
+			select.value = theme;
+		}
+
+		var savedTheme = window.localStorage.getItem(storageKey) || "sitecore";
+		applyTheme(savedTheme);
+
+		select.addEventListener("change", function () {
+			window.localStorage.setItem(storageKey, select.value);
+			applyTheme(select.value);
+		});
+
+		if (systemQuery.addEventListener) {
+			systemQuery.addEventListener("change", function () {
+				if ((window.localStorage.getItem(storageKey) || "sitecore") === "system") {
+					applyTheme("system");
+				}
+			});
+		}
+	}());
+</script>

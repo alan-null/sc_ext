@@ -9,3 +9,5 @@ package
 *.js.map
 !app/options/libs/*
 !scripts/*.js
+docs/_site/
+docs/.jekyll-cache/

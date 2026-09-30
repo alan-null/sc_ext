@@ -1,0 +1,28 @@
+title: Sitecore Extensions
+description: Documentation for the Sitecore Extensions browser extension
+repository: alan-null/sc_ext
+remote_theme: just-the-docs/just-the-docs
+url: https://alan-null.github.io
+baseurl: /sc_ext
+favicon_ico: "/assets/images/favicon.ico"
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-sitemap
+
+permalink: pretty
+color_scheme: sitecore
+aux_links:
+  "Sitecore Extensions on GitHub":
+    - "https://github.com/alan-null/sc_ext"
+nav_external_links:
+  - title: Latest Release
+    url: https://github.com/alan-null/sc_ext/releases/latest
+    hide_icon: false
+    opens_in_new_tab: true
+callouts:
+  warning:
+    title: Warning
+    color: red
+  highlight:
+    color: yellow
