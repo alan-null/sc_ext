@@ -1,0 +1,17 @@
+.theme-switcher {
+  display: flex;
+  align-items: center;
+  gap: $sp-2;
+  margin-top: $sp-4;
+  color: $nav-child-link-color;
+  font-size: $font-size-4;
+}
+
+.theme-switcher select {
+  min-width: 6.5rem;
+  padding: $sp-1 $sp-2;
+  color: $body-text-color;
+  background-color: $base-button-color;
+  border: $border $border-color;
+  border-radius: $border-radius;
+}
