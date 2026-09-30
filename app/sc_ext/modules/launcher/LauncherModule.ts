@@ -299,9 +299,16 @@ namespace SitecoreExtensions.Modules.Launcher {
 
         private isValidContext(): boolean {
             if (window.frameElement) {
-                return window.frameElement.id != 'Editor_contentIframe' && window.frameElement.id != 'holder';
+                return window.frameElement.id != 'Editor_contentIframe'
+                    && window.frameElement.id != 'holder'
+                    && !this.isRichTextEditorPreview();
             }
             return true;
+        }
+
+        private isRichTextEditorPreview(): boolean {
+            var path = window.location.pathname.toLowerCase().replace(/%20/g, ' ');
+            return path == '/sitecore/shell/controls/rich text editor/preview.aspx';
         }
 
         private selectFirstResult(): void {
