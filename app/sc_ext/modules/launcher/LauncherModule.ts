@@ -40,6 +40,10 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         initialize(): void {
+            if (this.isRichTextEditorPreview()) {
+                this.registerShortcutForwarding();
+                return;
+            }
             this.injectlauncherHtml();
             this.registerGlobalShortcuts();
             this.registerInternalCommands();
@@ -138,6 +142,28 @@ namespace SitecoreExtensions.Modules.Launcher {
                 }
                 evt.preventDefault();
             };
+            window.addEventListener('message', (evt: MessageEvent) => {
+                var data = evt.data;
+                if (evt.source === window || evt.origin != window.location.origin
+                    || !data || data.sc_ext_launcher_show_request !== true) {
+                    return;
+                }
+                this.showLauncher();
+            });
+        }
+
+        registerShortcutForwarding(): void {
+            if (!this.options.enabled) {
+                return;
+            }
+            document.addEventListener('keydown', (evt: KeyboardEvent) => {
+                if ((evt.which || evt.keyCode) != this.options.keyBindings.show || !evt.ctrlKey) {
+                    return;
+                }
+                (window.top || window).postMessage({ sc_ext_launcher_show_request: true }, '*');
+                evt.preventDefault();
+                evt.stopPropagation();
+            }, true);
         }
 
         addFlowConditionForKeyDownEvent(): void {
@@ -300,8 +326,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         private isValidContext(): boolean {
             if (window.frameElement) {
                 return window.frameElement.id != 'Editor_contentIframe'
-                    && window.frameElement.id != 'holder'
-                    && !this.isRichTextEditorPreview();
+                    && window.frameElement.id != 'holder';
             }
             return true;
         }
