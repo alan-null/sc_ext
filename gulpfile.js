@@ -46,13 +46,17 @@ function fixPipe(stream) {
 }
 
 function typescript(src, dest, concatFile) {
+    var compilerOptions = { target: "es5" };
+    if (concatFile) {
+        compilerOptions.outFile = concatFile;
+    }
     var tsResult = gulp.src(src)
         .pipe(tslint({
             formatter: "verbose"
         }))
         .pipe(tslint.report({ emitError: false }))
         .pipe(sourcemaps.init())
-        .pipe(ts({ outFile: concatFile, target: "es5" }));
+        .pipe(ts(compilerOptions));
 
     concatFile = (concatFile || '|');
     return tsResult.js
@@ -122,14 +126,15 @@ gulp.task('sass_all', (callback) => {
 });
 
 gulp.task('cleanup_dev', () => {
-    del(
+    return del(
         [
+            'app/common/optionsProvider.js', 'app/common/optionsProvider.js.map',
             'app/chrome/**/*.js', 'app/chrome/**/*.js.map',
             'app/options/*.js', 'app/options/*.js.map',
             'app/sc_ext/*.js', 'app/sc_ext/*.js.map'
         ]
         , { dryRun: false }).then(paths => {
-            console.log('Files and folders that would be deleted:\n', paths.join('\n'));
+            console.log('Deleted files and folders:\n', paths.join('\n'));
         });
 });
 

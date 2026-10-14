@@ -123,15 +123,25 @@ Install **docker**
 
 Connect to a node container
 
+On Windows, run:
+
 ```bash
 .\.devcontainer\run.ps1
+```
+
+On Linux, run from the repository root with your host user's UID and GID so generated files remain writable on the host:
+
+```bash
+docker compose -f .devcontainer/docker-compose.yml run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp localdev
 ```
 
 Run build command inside container
 
 ```bash
-node@21dc36488c7b:/data/app$ npm run build
+npm run build
 ```
+
+If a previous container created files under a different UID, the build removes and regenerates the common JavaScript outputs. If cleanup itself reports `EACCES`, restore ownership of the affected generated files or directories on the host before rebuilding. The container user needs write access to the mounted repository, including `app`, `dist` and `node_modules`.
 
 `node_modules` *are shared between host and container. Container was introduced only to exclude need of having node installed.*
 
