@@ -47,9 +47,6 @@ namespace SitecoreExtensions.Modules.Launcher {
             this.injectlauncherHtml();
             this.registerGlobalShortcuts();
             this.registerInternalCommands();
-            if (Context.Location() == Enums.Location.ContentEditor) {
-                this.addFlowConditionForKeyDownEvent();
-            }
             this.modalElement = <HTMLDivElement>document.getElementById('sc-ext-modal');
             this.searchBoxElement = <HTMLInputElement>document.getElementById('sc-ext-searchBox');
             this.searchResultsElement = <HTMLUListElement>document.getElementById('sc-ext-searchResults');
@@ -104,11 +101,12 @@ namespace SitecoreExtensions.Modules.Launcher {
             var modal = HTMLHelpers.createElement<HTMLDivElement>('div', { class: 'launcher-modal', id: 'sc-ext-modal' });
             var div = HTMLHelpers.createElement<HTMLDivElement>('div', { class: 'launcher-modal-content' });
             var breadcrumb = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'nested-breadcrumb hidden', id: 'sc-ext-nestedBreadcrumb' });
-            var input = HTMLHelpers.createElement<HTMLInputElement>('input', { class: 'search-field', id: 'sc-ext-searchBox', autocomplete: this.options.autocomplete ?  "on" : "off" });
+            var input = HTMLHelpers.createElement<HTMLInputElement>('input', { class: 'search-field scIgnoreModified', id: 'sc-ext-searchBox', autocomplete: this.options.autocomplete ?  "on" : "off" });
 
             var ul = HTMLHelpers.createElement<HTMLUListElement>('ul', { class: 'term-list hidden', id: 'sc-ext-searchResults' });
             input.onkeydown = (e) => this.inputKeyDownEvent(e);
             input.onkeyup = (e) => this.inputKeyUpEvent(e);
+            input.onkeypress = (e) => e.stopPropagation();
             div.appendChild(breadcrumb);
             div.appendChild(input);
             div.appendChild(ul);
@@ -118,30 +116,14 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         registerGlobalShortcuts(): void {
-            document.onkeydown = (evt: KeyboardEvent) => {
-                evt = (evt != null ? evt : <KeyboardEvent>window.event);
-                switch (evt.which || evt.keyCode) {
-                    case this.options.keyBindings.show: {
-                        if (evt.ctrlKey) {
-                            this.showLauncher();
-                            break;
-                        }
-                        return;
-                    }
-                    case this.options.keyBindings.hide: {
-                        if (evt.target == this.searchBoxElement) {
-                            if (this.activeNestedCommand != null) {
-                                this.exitNestedMode();
-                            } else {
-                                this.hideLauncher();
-                            }
-                        }
-                        break;
-                    }
-                    default: return;
+            document.addEventListener('keydown', (evt: KeyboardEvent) => {
+                if ((evt.which || evt.keyCode) != this.options.keyBindings.show || !evt.ctrlKey) {
+                    return;
                 }
                 evt.preventDefault();
-            };
+                evt.stopPropagation();
+                this.showLauncher();
+            }, true);
             window.addEventListener('message', (evt: MessageEvent) => {
                 var data = evt.data;
                 if (evt.source === window || evt.origin != window.location.origin
@@ -164,13 +146,6 @@ namespace SitecoreExtensions.Modules.Launcher {
                 evt.preventDefault();
                 evt.stopPropagation();
             }, true);
-        }
-
-        addFlowConditionForKeyDownEvent(): void {
-            HTMLHelpers.addFlowConditionToEvent(scSitecore, 'onKeyDown', (evt: KeyboardEvent) => {
-                evt = (evt != null ? evt : <KeyboardEvent>window.event);
-                return (evt as any).element().id != 'sc-ext-searchBox';
-            });
         }
 
         executeSelectedCommand(evt?: UserActionEvent): void {
@@ -212,9 +187,18 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         inputKeyDownEvent(evt: KeyboardEvent): void {
+            evt.stopPropagation();
             if (evt.keyCode == this.options.keyBindings.executeCommand) {
                 evt.preventDefault();
-                evt.stopPropagation();
+                return;
+            }
+            if (evt.keyCode == this.options.keyBindings.hide) {
+                if (this.activeNestedCommand != null) {
+                    this.exitNestedMode();
+                } else {
+                    this.hideLauncher();
+                }
+                evt.preventDefault();
                 return;
             }
             if (this.activeNestedCommand != null && evt.keyCode == 8 && this.searchBoxElement.value.length == 0) {
@@ -224,6 +208,7 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         inputKeyUpEvent(evt: KeyboardEvent): void {
+            evt.stopPropagation();
             if (evt.keyCode == this.options.keyBindings.executeCommand && this.selectedCommand[0]) {
                 this.executeSelectedCommand(evt);
                 return;

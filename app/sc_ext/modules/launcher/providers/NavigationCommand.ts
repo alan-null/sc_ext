@@ -31,7 +31,7 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             if (typeof chrome != "undefined" && chrome.runtime) {
                 chrome.runtime.sendMessage({
                     sc_ext_openTab_request: true,
-                    url: this.url,
+                    url: new URL(this.url, window.top.location.href).href,
                     active: false
                 });
                 return;
