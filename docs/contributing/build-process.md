@@ -22,6 +22,8 @@ This document explains how the build process works.
 
 `npm run package` runs `build` and creates `package/sc-ext-<manifest.version>.zip` from `dist`.
 
+For local development, load `app` as an unpacked extension and run `npm run watch`. Its manifest exposes development source maps for debugging. For distribution, use the ZIP created by `npm run package`, or load `dist` to check the release output. The release build removes source-map resource declarations and excludes source-map files without changing `app/manifest.json`.
+
 #### watch
 
 `npm run watch` starts a watcher that rebuilds output files when source files change. It sets build mode to `watch`, so TypeScript and Sass errors are reported without stopping the watcher.
@@ -88,8 +90,11 @@ release layout under `dist`. `publish_chrome` excludes the development-only
 
 ### chromeManifest
 
-`chromeManifest` copies `app/manifest.json` to `dist/manifest.json`. The
-manifest is not rewritten during this task.
+`chromeManifest` reads `app/manifest.json` and writes `dist/manifest.json` with resources ending in `.map` removed from `web_accessible_resources`. Other resources and entry settings are preserved. Empty entries are removed, and the whole field is omitted when no entries remain. The source manifest stays unchanged.
+
+### validate_release
+
+`validate_release` runs after publishing and fails the build if `dist` contains `.map` files or the release manifest declares `.map` resources as web-accessible. Packaging depends on this validated build.
 
 ### extras
 

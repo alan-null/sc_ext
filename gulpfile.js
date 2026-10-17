@@ -13,6 +13,8 @@ var htmlmin = require('gulp-htmlmin')
 var zip = require('gulp-zip')
 var size = require('gulp-size')
 var replace = require('gulp-string-replace');
+var fs = require('fs');
+var releaseManifest = require('./scripts/releaseManifest');
 
 var mode = "build"
 
@@ -171,8 +173,12 @@ gulp.task('extras', () => {
 });
 
 gulp.task('chromeManifest', () => {
-    gulp.src("app/manifest.json")
-        .pipe(gulp.dest("dist"));
+    var manifest = JSON.parse(fs.readFileSync('app/manifest.json', 'utf8'));
+    fs.writeFileSync('dist/manifest.json', JSON.stringify(releaseManifest.prepare(manifest), null, 4) + '\n');
+});
+
+gulp.task('validate_release', () => {
+    releaseManifest.validate('dist');
 });
 
 gulp.task('get_package_size', () => {
@@ -259,6 +265,7 @@ gulp.task('build', ['cleanup_release'], (callback) => {
         'typescript_all', 'sass_all', 'copy_lib',
         'extras', 'chromeManifest',
         'publish_all',
+        'validate_release',
         'get_package_size', callback);
 });
 

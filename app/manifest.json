@@ -68,6 +68,16 @@
         },
         "default_popup": "chrome/popup/popup.html"
     },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "sc_ext/*.map"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ],
     "options_ui": {
         "page": "options/options.html"
     }
