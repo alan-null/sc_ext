@@ -113,9 +113,11 @@ namespace ScExtPage.MyAgent {
                 ScExtPage.emit('myFeature:changed');
             });
         }
-    });
+    }, { initialize: ScExtPage.noArgs });
 }
 ```
+
+Each registered method must have an argument validator; methods without one are rejected. The router requires string target/method names and an explicit argument array. Validators must check argument counts and types before a handler runs.
 
 The module then does:
 

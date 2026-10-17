@@ -83,5 +83,8 @@ namespace ScExtPage.PlaceholderAgent {
                 }
             });
         }
+    }, {
+        initialize: ScExtPage.noArgs,
+        remove: function (args) { return args.length === 1 && typeof args[0] === 'string'; }
     });
 }

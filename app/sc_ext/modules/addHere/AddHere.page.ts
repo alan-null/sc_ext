@@ -16,5 +16,5 @@ namespace ScExtPage.AddHereAgent {
             });
             watching = true;
         }
-    });
+    }, { initialize: ScExtPage.noArgs });
 }

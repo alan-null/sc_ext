@@ -3,11 +3,37 @@
 namespace ScExtPage {
     export type Handlers = { [method: string]: (...args: any[]) => void };
 
+    export type Validators = { [method: string]: (args: any[]) => boolean };
+
+    var validators: { [name: string]: Validators } = {};
     var agents: { [name: string]: Handlers } = {};
     var owns = Object.prototype.hasOwnProperty;
 
-    export function register(name: string, handlers: Handlers): void {
+    export function register(name: string, handlers: Handlers, checks: Validators): void {
         agents[name] = handlers;
+        validators[name] = checks;
+    }
+
+    export function noArgs(args: any[]): boolean {
+        return args.length === 0;
+    }
+
+    // Use an indexed loop so sparse arrays cannot skip validation.
+    function stringArgs(args: any[], min: number, max: number): boolean {
+        if (args.length < min || args.length > max) {
+            return false;
+        }
+        for (var i = 0; i < args.length; i++) {
+            if (typeof args[i] !== 'string') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function postEventArgs(args: any[]): boolean {
+        return args.length === 3 && args[0] === null
+            && typeof args[1] === 'string' && typeof args[2] === 'string';
     }
 
     // Page -> isolated world. Payload must be structured-cloneable.
@@ -66,7 +92,9 @@ namespace ScExtPage {
 
     window.addEventListener('message', function (event: MessageEvent) {
         var data = event.data;
-        if (event.source !== window || !data || data.sc_ext_page_call !== true) {
+        if (event.source !== window || !data || typeof data !== 'object' || Array.isArray(data)
+            || data.sc_ext_page_call !== true || typeof data.target !== 'string'
+            || typeof data.method !== 'string' || !Array.isArray(data.args)) {
             return;
         }
         if (!owns.call(agents, data.target)) {
@@ -77,14 +105,25 @@ namespace ScExtPage {
             return;
         }
         try {
-            agent[data.method].apply(agent, data.args || []);
+            var checks = validators[data.target];
+            if (!checks || !owns.call(checks, data.method)
+                || typeof checks[data.method] !== 'function' || !checks[data.method](data.args)) {
+                return;
+            }
+            agent[data.method].apply(agent, data.args);
         } catch (error) {
             console.error('sc_ext page bridge failed: ' + data.target + '.' + data.method, error);
         }
     });
 
-    register('scForm', forwarder('scForm', ['invoke', 'postEvent', 'postRequest', 'resume']));
-    register('scSitecore', forwarder('scSitecore', ['postEvent']));
+    // Contracts match the isolated-world callers. These checks do not authenticate the page.
+    register('scForm', forwarder('scForm', ['invoke', 'postEvent', 'postRequest', 'resume']), {
+        invoke: function (args) { return stringArgs(args, 1, 2); },
+        postEvent: postEventArgs,
+        postRequest: function (args) { return stringArgs(args, 4, 4); },
+        resume: noArgs
+    });
+    register('scSitecore', forwarder('scSitecore', ['postEvent']), { postEvent: postEventArgs });
 
     watchPageActivity(40);
 }
