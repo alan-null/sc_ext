@@ -135,15 +135,18 @@ On Linux, run from the repository root with your host user's UID and GID so gene
 docker compose -f .devcontainer/docker-compose.yml run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp localdev
 ```
 
-Run build command inside container
+Install dependencies and build inside the container:
 
 ```bash
+npm install
 npm run build
 ```
 
 If a previous container created files under a different UID, the build removes and regenerates the common JavaScript outputs. If cleanup itself reports `EACCES`, restore ownership of the affected generated files or directories on the host before rebuilding. The container user needs write access to the mounted repository, including `app`, `dist` and `node_modules`.
 
 `node_modules` *are shared between host and container. Container was introduced only to exclude need of having node installed.*
+
+The repository bind mount also shares `package-lock.json` with the host. Keep this file in version control to record the resolved dependency versions, and commit updates alongside dependency changes in `package.json`. Keep `node_modules` ignored. Run dependency installs inside the container to use the project's Node.js and npm versions consistently.
 
 Image available on [**docker**hub](https://hub.docker.com/r/alpl/sc_ext)
 
