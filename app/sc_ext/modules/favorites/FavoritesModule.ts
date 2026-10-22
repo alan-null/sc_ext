@@ -176,7 +176,7 @@ namespace SitecoreExtensions.Modules.Favorites {
                 title: 'Open extension favorites'
             });
             var icon = HTMLHelpers.createElement<HTMLImageElement>('img', {
-                src: '/temp/iconcache/office/24x24/star.png',
+                src: this.getStarIcon(true),
                 class: 'scRibbonToolbarLargeButtonIcon',
                 alt: ''
             });
@@ -235,6 +235,9 @@ namespace SitecoreExtensions.Modules.Favorites {
             var star = HTMLHelpers.createElement<HTMLSpanElement>('span', {
                 class: this.starClass, title: 'Add to favorites', role: 'button', tabindex: '0'
             });
+            star.appendChild(HTMLHelpers.createElement<HTMLImageElement>('img', {
+                src: this.getStarIcon(false), alt: '', width: '24', height: '24'
+            }));
             star.onclick = event => {
                 event.preventDefault();
                 this.isCurrentFavorite() ? this.removeCurrent() : this.addCurrent();
@@ -253,6 +256,15 @@ namespace SitecoreExtensions.Modules.Favorites {
             var saved = this.isCurrentFavorite();
             star.className = this.starClass + (saved ? ' saved' : '');
             star.title = saved ? 'Remove from favorites' : 'Add to favorites';
+            star.setAttribute('aria-label', star.title);
+            star.setAttribute('aria-pressed', saved ? 'true' : 'false');
+            (<HTMLImageElement>star.querySelector('img')).src = this.getStarIcon(saved);
+        }
+
+        private getStarIcon(filled: boolean): string {
+            var color = filled ? '#e0a800' : '#777';
+            return 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="'
+                + (filled ? color : 'none') + '" stroke="' + color + '" stroke-width="1.5" stroke-linejoin="round" d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01Z"/></svg>');
         }
 
         private getLauncher(): Launcher.LauncherModule {
