@@ -538,8 +538,13 @@ namespace SitecoreExtensions.Modules.Launcher {
             spanDescription.innerText = options.description;
 
             if (options.icon) {
+                var iconSlot = HTMLHelpers.createElement<HTMLSpanElement>('span', { class: 'command-icon-slot' });
                 var img = HTMLHelpers.createElement<HTMLImageElement>('img', { src: options.icon, class: 'command-img' });
-                li.appendChild(img);
+                img.onerror = () => {
+                    if (img.parentNode != null) img.parentNode.removeChild(img);
+                };
+                iconSlot.appendChild(img);
+                li.appendChild(iconSlot);
             }
             li.appendChild(spanName);
             li.appendChild(spanDescription);

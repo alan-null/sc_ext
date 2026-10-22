@@ -103,8 +103,17 @@ $font: "Arvo", "Helvetica Neue", Helvetica, arial, sans-serif;
                 color: white;
             }
         }
+        .command-icon-slot {
+            display: inline-block;
+            width: 26px;
+            height: 16px;
+            vertical-align: middle;
+        }
         img.command-img {
+            max-width: 16px;
+            max-height: 16px;
             padding-left: 10px;
+            vertical-align: middle;
         }
     }
 }
