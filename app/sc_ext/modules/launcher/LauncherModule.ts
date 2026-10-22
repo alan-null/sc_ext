@@ -116,14 +116,15 @@ namespace SitecoreExtensions.Modules.Launcher {
         }
 
         registerGlobalShortcuts(): void {
-            document.addEventListener('keydown', (evt: KeyboardEvent) => {
-                if ((evt.which || evt.keyCode) != this.options.keyBindings.show || !evt.ctrlKey) {
+            // Let page handlers claim shortcuts before using Launcher as a fallback.
+            window.addEventListener('keydown', (evt: KeyboardEvent) => {
+                if ((evt.which || evt.keyCode) != this.options.keyBindings.show || !evt.ctrlKey || evt.defaultPrevented) {
                     return;
                 }
                 evt.preventDefault();
                 evt.stopPropagation();
                 this.showLauncher();
-            }, true);
+            }, false);
             window.addEventListener('message', (evt: MessageEvent) => {
                 var data = evt.data;
                 if (evt.source === window || evt.origin != window.location.origin
@@ -138,14 +139,14 @@ namespace SitecoreExtensions.Modules.Launcher {
             if (!this.options.enabled) {
                 return;
             }
-            document.addEventListener('keydown', (evt: KeyboardEvent) => {
-                if ((evt.which || evt.keyCode) != this.options.keyBindings.show || !evt.ctrlKey) {
+            window.addEventListener('keydown', (evt: KeyboardEvent) => {
+                if ((evt.which || evt.keyCode) != this.options.keyBindings.show || !evt.ctrlKey || evt.defaultPrevented) {
                     return;
                 }
                 (window.top || window).postMessage({ sc_ext_launcher_show_request: true }, '*');
                 evt.preventDefault();
                 evt.stopPropagation();
-            }, true);
+            }, false);
         }
 
         executeSelectedCommand(evt?: UserActionEvent): void {

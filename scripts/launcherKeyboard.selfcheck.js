@@ -23,7 +23,7 @@ const context = {
         addEventListener: (type, handler, capture) => listeners.push({ type, handler, capture }),
         querySelector: () => ({ appendChild: () => {} })
     },
-    window: { addEventListener: () => {} }
+    window: { addEventListener: (type, handler, capture) => listeners.push({ type, handler, capture, surface: 'window' }) }
 };
 const source = fs.readFileSync('app/sc_ext/modules/launcher/LauncherModule.ts', 'utf8');
 vm.runInNewContext(ts.transpile(source, { target: ts.ScriptTarget.ES5, module: ts.ModuleKind.None }), context);
@@ -98,15 +98,44 @@ assert(back.propagationStopped && back.defaultPrevented && exited === 2, 'empty 
 launcher.registerGlobalShortcuts();
 assert.strictEqual(context.document.onkeydown, pageKeyDown, 'Launcher must preserve the page keydown property');
 const shortcut = listeners.filter(listener => listener.type === 'keydown')[0];
-assert.strictEqual(shortcut.capture, true, 'opening shortcut must run before page bubble handlers');
+assert.strictEqual(shortcut.surface, 'window', 'fallback must run after document and editor handlers');
+assert.strictEqual(shortcut.capture, false, 'opening shortcut must run during bubbling');
 [event(32), event(82), event(27)].forEach(evt => {
     shortcut.handler(evt);
     assert(!evt.defaultPrevented && !evt.propagationStopped && shown === 0, 'unrelated page keys must remain untouched');
 });
 launcher.options.keyBindings.show = 76;
+function node(classes, parentElement) {
+    return { classList: { contains: name => classes.indexOf(name) >= 0 }, parentElement };
+}
+const editorTargets = [node(['ace_text-input']), node([], node(['ace_editor']))];
+editorTargets.forEach(target => {
+    const evt = event(76, true);
+    evt.target = target;
+    evt.preventDefault(); // Simulate a page handler claiming the shortcut.
+    shortcut.handler(evt);
+    assert(evt.defaultPrevented && !evt.propagationStopped && shown === 0, 'claimed shortcuts must not open Launcher');
+});
 const open = event(76, true);
+open.target = editorTargets[0]; // Unclaimed shortcuts work even inside Ace.
 shortcut.handler(open);
 assert(open.defaultPrevented && open.propagationStopped && shown === 1, 'configured opening shortcut must be contained');
+
+const forwarded = [];
+context.window.top = { postMessage: message => forwarded.push(message) };
+launcher.options.enabled = true;
+launcher.registerShortcutForwarding();
+const forwardingShortcut = listeners.filter(listener => listener.type === 'keydown')[1];
+editorTargets.forEach(target => {
+    const evt = event(76, true);
+    evt.target = target;
+    evt.preventDefault();
+    forwardingShortcut.handler(evt);
+    assert(evt.defaultPrevented && !evt.propagationStopped && forwarded.length === 0, 'claimed shortcuts must not be forwarded from preview frames');
+});
+const forward = event(76, true);
+forwardingShortcut.handler(forward);
+assert(forward.defaultPrevented && forward.propagationStopped && forwarded.length === 1, 'ordinary preview shortcuts must still be forwarded');
 launcher.options.keyBindings.executeCommand = 69;
 const customExecute = event(69);
 input.onkeydown(customExecute);
