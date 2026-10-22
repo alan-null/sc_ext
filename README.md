@@ -144,6 +144,12 @@ npm run build
 
 If a previous container created files under a different UID, the build removes and regenerates the common JavaScript outputs. If cleanup itself reports `EACCES`, restore ownership of the affected generated files or directories on the host before rebuilding. The container user needs write access to the mounted repository, including `app`, `dist` and `node_modules`.
 
+For example, if cleanup cannot remove `dist/_locales`, run this once from the repository root to restore ownership of `dist` to your host user, then start the container with your UID and GID as shown above:
+
+```bash
+docker compose -f .devcontainer/docker-compose.yml run --rm --user 0:0 --entrypoint /bin/sh localdev -c "chown -R $(id -u):$(id -g) /data/app/dist"
+```
+
 `node_modules` *are shared between host and container. Container was introduced only to exclude need of having node installed.*
 
 The repository bind mount also shares `package-lock.json` with the host. Keep this file in version control to record the resolved dependency versions, and commit updates alongside dependency changes in `package.json`. Keep `node_modules` ignored. Run dependency installs inside the container to use the project's Node.js and npm versions consistently.
