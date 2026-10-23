@@ -1,12 +1,112 @@
-<div class="row">
-    <div class="col-lg-8 col-md-offset-2">
-        <div ng-controller="FavoritesController as vm">
-            <h1><a href="{{::vm.link}}" class="doc-link">{{::vm.title}}</a></h1>
-            <form ng-submit="vm.onSubmit()" name="vm.form">
-                <formly-form model="vm.model" fields="vm.fields" options="vm.options" form="vm.form">
-                    <button type="submit" class="btn btn-primary submit-button" ng-disabled="vm.form.$invalid">Save</button>
-                </formly-form>
-            </form>
+<div class="favorites-page" ng-controller="FavoritesController as vm">
+    <header class="favorites-heading">
+        <div>
+            <h1>Favorites</h1>
+            <p>Your shortcuts to Sitecore items, wherever you work.</p>
         </div>
-    </div>
+        <a href="{{::vm.link}}" target="_blank" rel="noopener" class="favorites-doc-link">Documentation ↗</a>
+    </header>
+
+    <section class="favorites-library" aria-labelledby="favorites-list-heading">
+        <div class="favorites-library-heading">
+            <div>
+                <h2 id="favorites-list-heading">Saved favorites <span class="favorites-count">{{vm.favorites.length}}</span></h2>
+                <p>Edit a shortcut to choose its name and where it opens.</p>
+            </div>
+            <div class="favorites-search" ng-if="vm.favorites.length">
+                <label class="sr-only" for="favorites-search">Search favorites</label>
+                <input id="favorites-search" type="search" class="form-control" placeholder="Search name, path or host…" ng-model="vm.search" ng-disabled="vm.busy || vm.editedFavorite">
+            </div>
+        </div>
+        <p class="favorites-error" role="alert" ng-if="vm.error &amp;&amp; !vm.editedFavorite">{{vm.error}}</p>
+        <div class="favorites-empty" ng-if="!vm.favorites.length">
+            <strong>Your shortcuts will appear here</strong>
+            <p>Star an item in the Content Editor to save your first favorite.</p>
+        </div>
+        <p class="favorites-empty" ng-if="vm.favorites.length &amp;&amp; !(vm.favorites | filter:vm.search).length">No favorites match “{{vm.search}}”. Try another name, path or host.</p>
+        <table class="favorites-table" ng-if="vm.favorites.length &amp;&amp; (vm.favorites | filter:vm.search).length">
+            <thead><tr><th class="favorites-name-column">Item</th><th class="favorites-scope-column">Available on</th><th class="favorites-database-column">Database</th><th class="favorites-actions-column"><span class="sr-only">Actions</span></th></tr></thead>
+            <tbody>
+                <tr class="favorites-row" ng-repeat-start="favorite in vm.favorites | filter:vm.search track by vm.favoriteKey(favorite)" ng-class="{'is-editing': vm.originalFavorite &amp;&amp; vm.favoriteKey(vm.originalFavorite) === vm.favoriteKey(favorite)}">
+                    <td class="favorites-item-cell">
+                        <strong class="favorites-item-name">{{favorite.name}}</strong>
+                        <span class="favorites-item-path" title="{{favorite.path}}">{{favorite.path}}</span>
+                    </td>
+                    <td class="favorites-scope-cell">
+                        <span class="favorites-scope-badge" ng-class="{'is-any': favorite.scope === 'any', 'is-matching': favorite.scope === 'matching'}">
+                            <span ng-if="favorite.scope === 'any'" class="favorite-target">Any instance</span>
+                            <span ng-if="favorite.scope === 'matching'">Matching instances</span>
+                            <span ng-if="favorite.scope !== 'any' &amp;&amp; favorite.scope !== 'matching'">Specific instance</span>
+                        </span>
+                        <span class="favorite-target favorites-host" ng-if="favorite.scope !== 'any'" title="{{favorite.scope === 'matching' ? favorite.hostPattern : favorite.host}}">{{favorite.scope === 'matching' ? favorite.hostPattern : favorite.host}}</span>
+                    </td>
+                    <td class="favorites-database-cell"><span class="favorites-database">{{favorite.database}}</span></td>
+                    <td class="favorites-actions-cell">
+                        <button type="button" class="favorites-action" ng-click="vm.editFavorite(favorite)" ng-disabled="vm.busy || vm.editedFavorite" aria-label="Edit {{favorite.name}}">Edit</button>
+                        <button type="button" class="favorites-action favorites-action-delete" ng-click="vm.deleteFavorite(favorite)" ng-disabled="vm.busy || vm.editedFavorite" aria-label="Delete {{favorite.name}}">Delete</button>
+                    </td>
+                </tr>
+                <tr ng-repeat-end ng-if="vm.originalFavorite &amp;&amp; vm.favoriteKey(vm.originalFavorite) === vm.favoriteKey(favorite)" class="favorites-editor-row">
+                    <td colspan="4">
+                        <form name="favoriteForm" ng-submit="vm.saveFavorite()" class="favorites-editor" ng-keydown="$event.keyCode === 27 &amp;&amp; !vm.busy &amp;&amp; vm.cancelEditing()" aria-labelledby="favorites-editor-heading">
+                            <div class="favorites-editor-heading">
+                                <h3 id="favorites-editor-heading">Edit favorite</h3>
+                                <span>Changes apply when you save.</span>
+                            </div>
+                            <p class="favorites-error" role="alert" ng-if="vm.error">{{vm.error}}</p>
+                            <div class="favorites-edit-fields">
+                                <div class="form-group">
+                                    <label for="favorite-name">Display name</label>
+                                    <input id="favorite-name" class="form-control" ng-model="vm.editedFavorite.name" required ng-disabled="vm.busy">
+                                </div>
+                                <div class="form-group">
+                                    <label for="favorite-scope">Use on</label>
+                                    <select id="favorite-scope" class="form-control" ng-model="vm.editedFavorite.scope" ng-disabled="vm.busy">
+                                        <option value="instance">Specific instance</option>
+                                        <option value="any">Any instance</option>
+                                        <option value="matching">Matching instances</option>
+                                    </select>
+                                </div>
+                                <div class="form-group favorites-full-width" ng-if="vm.editedFavorite.scope === 'instance'">
+                                    <label for="favorite-host">Hostname</label>
+                                    <input id="favorite-host" class="form-control" ng-model="vm.editedFavorite.host" placeholder="author.local:8443" required ng-disabled="vm.busy" aria-describedby="favorite-host-help">
+                                    <p id="favorite-host-help" class="help-block">Opens on this host. Include a port if needed, without https:// or a path.</p>
+                                </div>
+                                <div class="form-group favorites-full-width" ng-if="vm.editedFavorite.scope === 'matching'">
+                                    <label for="favorite-pattern">Hostname pattern</label>
+                                    <input id="favorite-pattern" class="form-control" ng-model="vm.editedFavorite.hostPattern" placeholder="*.sitecore-staging.cloud" required ng-disabled="vm.busy" aria-describedby="favorite-pattern-help">
+                                    <p id="favorite-pattern-help" class="help-block">Use * for any characters, e.g. *.cm. Matches the whole hostname, ignoring case and port.</p>
+                                    <p class="favorites-scope-note">Appears on matching instances and opens on the host you are using.</p>
+                                </div>
+                            </div>
+                            <p class="favorites-scope-note" ng-if="vm.editedFavorite.scope === 'any'">Appears on every instance and opens on the host you are using. The item must exist there with the same ID and database.</p>
+                            <details class="favorites-item-details">
+                                <summary>Item details</summary>
+                                <dl>
+                                    <dt>Item ID</dt><dd><code>{{vm.editedFavorite.id}}</code></dd>
+                                    <dt>Path</dt><dd>{{vm.editedFavorite.path || 'Not recorded'}}</dd>
+                                    <dt>Database</dt><dd>{{vm.editedFavorite.database}}</dd>
+                                    <dt>Language</dt><dd>{{vm.editedFavorite.language}}</dd>
+                                    <dt>Saved instance</dt><dd>{{vm.editedFavorite.host || 'None'}}<span ng-if="vm.editedFavorite.scope !== 'instance'" class="favorites-details-help">Reused if you switch to Specific instance; you can edit it there.</span></dd>
+                                </dl>
+                            </details>
+                            <div class="favorites-editor-footer">
+                                <button type="button" class="btn btn-default" ng-click="vm.cancelEditing()" ng-disabled="vm.busy">Cancel</button>
+                                <button type="submit" class="btn btn-primary" ng-disabled="favoriteForm.$invalid || vm.busy">{{vm.busy ? 'Saving…' : 'Save favorite'}}</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="favorites-storage-note">Showing extension-stored favorites. Favorites in site-local storage stay on their Sitecore instance; use the launcher’s “Change favorite scope” command there.</p>
+    </section>
+    <details class="favorites-settings">
+        <summary>Module settings <span>Storage, defaults and Content Editor controls</span></summary>
+        <form ng-submit="vm.onSubmit()" name="vm.form" class="favorites-settings-form">
+            <formly-form model="vm.model" fields="vm.fields" options="vm.options" form="vm.form">
+                <button type="submit" class="btn btn-primary submit-button" ng-disabled="vm.form.$invalid">Save settings</button>
+            </formly-form>
+        </form>
+    </details>
 </div>

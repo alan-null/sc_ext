@@ -20,6 +20,7 @@ namespace SitecoreExtensions.Modules.Favorites {
 
         public initialize(): void {
             if (Context.Location() != Enums.Location.ContentEditor) return;
+            this.store.onChanged = () => { this.refresh(); };
             window.addEventListener('load', () => this.refresh());
             SitecorePageBridge.on('page:changed', () => { this.refresh(); });
             this.refresh();
@@ -32,6 +33,23 @@ namespace SitecoreExtensions.Modules.Favorites {
         public isCurrentFavorite(): boolean {
             var id = this.getCurrentItemId();
             return id != null && this.store.containsCached(id, Context.Database(), window.top.location.host);
+        }
+
+        public currentFavorite(): Favorite {
+            var id = this.getCurrentItemId();
+            return id == null ? null : this.store.currentCached(id, Context.Database(), window.top.location.host);
+        }
+
+        public async changeCurrentScope(): Promise<void> {
+            var favorite = this.currentFavorite();
+            if (favorite == null) return;
+            try {
+                await this.store.setScope(favorite.id, favorite.database, window.top.location.host,
+                    favorite.scope == 'any' || favorite.scope == 'matching' ? 'instance' : 'any');
+            } catch (error) {
+                Notification.Instance.warning({ message: error.message, position: 'topRight', progressBar: false });
+            }
+            this.refresh();
         }
 
         public getCurrentItemName(): string {
@@ -63,12 +81,13 @@ namespace SitecoreExtensions.Modules.Favorites {
             if (!this.canCapture()) return;
             var id = this.getCurrentItemId();
             if (await this.store.contains(id, Context.Database(), window.top.location.host)) {
-                var current = (await this.store.all()).filter(favorite =>
-                    favorite.id.toLowerCase() == id.toLowerCase() &&
-                    favorite.database == Context.Database() &&
-                    favorite.host == window.top.location.host)[0];
+                var current = this.currentFavorite();
                 if (current != null && current.name.toLowerCase() == id.toLowerCase()) {
-                    await this.store.add(this.captureCurrent());
+                    var captured = this.captureCurrent();
+                    captured.scope = current.scope;
+                    captured.host = current.host;
+                    captured.hostPattern = current.hostPattern;
+                    await this.store.add(captured);
                 }
             }
             if (this.options.showToolbarButton) this.injectRibbonTab();
@@ -90,6 +109,8 @@ namespace SitecoreExtensions.Modules.Favorites {
             favorite.database = Context.Database();
             favorite.language = Context.Language();
             favorite.host = window.top.location.host;
+            favorite.scope = this.options.defaultScope;
+            favorite.icon = Favorite.normalizeIcon(favorite);
             favorite.createdAt = Date.now();
             return favorite;
         }
@@ -255,7 +276,10 @@ namespace SitecoreExtensions.Modules.Favorites {
             if (star == null) return;
             var saved = this.isCurrentFavorite();
             star.className = this.starClass + (saved ? ' saved' : '');
-            star.title = saved ? 'Remove from favorites' : 'Add to favorites';
+            var current = this.currentFavorite();
+            star.title = saved ? (current.scope == 'any' ? 'Remove shared favorite (all instances)' : 'Remove from favorites')
+                : 'Add to favorites (' + (this.options.defaultScope == 'any' ? 'any instance' : 'this instance') + ')';
+            if (saved && current.scope == 'matching') star.title = 'Remove matching favorite (' + current.hostPattern + ')';
             star.setAttribute('aria-label', star.title);
             star.setAttribute('aria-pressed', saved ? 'true' : 'false');
             (<HTMLImageElement>star.querySelector('img')).src = this.getStarIcon(saved);

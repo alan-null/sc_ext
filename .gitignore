@@ -6,6 +6,7 @@ dist
 package
 *.js
 *.css
+!app/options/styles/favorites.css
 *.js.map
 !app/options/libs/*
 !scripts/*.js

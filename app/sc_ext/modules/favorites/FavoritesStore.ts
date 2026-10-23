@@ -2,26 +2,37 @@
 
 namespace SitecoreExtensions.Modules.Favorites {
     import StorageType = Launcher.StorageType;
-    import GlobalStorage = Storage.GlobalStorage;
+    import FavoritesRepository = Common.FavoritesRepository;
 
     export class FavoritesStore {
-        private static key: string = "sc_ext::favorites";
+        public onChanged: () => void;
         private cache: Favorite[] = null;
+        private repository: FavoritesRepository;
 
-        constructor(private storageType: StorageType, private shareAcrossInstances: boolean, private maxItems: number) { }
+        constructor(private storageType: StorageType, private shareAcrossInstances: boolean, private maxItems: number) {
+            this.repository = new FavoritesRepository(storageType == StorageType.GlobalStorage);
+            if (storageType == StorageType.GlobalStorage) {
+                chrome.storage.onChanged.addListener((changes, area) => {
+                    if (area == 'local' && changes.sc_ext_globalStorage) this.invalidate();
+                });
+            } else {
+                window.addEventListener('storage', event => {
+                    if (event.key == null || event.key == FavoritesRepository.key) this.invalidate();
+                });
+            }
+        }
 
         public async all(): Promise<Favorite[]> {
             var favorites = await this.load();
-            if (this.shareAcrossInstances) return favorites.slice();
-
             var host = window.top.location.host;
-            return favorites.filter(favorite => favorite.host == host);
+            return favorites.filter(favorite => Favorite.appliesTo(favorite, host) ||
+                this.shareAcrossInstances && favorite.scope != 'any' && favorite.scope != 'matching');
         }
 
         public async add(favorite: Favorite): Promise<void> {
-            var favorites = await this.load();
+            var favorites = await this.repository.all();
             var previousLength = favorites.length;
-            var existing = favorites.filter(item => this.sameIdentity(item, favorite))[0];
+            var existing = favorites.filter(item => Favorite.key(item) == Favorite.key(favorite))[0];
             if (existing) {
                 existing.name = favorite.name;
                 existing.path = favorite.path;
@@ -41,8 +52,26 @@ namespace SitecoreExtensions.Modules.Favorites {
         }
 
         public async remove(id: string, database: string, host: string): Promise<void> {
-            var favorites = await this.load();
-            await this.save(favorites.filter(item => !this.matches(item, id, database, host)));
+            this.cache = await this.repository.all();
+            var favorite = this.currentCached(id, database, host);
+            if (favorite) await this.repository.remove(favorite);
+            this.cache = await this.repository.all();
+        }
+
+        public async setScope(id: string, database: string, host: string, scope: 'instance' | 'any'): Promise<void> {
+            this.cache = await this.repository.all();
+            var favorite = this.currentCached(id, database, host);
+            if (!favorite) return;
+            var updated = Object.assign({}, favorite, { scope: scope, host: host, icon: Favorite.normalizeIcon(favorite) });
+            await this.repository.update(favorite, updated);
+            this.cache = await this.repository.all();
+        }
+
+        public currentCached(id: string, database: string, host: string): Favorite {
+            if (this.cache == null || id == null) return null;
+            var matches = this.cache.filter(item => this.matches(item, id, database, host));
+            return matches.filter(item => item.scope != 'any' && item.scope != 'matching')[0] ||
+                matches.filter(item => item.scope == 'matching')[0] || matches[0] || null;
         }
 
         public async contains(id: string, database: string, host: string): Promise<boolean> {
@@ -51,7 +80,7 @@ namespace SitecoreExtensions.Modules.Favorites {
         }
 
         public containsCached(id: string, database: string, host: string): boolean {
-            return this.cache != null && this.cache.some(item => this.matches(item, id, database, host));
+            return this.currentCached(id, database, host) != null;
         }
 
         public async clear(): Promise<void> {
@@ -61,36 +90,23 @@ namespace SitecoreExtensions.Modules.Favorites {
         private async load(): Promise<Favorite[]> {
             if (this.cache != null) return this.cache;
 
-            var value = this.storageType == StorageType.GlobalStorage
-                ? await GlobalStorage.get(FavoritesStore.key)
-                : localStorage.getItem(FavoritesStore.key);
-            try {
-                var parsed = typeof value == 'string' ? JSON.parse(value) : value;
-                this.cache = Array.isArray(parsed)
-                    ? parsed.filter(item => item && item.id && item.host)
-                    : [];
-            } catch (_) {
-                this.cache = [];
-            }
+            this.cache = await this.repository.all();
             return this.cache;
         }
 
         private async save(favorites: Favorite[]): Promise<void> {
-            var value = JSON.stringify(favorites);
-            if (this.storageType == StorageType.GlobalStorage) {
-                await GlobalStorage.set(FavoritesStore.key, value);
-            } else {
-                localStorage.setItem(FavoritesStore.key, value);
-            }
+            await this.repository.save(favorites);
             this.cache = favorites;
         }
 
-        private sameIdentity(left: Favorite, right: Favorite): boolean {
-            return this.matches(left, right.id, right.database, right.host);
+        private invalidate(): void {
+            this.cache = null;
+            if (this.onChanged) this.onChanged();
         }
 
         private matches(favorite: Favorite, id: string, database: string, host: string): boolean {
-            return favorite.id.toLowerCase() == id.toLowerCase() && favorite.database == database && favorite.host == host;
+            return id != null && favorite.id.toLowerCase() == id.toLowerCase() && favorite.database == database &&
+                Favorite.appliesTo(favorite, host);
         }
     }
 }

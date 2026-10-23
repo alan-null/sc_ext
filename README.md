@@ -26,7 +26,7 @@ Sitecore Extensions is a google chrome/firefox extension which provides small im
 Full documentation is available at [https://alan-null.github.io/sc_ext/](https://alan-null.github.io/sc_ext/).
 
 - [Launcher](https://alan-null.github.io/sc_ext/launcher/) - launch Sitecore commands using command omnibox,
-- Favorites - save Content Editor items and return to them from the launcher,
+- Favorites - save Content Editor items for a specific instance, any instance, or hosts matching a wildcard pattern such as `*.cm`. Edit hostnames and patterns and choose the default scope under Options → Modules → Favorites, or use the launcher command “Change favorite scope” for the current item. Patterns match the whole hostname, ignoring case and port; matching favorites open on the current host,
 - GUID formats - copy the current item ID in common GUID formats or generate a new GUID,
 - [Collapse all sections](https://github.com/alan-null/sc_ext/wiki/Section-Switches) - you can collapse all opened sections in Content Editor with just one click,
 - [Expand all sections](https://github.com/alan-null/sc_ext/wiki/Section-Switches) - you can expand all opened sections in Content Editor with just one click,

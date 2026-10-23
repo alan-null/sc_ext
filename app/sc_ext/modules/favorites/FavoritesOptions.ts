@@ -4,6 +4,7 @@ namespace SitecoreExtensions.Modules.Favorites {
     export class FavoritesOptions extends Options.ModuleOptions {
         storageType: Launcher.StorageType = Launcher.StorageType.GlobalStorage;
         shareAcrossInstances: boolean = true;
+        defaultScope: 'instance' | 'any' = 'instance';
         maxItems: number = 50;
         showToolbarButton: boolean = true;
         showQuickInfoStar: boolean = true;
@@ -16,6 +17,7 @@ namespace SitecoreExtensions.Modules.Favorites {
             this.storageType = Launcher.StorageType[rawOptions.model.storageType as string];
             if (this.storageType == null) this.storageType = Launcher.StorageType.GlobalStorage;
             if (rawOptions.model.shareAcrossInstances != null) this.shareAcrossInstances = rawOptions.model.shareAcrossInstances;
+            if (rawOptions.model.defaultScope == 'any') this.defaultScope = 'any';
             if (rawOptions.model.maxItems != null) this.maxItems = rawOptions.model.maxItems;
             if (rawOptions.model.showToolbarButton != null) this.showToolbarButton = rawOptions.model.showToolbarButton;
             if (rawOptions.model.showQuickInfoStar != null) this.showQuickInfoStar = rawOptions.model.showQuickInfoStar;

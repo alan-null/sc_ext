@@ -12,7 +12,8 @@ namespace SitecoreExtensions.Modules.Favorites {
         constructor(private module: FavoritesModule) { }
 
         public getCommands(): ICommand[] {
-            return [this.createFavoritesCommand(), this.createAddCommand(), this.createRemoveCommand(), this.createClearCommand()];
+            return [this.createFavoritesCommand(), this.createAddCommand(), this.createRemoveCommand(),
+                this.createScopeCommand(), this.createManageCommand(), this.createClearCommand()];
         }
 
         private createFavoritesCommand(): INestedCommand {
@@ -37,10 +38,10 @@ namespace SitecoreExtensions.Modules.Favorites {
                 }];
             }
             return favorites.map(favorite => <NestedItem>{
-                key: favorite.host + '|' + favorite.database + '|' + favorite.id,
+                key: Favorite.key(favorite),
                 title: favorite.name,
                 description: this.getDescription(favorite),
-                icon: favorite.icon,
+                icon: Favorite.iconUrl(favorite, window.top.location.host, window.top.location.protocol),
                 keepLauncherOpen: false,
                 execute: (evt: UserActionEvent) => this.navigate(favorite, evt)
             });
@@ -48,7 +49,8 @@ namespace SitecoreExtensions.Modules.Favorites {
 
         private createAddCommand(): DynamicCommand {
             var command = new DynamicCommand('Add to favorites', '', '');
-            command.descriptionGetter = _ => 'Save ' + this.module.getCurrentItemName();
+            command.descriptionGetter = _ => 'Save ' + this.module.getCurrentItemName() +
+                (this.module.options.defaultScope == 'any' ? ' for any instance' : ' for this instance');
             command.canExecuteCallback = () => this.module.canCapture() && !this.module.isCurrentFavorite();
             command.executeCallback = _ => { this.module.addCurrent(); };
             return command;
@@ -56,9 +58,32 @@ namespace SitecoreExtensions.Modules.Favorites {
 
         private createRemoveCommand(): DynamicCommand {
             var command = new DynamicCommand('Remove from favorites', '', '');
-            command.descriptionGetter = _ => 'Remove ' + this.module.getCurrentItemName();
+            command.descriptionGetter = _ => 'Remove ' + this.module.getCurrentItemName() +
+                (this.module.currentFavorite() && this.module.currentFavorite().scope == 'any' ? ' from all instances' :
+                    this.module.currentFavorite() && this.module.currentFavorite().scope == 'matching' ? ' from matching instances' : '');
             command.canExecuteCallback = () => this.module.canCapture() && this.module.isCurrentFavorite();
             command.executeCallback = _ => { this.module.removeCurrent(); };
+            return command;
+        }
+
+        private createScopeCommand(): DynamicCommand {
+            var command = new DynamicCommand('Change favorite scope', '', '');
+            command.descriptionGetter = _ => this.module.currentFavorite() &&
+                (this.module.currentFavorite().scope == 'any' || this.module.currentFavorite().scope == 'matching')
+                ? 'Use this favorite on this instance only' : 'Use this favorite on any instance';
+            command.canExecuteCallback = () => this.module.canCapture() && this.module.isCurrentFavorite();
+            command.executeCallback = _ => { this.module.changeCurrentScope(); };
+            return command;
+        }
+
+        private createManageCommand(): DynamicCommand {
+            var command = new DynamicCommand('Manage favorites', '', '');
+            command.descriptionGetter = _ => 'Edit extension-stored favorites in Options';
+            command.canExecuteCallback = () => this.module.options.enabled;
+            command.executeCallback = _ => {
+                chrome.runtime.sendMessage({ sc_ext_openTab_request: true,
+                    url: chrome.runtime.getURL('options/options.html?module=favorites'), active: true });
+            };
             return command;
         }
 
@@ -83,7 +108,8 @@ namespace SitecoreExtensions.Modules.Favorites {
         }
 
         private navigate(favorite: Favorite, evt: UserActionEvent): void {
-            var sameHost = favorite.host == window.top.location.host;
+            var host = Favorite.targetHost(favorite, window.top.location.host);
+            var sameHost = host == window.top.location.host;
             var sameDatabase = favorite.database == Context.Database();
             var sameLanguage = favorite.language == Context.Language();
             if (sameHost && sameDatabase && sameLanguage && Context.Location() == Enums.Location.ContentEditor && !(evt && evt.ctrlKey)) {
@@ -91,7 +117,7 @@ namespace SitecoreExtensions.Modules.Favorites {
                 return;
             }
 
-            var origin = window.top.location.protocol + '//' + favorite.host;
+            var origin = window.top.location.protocol + '//' + host;
             var url = origin + '/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=' + encodeURIComponent(favorite.id);
             if (favorite.language) url += '&la=' + encodeURIComponent(favorite.language);
             if (favorite.database) url += '&sc_content=' + encodeURIComponent(favorite.database);
@@ -100,7 +126,9 @@ namespace SitecoreExtensions.Modules.Favorites {
 
         private getDescription(favorite: Favorite): string {
             var description = favorite.path || ((favorite.database || '') + ' ' + favorite.id).trim();
-            if (favorite.host != window.top.location.host) description += ' (' + favorite.host + ')';
+            if (favorite.scope == 'any') description += ' (Any instance)';
+            else if (favorite.scope == 'matching') description += ' (Matching instances: ' + favorite.hostPattern + ')';
+            else if (favorite.host != window.top.location.host) description += ' (' + favorite.host + ')';
             return description;
         }
     }

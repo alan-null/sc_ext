@@ -12,3 +12,4 @@
 /// <reference path='communication/message/response/GetOptionsResponseMessage.ts' />
 /// <reference path='communication/message/response/GetGlobalStorageResponseMessage.ts' />
 /// <reference path='GlobalStorage.ts' />
+/// <reference path='FavoritesRepository.ts' />

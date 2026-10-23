@@ -8,7 +8,8 @@ module SitecoreExtensions.Options {
         constructor(private $scope: any) {
             super();
             $scope.vm = this;
-            $scope.vm.content = "views/general.html";
+            $scope.vm.content = /(?:^\?|&)module=favorites(?:&|$)/.test(window.location.search)
+                ? 'views/modules/favorites/index.html' : 'views/general.html';
         }
     }
 }
