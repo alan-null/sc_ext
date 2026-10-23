@@ -33,6 +33,8 @@ module SitecoreExtensions.Options {
         optionsProvider: OptionsProvider = new OptionsProvider();
         importButton: ImportButton = new ImportButton();
         fileInput: FileInput = new FileInput();
+        includeFavorites: boolean = false;
+        private favoritesRepository = new Common.FavoritesRepository(true);
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Settings');
             $scope.vm.title = 'Settings';
@@ -46,11 +48,22 @@ module SitecoreExtensions.Options {
                 var files = evt.target.files;
                 var file = files[0];
                 if (file) {
+                    new ImportButton().disable();
+                    $scope.vm.file = null;
                     var reader = new FileReader();
                     reader.onload = function () {
                         try {
                             let obj = JSON.parse(this.result) as OptionsWrapper;
-                            if (obj.options && obj.options.length > 0) {
+                            if (obj.favorites !== undefined && (!Array.isArray(obj.favorites) || obj.favorites.some(favorite =>
+                                !favorite || typeof favorite.id != 'string' || !favorite.id ||
+                                typeof favorite.name != 'string' || !favorite.name ||
+                                typeof favorite.database != 'string' || !favorite.database ||
+                                (favorite.host !== undefined && typeof favorite.host != 'string') ||
+                                (favorite.hostPattern !== undefined && typeof favorite.hostPattern != 'string') ||
+                                !!Modules.Favorites.Favorite.validationError(favorite)))) {
+                                throw new Error('Invalid favorites in backup.');
+                            }
+                            if (Array.isArray(obj.options)) {
                                 $scope.vm.file = obj;
                                 new ImportButton().enable();
                                 return;
@@ -62,8 +75,8 @@ module SitecoreExtensions.Options {
                     };
                     reader.readAsText(file);
                 } else {
-                    $scope.vm.file = this.result;
-                    new ImportButton().enable();
+                    $scope.vm.file = null;
+                    new ImportButton().disable();
                 }
             }
         }
@@ -126,8 +139,22 @@ module SitecoreExtensions.Options {
             document.body.removeChild(node);
         }
 
-        private importFile() {
+        private async importFile() {
             let file = this.$scope.vm.file as OptionsWrapper;
+            if (file.favorites !== undefined) {
+                try {
+                    let favorites = await this.favoritesRepository.all();
+                    file.favorites.forEach(favorite => {
+                        if (!favorites.some(existing => Modules.Favorites.Favorite.key(existing) == Modules.Favorites.Favorite.key(favorite))) {
+                            favorites.push(favorite);
+                        }
+                    });
+                    await this.favoritesRepository.save(favorites);
+                } catch (_) {
+                    alert('Could not import favorites. Please try again.');
+                    return;
+                }
+            }
             this.optionsProvider.setOptions(file.options, () => {
                 alert("Your settings have been imported");
                 this.importButton.disable();
@@ -136,8 +163,18 @@ module SitecoreExtensions.Options {
         };
 
         private exportFile() {
-            this.optionsProvider.getOptions((o: OptionsWrapper) => {
-                this.download("settings.json", JSON.stringify(o));
+            let includeFavorites = this.includeFavorites;
+            this.optionsProvider.getOptions(async (o: OptionsWrapper) => {
+                let backup = new OptionsWrapper(o && o.options || []);
+                if (includeFavorites) {
+                    try {
+                        backup.favorites = await this.favoritesRepository.all();
+                    } catch (_) {
+                        alert('Could not export favorites. Please try again.');
+                        return;
+                    }
+                }
+                this.download("settings.json", JSON.stringify(backup));
             });
         }
     }

@@ -10,8 +10,13 @@
 			</br>
 			<button ng-click="vm.reset()" class="btn btn-danger">Reset</button>
 			<h3>Export settings:</h3>
+			<div class="checkbox">
+				<label><input type="checkbox" ng-model="vm.includeFavorites"> Include favorites</label>
+			</div>
+			<p class="help-block">Includes favorites saved in Global Storage. Favorites saved in a Sitecore instance's Local Storage cannot be exported here.</p>
 			<button ng-click="vm.exportFile()" class="btn btn-success">Export</button>
 			<h3>Import settings:</h3>
+			<p class="help-block">Favorites included in a backup are added to Global Storage. Existing favorites are kept.</p>
 			<input type="file" id="file" accept=".json" name="file" class="btn" enctype="multipart/form-data " />
 			<button id="ImportFile" ng-click="vm.importFile()" class="btn btn-warning disabled">Import</button>
 		</div>

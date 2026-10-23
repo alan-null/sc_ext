@@ -20,6 +20,7 @@ module SitecoreExtensions.Options {
 
     export class OptionsWrapper {
         options: IModuleOptions[];
+        favorites?: Modules.Favorites.Favorite[];
 
         constructor(options: IModuleOptions[]) {
             this.options = options;
