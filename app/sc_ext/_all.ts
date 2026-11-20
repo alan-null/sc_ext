@@ -41,6 +41,7 @@
 // Http
 /// <reference path='http/Method.ts'/>
 /// <reference path='http/HttpRequest.ts'/>
+/// <reference path='http/ItemService.ts'/>
 // Libraries
 /// <reference path='libraries/Fuzzy.ts'/>
 

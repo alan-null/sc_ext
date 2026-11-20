@@ -22,11 +22,23 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             if (Context.Location() == Enums.Location.ContentEditor) {
                 let command = new DynamicCommand("DB Browser.aspx?id=CurrentItem", "The interface for various item manipulations.", "");
                 command.executeCallback = (cmd: DynamicCommand, evt: UserActionEvent) => {
-                    this.openDbBrowser("/sitecore/admin/dbbrowser.aspx?db=" + cmd.Database + "&lang=" + cmd.Lang + "&id=" + cmd.ItemId, evt);
+                    this.openDbBrowser("/sitecore/admin/dbbrowser.aspx?db=" + cmd.Database + "&lang=" + cmd.Lang + "&id=" + cmd.ItemId, evt, () => {
+                        SitecoreExtensions.Notification.Instance.info({
+                            message: "<b>DB Browser:</b></br>DB Browser.aspx is not available on this Sitecore version.</br>Showing the item's raw fields from the Item Service instead.",
+                            position: 'topRight', backgroundColor: 'rgba(157,222,255,0.97)', progressBar: false
+                        });
+                        this.openItemJson(cmd);
+                    });
                 };
                 command.canExecuteCallback = () => { return Context.Location() == Enums.Location.ContentEditor; };
                 command.descriptionGetter = (cmd: DynamicCommand) => { return "Browse '" + cmd.ItemId + "' item"; };
                 this.commands.push(command);
+
+                let itemJsonCommand = new DynamicCommand("Item Service JSON?id=CurrentItem", "Raw field values of the current item, from the Sitecore Item Service.", "");
+                itemJsonCommand.executeCallback = (cmd: DynamicCommand, evt: UserActionEvent) => { this.openItemJson(cmd); };
+                itemJsonCommand.canExecuteCallback = () => { return Context.Location() == Enums.Location.ContentEditor; };
+                itemJsonCommand.descriptionGetter = (cmd: DynamicCommand) => { return "Raw fields of '" + cmd.ItemId + "' item (opens in a new tab)"; };
+                this.commands.push(itemJsonCommand);
             }
             let dbBrowserCommand = new DynamicCommand('DB Browser.aspx', 'The interface for various item manipulations.', '');
             dbBrowserCommand.executeCallback = (cmd: DynamicCommand, evt: UserActionEvent) => {
@@ -74,20 +86,37 @@ namespace SitecoreExtensions.Modules.Launcher.Providers {
             return this.commands;
         }
 
-        private openDbBrowser(url: string, evt: UserActionEvent): void {
+        private openDbBrowser(url: string, evt: UserActionEvent, unavailable?: () => void): void {
+            let onUnavailable = unavailable || (() => this.notifyDbBrowserUnavailable());
             if (this.contextService.GetDbBrowserSupport() === false) {
-                this.notifyDbBrowserUnavailable();
+                onUnavailable();
                 return;
             }
             new Http.HttpRequest(window.top.location.origin + url, Http.Method.GET, (e: ProgressEvent) => {
                 let request = e.currentTarget as XMLHttpRequest;
                 let response = request.responseText || "";
                 if (!this.contextService.AcceptDbBrowserResponse(request.status, response)) {
-                    this.notifyDbBrowserUnavailable();
+                    onUnavailable();
                     return;
                 }
                 new NavigationCommand("", "", url).execute(evt);
-            }, () => { this.notifyDbBrowserUnavailable(); }).execute();
+            }, onUnavailable).execute();
+        }
+
+        // The browser's JSON viewer stands in for DB Browser's read-only view of an item.
+        private openItemJson(cmd: DynamicCommand): void {
+            let url = new Http.ItemService().itemUrl(cmd.ItemId, {
+                database: cmd.Database,
+                language: cmd.Lang,
+                version: Context.Version(),
+                includeStandardTemplateFields: true,
+                includeMetadata: true
+            });
+            if (typeof chrome != "undefined" && chrome.runtime) {
+                chrome.runtime.sendMessage({ sc_ext_openTab_request: true, url: url, active: true });
+            } else {
+                window.open(url, "_blank");
+            }
         }
 
         private notifyDbBrowserUnavailable(): void {

@@ -91,20 +91,16 @@ namespace SitecoreExtensions.Modules.FieldInspector {
     }
 
     export class FieldInspectorModule extends ModuleBase implements ISitecoreExtensionsModule {
-        database: string;
-        lang: string;
-        idParser: IdParser;
         classSectionInitialized: string = "sc-ext-gotofield-sections-initialized";
-        classFieldIDsInitialized: string = "sc-ext-gotofield-fieldIDs-initialized";
         classFieldNameSpan: string = "sc-ext-getfieldName";
-        tokenService: ShortcutsRunner.TokenService;
         options: FieldInspectorOptions;
-        private contextService: ContextService;
+        private itemService: Http.ItemService;
+        private fieldNames: { [key: string]: Promise<string> } = {};
+        private resetPages: { [itemUri: string]: Promise<Document> } = {};
 
         constructor(name: string, description: string, rawOptions: Options.ModuleOptionsBase) {
             super(name, description, rawOptions);
             this.options = new FieldInspectorOptions(rawOptions);
-            this.contextService = new ContextService();
         }
 
         canExecute(): boolean {
@@ -115,12 +111,7 @@ namespace SitecoreExtensions.Modules.FieldInspector {
             window.addEventListener('load', () => this.refreshControls());
             this.addTreeNodeHandlers('scContentTree');
             SitecorePageBridge.on('page:changed', () => { this.refreshControls(); });
-            this.database = SitecoreExtensions.Context.Database();
-            this.lang = SitecoreExtensions.Context.Language();
-            this.idParser = new IdParser();
-
-            var url = window.top.location.origin + "/sitecore/shell/default.aspx?xmlcontrol=ResetFields";
-            this.tokenService = new ShortcutsRunner.TokenService(url);
+            this.itemService = new Http.ItemService();
         }
 
         addTreeNodeHandlers(className: string): void {
@@ -147,390 +138,213 @@ namespace SitecoreExtensions.Modules.FieldInspector {
         private insertControls(): void {
             let allFieldsLabels = document.querySelectorAll(".scEditorFieldLabel");
             for (var i = 0; i < allFieldsLabels.length; i++) {
-                var label = allFieldsLabels[i] as HTMLDivElement;
-                let sectionPanel = this.getFirstElementWithClass(label, "scEditorSectionPanel") as HTMLDivElement;
-                if (!sectionPanel || !sectionPanel.previousSibling) {
+                let label = allFieldsLabels[i] as HTMLDivElement;
+                if (!this.getFirstElementWithClass(label, "scEditorSectionPanel") || label.querySelector("." + this.classFieldNameSpan)) {
                     continue;
                 }
-                let sectionElement = sectionPanel.previousSibling as HTMLDivElement;
-
-                let sectionPanelCell = this.getFirstElementWithClass(label, "scEditorSectionPanelCell") as HTMLDivElement;
-                if (!sectionPanelCell) {
-                    continue;
+                label.dataset["scextLabel"] = ResetFieldsPage.labelText(label);
+                let markerId = this.markerFieldID(label);
+                if (markerId) {
+                    label.dataset["fieldid"] = markerId;
                 }
-                let fieldLabels = sectionPanelCell.querySelectorAll(".scEditorFieldLabel");
 
-                for (let j = 0; j < fieldLabels.length; j++) {
-                    var child = fieldLabels[j] as HTMLTableRowElement;
-                    if (child.innerText == label.innerText) {
-                        let sectionName = this.getSectionName(sectionElement);
-                        label.dataset["sectionid"] = sectionName + "-" + j;
-
-
-                        let spanResetToStandardValues = HTMLHelpers.createElement("a", { class: "sc-ext-resetfield scContentButton sc-ext-contentButton" }) as HTMLSpanElement;
-                        let resetFieldText = "Reset Field";
+                let spanResetToStandardValues = HTMLHelpers.createElement("a", { class: "sc-ext-resetfield scContentButton sc-ext-contentButton" }) as HTMLSpanElement;
+                let resetFieldText = "Reset Field";
+                spanResetToStandardValues.innerText = resetFieldText;
+                spanResetToStandardValues.onclick = () => {
+                    spanResetToStandardValues.innerText = "Resetting ...";
+                    let itemID = Context.ItemID(), language = Context.Language(), version = Context.Version();
+                    this.resetField(label).then(() => {
                         spanResetToStandardValues.innerText = resetFieldText;
-                        spanResetToStandardValues.onclick = (e) => {
-                            (e.getSrcElement() as HTMLSpanElement).innerText = "Resetting ...";
+                        new PageObjects.ContentTree().loadItemVersion(itemID, language, version);
+                    }, (error) => {
+                        spanResetToStandardValues.innerText = resetFieldText;
+                        this.notifyError("Could not reset the field.", error);
+                    });
+                };
 
-                            this.getFieldID(Context.ItemID(), sectionName, j, (fieldID) => {
-                                (e.getSrcElement() as HTMLSpanElement).innerText = resetFieldText;
-                                var url = window.top.location.origin + "/sitecore/shell/default.aspx?xmlcontrol=ResetFields&id=" + Context.ItemID() + "&la=en&vs=1";
-                                let req = new Http.HttpRequest(url, Http.Method.POST, (e: ProgressEvent) => {
-                                    if ((e.target as XMLHttpRequest).status === 500) {
-                                        this.tokenService.invalidateToken().then((t) => {
-                                            spanResetToStandardValues.click();
-                                        });
-                                    } else {
-                                        let contentTree = new PageObjects.ContentTree();
-                                        contentTree.loadItem(Context.ItemID());
-                                    }
-                                });
-
-                                let formattedFieldId = fieldID.replace(/-/g, "").replace(/{/g, "").replace(/}/g, "");
-
-                                this.tokenService.getToken().then((token) => {
-                                    let postData =
-                                        "&__EVENTTARGET=" + "OK"
-                                        + "&__EVENTTYPE=" + "click"
-                                        + "&__CONTEXTMENU=" + ""
-                                        + "&__MODIFIED=" + ""
-                                        + "&__ISEVENT=" + "1"
-                                        + "&__CSRFTOKEN=" + token.__CSRFTOKEN
-                                        + "&__VIEWSTATE=" + token.__VIEWSTATE
-                                        + "&Reset_" + formattedFieldId + "=" + "1";
-                                    req.execute(postData);
-                                });
-                            }, e, () => { (e.getSrcElement() as HTMLSpanElement).innerText = resetFieldText; });
-                        };
-
-                        let spanGoToField = HTMLHelpers.createElement("a", { class: "sc-ext-gotofield scContentButton sc-ext-contentButton" }) as HTMLSpanElement;
-                        let goToFieldText = "Go to field";
+                let spanGoToField = HTMLHelpers.createElement("a", { class: "sc-ext-gotofield scContentButton sc-ext-contentButton" }) as HTMLSpanElement;
+                let goToFieldText = "Go to field";
+                spanGoToField.innerText = goToFieldText;
+                spanGoToField.onclick = (e) => {
+                    spanGoToField.innerText = "Loading ...";
+                    let ctrlKey = e.ctrlKey;
+                    this.resolveFieldID(label).then((fieldID) => {
                         spanGoToField.innerText = goToFieldText;
-                        spanGoToField.onclick = (e) => {
-                            (e.getSrcElement() as HTMLSpanElement).innerText = "Loading ...";
-                            if (e.ctrlKey) {
-                                this.getFieldID(Context.ItemID(), sectionName, j, (fieldID) => {
-                                    (e.getSrcElement() as HTMLSpanElement).innerText = goToFieldText;
-                                    var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + fieldID;
-                                    new Launcher.Providers.NavigationCommand(null, null, url).execute(e);
-                                }, e, () => { (e.getSrcElement() as HTMLSpanElement).innerText = goToFieldText; });
+                        if (ctrlKey) {
+                            var url = window.top.location.origin + "/sitecore/shell/Applications/Content%20Editor.aspx?sc_bw=1&fo=" + fieldID;
+                            new Launcher.Providers.NavigationCommand(null, null, url).execute({ ctrlKey: true, altKey: false });
+                        } else {
+                            new PageObjects.ContentTree().loadItem(fieldID);
+                        }
+                    }, (error) => {
+                        spanGoToField.innerText = goToFieldText;
+                        this.notifyError("Could not find the field's ID.", error);
+                    });
+                };
 
-                            } else {
-                                this.getFieldID(Context.ItemID(), sectionName, j, (fieldID) => {
-                                    (e.getSrcElement() as HTMLSpanElement).innerText = goToFieldText;
-                                    let contentTree = new PageObjects.ContentTree();
-                                    contentTree.loadItem(fieldID);
-                                }, e, () => { (e.getSrcElement() as HTMLSpanElement).innerText = goToFieldText; });
-                            }
+                let spanGetFieldName = HTMLHelpers.createElement("span", { class: this.classFieldNameSpan }, { default: label.innerHTML }) as HTMLSpanElement;
+                spanGetFieldName.innerHTML = label.innerHTML;
+                spanGetFieldName.onclick = () => {
+                    let fieldNameElement = new FieldNameElement(spanGetFieldName, this.options.fieldName.highlightText);
 
-                        };
-
-                        let spanGetFieldName = HTMLHelpers.createElement("span", { class: this.classFieldNameSpan }, { default: label.innerHTML }) as HTMLSpanElement;
-                        spanGetFieldName.innerHTML = label.innerHTML;
-                        spanGetFieldName.onclick = (e) => {
-                            let currentElement = this.getFirstElementWithClass(e.getSrcElement(), this.classFieldNameSpan);
-
-                            let fieldNameElement = new FieldNameElement(currentElement as HTMLSpanElement, this.options.fieldName.highlightText);
-
-                            if (fieldNameElement.currentElement.innerText == "Loading ...") {
-                                SitecoreExtensions.Notification.Instance.info({
-                                    message: '<b>Field Inspector:</b></br>Fetching field name in the background.</br>Please wait.',
-                                    position: 'topRight', backgroundColor: 'rgba(157,222,255,0.97)', progressBar: false
-                                });
-                                return;
-                            }
-
-                            fieldNameElement.setLoadingText();
-                            if (!fieldNameElement.IsInitialized()) {
-                                let initialized = this.ensureFieldsInitialized(
-                                    () => { this.writeDownFieldName(e, sectionElement, j, () => { fieldNameElement.resetLoadingText(); }); },
-                                    () => { fieldNameElement.resetLoadingText(); });
-                                if (initialized) {
-                                    this.writeDownFieldName(e, sectionElement, j, () => { fieldNameElement.resetLoadingText(); });
-                                }
-                            } else {
-                                if (fieldNameElement.getMode() == ViewMode.FieldName) {
-                                    fieldNameElement.setFieldTitle();
-                                } else {
-                                    fieldNameElement.setFieldName();
-                                }
-                            }
-                        };
-
-                        label.innerHTML = "";
-                        label.appendChild(spanGetFieldName);
-                        label.appendChild(spanGoToField);
-                        label.appendChild(spanResetToStandardValues);
+                    if (fieldNameElement.currentElement.innerText == "Loading ...") {
+                        SitecoreExtensions.Notification.Instance.info({
+                            message: '<b>Field Inspector:</b></br>Fetching field name in the background.</br>Please wait.',
+                            position: 'topRight', backgroundColor: 'rgba(157,222,255,0.97)', progressBar: false
+                        });
+                        return;
                     }
-                }
+
+                    if (fieldNameElement.IsInitialized()) {
+                        if (fieldNameElement.getMode() == ViewMode.FieldName) {
+                            fieldNameElement.setFieldTitle();
+                        } else {
+                            fieldNameElement.setFieldName();
+                        }
+                        return;
+                    }
+
+                    fieldNameElement.setLoadingText();
+                    this.resolveFieldID(label)
+                        .then((fieldID) => this.getFieldName(fieldID))
+                        .then((fieldName) => {
+                            fieldNameElement.Initialize(fieldName);
+                            fieldNameElement.setFieldName();
+                        }, (error) => {
+                            fieldNameElement.resetLoadingText();
+                            this.notifyError("Could not read the field name.", error);
+                        });
+                };
+
+                label.innerHTML = "";
+                label.appendChild(spanGetFieldName);
+                label.appendChild(spanGoToField);
+                label.appendChild(spanResetToStandardValues);
             }
         };
 
-        private ensureFieldsInitialized(callback?: any, errorCallback?: () => void) {
-            if (document.querySelector("." + this.classFieldIDsInitialized) == null) {
-                this.initFieldIDs(callback, errorCallback);
-                return false;
+        // Fields whose editor control carries its ID in a handler (fld={...}) need no request.
+        private markerFieldID(label: HTMLElement): string {
+            let marker = this.getFirstElementWithClass(label, "scEditorFieldMarker") as HTMLElement;
+            if (!marker) {
+                return null;
             }
-            return true;
+            let match = /\bfld=(\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\})/i.exec(marker.innerHTML);
+            return match ? match[1].toUpperCase() : null;
         }
 
-        private initFieldIDs(callback?: any, errorCallback?: () => void) {
-            let sectionsRoot = document.querySelector(".scEditorSections");
-            if (sectionsRoot) {
-                sectionsRoot.classList.add(this.classFieldIDsInitialized);
+        // The rest (dates, tree lists, rules ...) are found by their label on the item's Reset Fields page,
+        // which maps every label of the editor in one request.
+        private resolveFieldID(label: HTMLElement): Promise<string> {
+            if (label.dataset["fieldid"]) {
+                return Promise.resolve(label.dataset["fieldid"]);
             }
-            this.getItemFields(Context.ItemID(), callback, () => {
-                if (sectionsRoot) {
-                    sectionsRoot.classList.remove(this.classFieldIDsInitialized);
-                }
-                if (errorCallback) {
-                    errorCallback();
-                }
+            return this.loadResetPage(false).then((page) => {
+                this.annotateFieldIDs(ResetFieldsPage.parse(page));
+                let fieldID = label.dataset["fieldid"];
+                return fieldID ? Promise.resolve(fieldID) : Promise.reject<string>(new Error("The field is not listed on the Reset Fields page"));
             });
         }
 
-        private writeDownFieldName(e, sectionElement, j, errorCallback?: () => void) {
-            let elemenet = HTMLHelpers.getElement(e.getSrcElement(), (e) => { return e.dataset['fieldid'] != null; }) as HTMLDivElement;
-            if (!elemenet || !sectionElement) {
-                return;
+        private annotateFieldIDs(entries: ResetFieldEntry[]): void {
+            let labels = document.querySelectorAll(".scEditorFieldLabel[data-scext-label]");
+            let texts = new Array<string>();
+            for (let i = 0; i < labels.length; i++) {
+                texts.push((labels[i] as HTMLElement).dataset["scextLabel"]);
             }
-            let fieldID = elemenet.dataset['fieldid'];
-            let sectionName = this.getSectionName(sectionElement);
-            this.getFieldName(fieldID, sectionName, j, (fieldName) => {
-                let node = this.getFirstElementWithClass(e.getSrcElement(), this.classFieldNameSpan) as HTMLDivElement;
-                let currentElement = new FieldNameElement(node, this.options.fieldName.highlightText);
-                currentElement.Initialize(fieldName);
-                currentElement.setFieldName();
-            }, errorCallback);
+            let ids = ResetFieldsPage.match(texts, entries);
+            for (let i = 0; i < labels.length; i++) {
+                let label = labels[i] as HTMLElement;
+                if (!label.dataset["fieldid"] && ids[i]) {
+                    label.dataset["fieldid"] = ids[i];
+                }
+            }
         }
 
-        private getFieldID(itemID: string, sectionName: string, index: number, callback: GetFieldIDCallback, e: MouseEvent, errorCallback?: () => void) {
-            let fieldId = HTMLHelpers.getElement(e.getSrcElement(), (e) => { return e.dataset['fieldid'] != null; }) as HTMLDivElement;
-            if (fieldId) {
-                callback(fieldId.dataset['fieldid']);
-                return;
+        private resetPageUrl(): string {
+            return ResetFieldsPage.url(window.top.location.origin, Context.ItemID(), Context.Language(), Context.Version(), Context.Database());
+        }
+
+        private loadResetPage(fresh: boolean): Promise<Document> {
+            let key = Context.GetCurrentItem();
+            if (fresh || !this.resetPages[key]) {
+                let page = this.requestPage(this.resetPageUrl());
+                page.catch(() => { delete this.resetPages[key]; });
+                this.resetPages[key] = page;
             }
-            if (!this.canUseDbBrowser(errorCallback)) {
-                return;
-            }
+            return this.resetPages[key];
+        }
 
-            var request = new Http.HttpRequest(this.buildEndpointURL(itemID), Http.Method.GET, (e) => {
-                if (!this.acceptDbBrowserResponse(e)) {
-                    if (errorCallback) {
-                        errorCallback();
+        private requestPage(url: string): Promise<Document> {
+            return new Promise<Document>((resolve, reject) => {
+                new Http.HttpRequest(url, Http.Method.GET, (e: ProgressEvent) => {
+                    let request = e.currentTarget as XMLHttpRequest;
+                    if (request.status !== 200) {
+                        reject(new Error("Reset Fields page returned " + request.status));
+                        return;
                     }
-                    return;
-                }
-                var data = e.currentTarget.responseText;
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(data, "text/html");
-
-                let allSections = doc.querySelectorAll(".FieldSection");
-                let possibleSections = new Array<HTMLDivElement>();
-                for (let i = 0; i < allSections.length; i++) {
-                    var sectionCandidate = allSections[i] as HTMLDivElement;
-                    if (sectionCandidate.innerText == sectionName) {
-                        possibleSections.push(sectionCandidate);
-                    }
-                }
-
-                let fieldNode = null;
-                for (var j = 0; j < possibleSections.length; j++) {
-                    var section = possibleSections[j];
-                    let currentNode = section.parentNode as HTMLDivElement;
-                    if (!currentNode) {
-                        continue;
-                    }
-                    do {
-                        currentNode = currentNode.nextElementSibling as HTMLDivElement;
-                        index--;
-                        if (!currentNode) {
-                            break;
-                        }
-                    } while (index >= 0 && currentNode.nextElementSibling && currentNode.nextElementSibling.querySelector(".FieldSection") == null);
-                    if (!currentNode) {
-                        continue;
-                    }
-                    fieldNode = currentNode.querySelector(".FieldLabel>span>a");
-                    if (fieldNode != null && index < 0) break;
-                }
-
-                if (!fieldNode || !fieldNode.getAttribute("href")) {
-                    return;
-                }
-                let fieldID = this.idParser.extractID(fieldNode.getAttribute("href") as string);
-                callback(fieldID);
-            }, () => {
-                this.notifyDbBrowserUnavailable();
-                if (errorCallback) {
-                    errorCallback();
-                }
+                    resolve(new DOMParser().parseFromString(request.responseText, "text/html"));
+                }, () => { reject(new Error("Reset Fields page could not be loaded")); }).execute();
             });
-            request.execute();
         }
 
-        private buildEndpointURL(id: string): string {
-            var endpoint = window.top.location.origin + "/sitecore/admin/dbbrowser.aspx";
-            return endpoint + "?db=" + this.database + "&lang=" + this.lang + "&id=" + id;
-        }
-
-        private getFieldName(fieldID: string, sectionName: string, index: number, callback: GetFieldNameCallback, errorCallback?: () => void) {
-            if (!this.canUseDbBrowser(errorCallback)) {
-                return;
-            }
-            var request = new Http.HttpRequest(this.buildEndpointURL(fieldID), Http.Method.GET, (e) => {
-                if (!this.acceptDbBrowserResponse(e)) {
-                    if (errorCallback) {
-                        errorCallback();
+        // Posts the Reset Fields dialog back with only this field ticked, as its OK button would,
+        // on a fresh copy of the page for its form state.
+        private resetField(label: HTMLElement): Promise<void> {
+            return this.resolveFieldID(label).then((fieldID) => {
+                return this.loadResetPage(true).then((page) => {
+                    let hex = ResetFieldsPage.toHex(fieldID);
+                    let viewState = ResetFieldsPage.formValue(page, "__VIEWSTATE");
+                    if (!page.getElementById("Reset_" + hex) || !viewState) {
+                        return Promise.reject(new Error("The field is not listed on the Reset Fields page"));
                     }
-                    return;
-                }
-                var data = e.currentTarget.responseText;
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(data, "text/html");
-                let pathFragments = doc.querySelectorAll(".ItemPathFragment");
-                if (pathFragments.length == 0) {
-                    return;
-                }
-                let lastPathFragment = pathFragments[pathFragments.length - 1] as HTMLAnchorElement;
-                let fieldName = lastPathFragment.innerText;
-                callback(fieldName);
-            }, () => {
-                this.notifyDbBrowserUnavailable();
-                if (errorCallback) {
-                    errorCallback();
-                }
+                    let postData = [
+                        ["__EVENTTARGET", "OK"],
+                        ["__EVENTTYPE", "click"],
+                        ["__CONTEXTMENU", ""],
+                        ["__MODIFIED", ""],
+                        ["__ISEVENT", "1"],
+                        ["__CSRFTOKEN", ResetFieldsPage.formValue(page, "__CSRFTOKEN")],
+                        ["__VIEWSTATE", viewState],
+                        ["Reset_" + hex, "1"]
+                    ].map((pair) => encodeURIComponent(pair[0]) + "=" + encodeURIComponent(pair[1])).join("&");
+
+                    return new Promise<void>((resolve, reject) => {
+                        new Http.HttpRequest(this.resetPageUrl(), Http.Method.POST, (e: ProgressEvent) => {
+                            let status = (e.currentTarget as XMLHttpRequest).status;
+                            if (status === 200) {
+                                resolve();
+                            } else {
+                                reject(new Error("Reset Fields returned " + status));
+                            }
+                        }, () => { reject(new Error("Reset Fields could not be reached")); }).execute(postData);
+                    });
+                });
             });
-            request.execute();
         }
 
-        private getItemFields(itemID: string, callback?: any, errorCallback?: () => void) {
-            if (!this.canUseDbBrowser(errorCallback)) {
-                return;
+        // The field definition item's name, from the Sitecore Item Service.
+        private getFieldName(fieldID: string): Promise<string> {
+            let database = Context.Database();
+            let key = database + "|" + fieldID;
+            if (!this.fieldNames[key]) {
+                let request = this.itemService.getItem(fieldID, { database: database, fields: ["ItemName"] })
+                    .then((item) => item && item.ItemName ? item.ItemName as string : Promise.reject(new Error("No ItemName in the Item Service response")));
+                request.catch(() => { delete this.fieldNames[key]; });
+                this.fieldNames[key] = request;
             }
-            var request = new Http.HttpRequest(this.buildEndpointURL(itemID), Http.Method.GET, (e) => {
-                if (!this.acceptDbBrowserResponse(e)) {
-                    if (errorCallback) {
-                        errorCallback();
-                    }
-                    return;
-                }
-                var data = e.currentTarget.responseText;
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(data, "text/html");
-
-                let fieldsScroller = doc.querySelector(".FieldsScroller");
-                if (!fieldsScroller) {
-                    return;
-                }
-                let allSections = fieldsScroller.querySelectorAll("td.FieldSection,td.FieldLabel .ItemPathTemplate");
-                let currentSection;
-                // tslint:disable-next-line:whitespace
-                for (var index = 0; index < allSections.length;) {
-                    var section = allSections[index] as HTMLTableDataCellElement;
-
-                    if (section.className == "FieldSection") {
-                        let sectionName = section.innerText.replace(/ /g, "_");
-                        let sectionID = "Section_" + sectionName;
-                        currentSection = document.querySelector(".scEditorSections [id^='" + sectionID + "']");
-                        index++;
-                        if (currentSection == null) {
-                            break;
-                        }
-                    }
-                    section = allSections[index] as HTMLTableDataCellElement;
-                    if (section == null) {
-                        break;
-                    }
-
-                    let fieldIndex = 0;
-
-                    let getSectionID = (tempIndex: number): string => {
-                        let sectionName = this.getSectionName(currentSection);
-                        let id = sectionName + "-" + tempIndex;
-                        while (document.querySelector("[data-sectionid='" + id + "']:not([data-fieldid])") == null) {
-                            id = sectionName + "-" + (++tempIndex);
-                            if (tempIndex > 100) return id;
-                        }
-                        return id;
-                    };
-
-                    while (section && section.className == "ItemPathTemplate") {
-                        let id = getSectionID(fieldIndex++);
-
-                        let label = document.querySelector("[data-sectionid='" + id + "']") as HTMLAnchorElement;
-                        let href = section.getAttribute("href");
-                        if (!label || !href) {
-                            section = allSections[++index] as HTMLTableDataCellElement;
-                            continue;
-                        }
-
-                        label.dataset["fieldid"] = this.idParser.extractID(href as string);
-                        section = allSections[++index] as HTMLTableDataCellElement;
-                    }
-                }
-                if (callback) {
-                    callback();
-                }
-            }, () => {
-                this.notifyDbBrowserUnavailable();
-                if (errorCallback) {
-                    errorCallback();
-                }
-            });
-            request.execute();
+            return this.fieldNames[key];
         }
 
-        private canUseDbBrowser(errorCallback?: () => void): boolean {
-            if (this.contextService.GetDbBrowserSupport() === false) {
-                this.notifyDbBrowserUnavailable();
-                if (errorCallback) {
-                    errorCallback();
-                }
-                return false;
-            }
-            return true;
-        }
-
-        private acceptDbBrowserResponse(event: ProgressEvent): boolean {
-            let request = event.currentTarget as XMLHttpRequest;
-            let response = request.responseText || "";
-            if (!this.contextService.AcceptDbBrowserResponse(request.status, response)) {
-                this.notifyDbBrowserUnavailable();
-                return false;
-            }
-            return true;
-        }
-
-        private notifyDbBrowserUnavailable(): void {
+        private notifyError(message: string, error: any): void {
+            let detail = error instanceof Http.ItemServiceError && error.isUnavailable()
+                ? "The Sitecore Item Service (/sitecore/api/ssc) is disabled or not accessible on this instance."
+                : (error && error.message) || "";
             SitecoreExtensions.Notification.Instance.warning({
-                message: "<b>Field Inspector:</b></br>This feature is unavailable because this Sitecore version no longer supports DB Browser.aspx.",
+                message: "<b>Field Inspector:</b></br>" + message + (detail ? "</br>" + detail : ""),
                 position: 'topRight', backgroundColor: 'rgba(255,218,157,0.97)', progressBar: false
             });
-        }
-        private getSectionName(section: HTMLElement): string {
-            if (!section) {
-                return "";
-            }
-            let handler = section.getAttribute("onclick");
-            if (handler == null && section.onclick != null) {
-                handler = String(section.onclick);
-            }
-
-            if (handler != null) {
-                let toggleSectionMatch = handler.match(/ToggleSection\(\s*["']([^"']+)["']/);
-                if (toggleSectionMatch != null) {
-                    return toggleSectionMatch[1] || "";
-                }
-
-                let sectionNameMatch = handler.match(/,\s*["']([^"']+)["']\s*\)/);
-                if (sectionNameMatch != null) {
-                    return sectionNameMatch[1] || "";
-                }
-            }
-
-            return (section.innerText || section.textContent || "").trim();
         }
 
         private getFirstElementWithClass(parent: any, className: string): Node {

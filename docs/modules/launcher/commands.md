@@ -24,7 +24,8 @@ permalink: /commands/
 | Cache.aspx | Caches overview. |
 | Config Layers.aspx | Merge configuration files depending on configuration layers and roles |
 | DB Browser.aspx | Interface for various item manipulations. |
-| DB Browser.aspx?id=CurrentItem | Opens DB Browser.aspx and navigates to current item |
+| DB Browser.aspx?id=CurrentItem | Opens DB Browser.aspx and navigates to current item. Where DB Browser is no longer available, opens the item's raw fields from the Item Service instead. |
+| Item Service JSON?id=CurrentItem | Opens the current item's raw field values (standard fields included) as JSON from the Sitecore Item Service (`/sitecore/api/ssc/item`), in a new tab. |
 | Database Cleanup.aspx | Perform various cleanup operations on specific databases. |
 | Dependency Injection Configuration.aspx | Shows configured services. For detailed information use `details=1`. |
 | EventQueue Statistics.aspx | Overview of EventQueue processing. |

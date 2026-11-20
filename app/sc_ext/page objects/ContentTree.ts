@@ -26,6 +26,11 @@ namespace SitecoreExtensions.PageObjects {
             }, 100, 10);
         }
 
+        // Reloads an item in a given language and version; LoadItem("{id}") always opens the latest version.
+        public loadItemVersion(id: string, language: string, version: string): void {
+            scForm.postRequest("", "", "", "item:load(id=" + id + ",language=" + language + ",version=" + version + ")");
+        }
+
         public scrollToActiveNode(): void {
             let element = this.getActiveTreeNode();
             HTMLHelpers.scrollToElement(element, this.element);

@@ -94,6 +94,13 @@ namespace SitecoreExtensions {
             return null;
         }
 
+        static Version(): string {
+            if (this.Location() == Location.ContentEditor) {
+                return this.getQueryStringValue(this.GetCurrentItem(), "ver");
+            }
+            return null;
+        }
+
         static ItemID(): string {
             var value = this.GetCurrentItem();
             return value.match(/{.*}/)[0];
