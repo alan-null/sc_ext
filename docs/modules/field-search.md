@@ -2,7 +2,7 @@
 layout: default
 title: Field Search
 parent: Modules
-nav_order: 3
+nav_order: 8
 ---
 
 ## Overview

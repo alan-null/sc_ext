@@ -2,7 +2,7 @@
 layout: default
 title: Toggle Ribbon
 parent: Modules
-nav_order: 9
+nav_order: 15
 ---
 
 ## Overview

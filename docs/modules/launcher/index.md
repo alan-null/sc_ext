@@ -2,7 +2,7 @@
 layout: default
 title: Launcher
 parent: Modules
-nav_order: 5
+nav_order: 12
 has_children: true
 permalink: /launcher/
 ---
@@ -38,6 +38,15 @@ By default, each navigation command opens in the current window. To open a comma
 Type `#` at the beginning to switch Launcher into instant search mode. With the hash at the beginning, you can search all Sitecore content. Like Sitecore instant search, it also accepts item IDs.
 
 [![Instant Search](https://alan-null.github.io/blog/images/posts/sc-ext-3.0.0/instantSearch.gif)](https://alan-null.github.io/blog/images/posts/sc-ext-3.0.0/instantSearch.gif)
+
+### Nested commands
+
+Some commands are a group of options, for example [GUID Formats]({{ site.baseurl }}{% link modules/guid.md %}) or [Favorites]({{ site.baseurl }}{% link modules/favorites.md %}). Pick the parent command and Launcher shows a second list with its options. Press `Backspace` on an empty search box or `Esc` to go back to the main list.
+
+## Keyboard shortcuts
+
+- If a page already handles the Launcher shortcut (for example, autocomplete in an Ace code editor), the page wins. Launcher opens only when nothing else claimed the key.
+- Pressing `Ctrl + Space` inside the Rich Text Editor opens the main Launcher.
 
 ## Last used commands
 

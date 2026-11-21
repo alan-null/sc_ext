@@ -6,7 +6,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Database Name');
             $scope.vm.title = 'Database Name module';
-            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Database-Name';
+            $scope.vm.link = 'https://alan-null.github.io/sc_ext/modules/database-name/';
         }
 
         getFields() {

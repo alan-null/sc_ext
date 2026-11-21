@@ -2,7 +2,7 @@
 layout: default
 title: Header QuickInfo Extender
 parent: Modules
-nav_order: 16
+nav_order: 11
 ---
 
 ## Overview

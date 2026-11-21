@@ -2,7 +2,7 @@
 layout: default
 title: Tree Auto Expand
 parent: Modules
-nav_order: 13
+nav_order: 16
 ---
 
 ## Overview

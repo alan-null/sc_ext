@@ -2,7 +2,7 @@
 layout: default
 title: Field Inspector
 parent: Modules
-nav_order: 8
+nav_order: 7
 ---
 
 ## Overview

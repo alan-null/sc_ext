@@ -7,7 +7,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Restore Last Location');
             $scope.vm.title = 'Restore Last Location module';
-            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Restore-Last-Location';
+            $scope.vm.link = 'https://alan-null.github.io/sc_ext/modules/restore-last-location/';
         }
 
         getFields() {

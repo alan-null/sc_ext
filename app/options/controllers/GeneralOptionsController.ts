@@ -7,7 +7,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'General');
             $scope.vm.title = 'Sitecore Extensions general options';
-            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki';
+            $scope.vm.link = 'https://alan-null.github.io/sc_ext/';
         }
 
         getFields() {

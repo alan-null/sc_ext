@@ -2,7 +2,7 @@
 layout: default
 title: Restore Last Location
 parent: Modules
-nav_order: 4
+nav_order: 13
 ---
 
 ## Overview

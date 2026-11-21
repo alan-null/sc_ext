@@ -2,7 +2,7 @@
 layout: default
 title: Database Selector
 parent: Modules
-nav_order: 10
+nav_order: 4
 ---
 
 ## Overview

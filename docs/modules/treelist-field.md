@@ -2,7 +2,7 @@
 layout: default
 title: Treelist Field
 parent: Modules
-nav_order: 7
+nav_order: 18
 ---
 
 ## Overview

@@ -2,7 +2,7 @@
 layout: default
 title: Go To Datasource
 parent: Modules
-nav_order: 11
+nav_order: 9
 ---
 
 ## Overview

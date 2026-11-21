@@ -16,7 +16,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Favorites');
             $scope.vm.title = 'Favorites module';
-            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Favorites';
+            $scope.vm.link = 'https://alan-null.github.io/sc_ext/modules/favorites/';
             this.refreshFavorites();
             var onChanged = (changes, area) => {
                 if (area == 'local' && changes.sc_ext_globalStorage) this.refreshFavorites();

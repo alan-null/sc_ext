@@ -26,24 +26,24 @@ Sitecore Extensions is a google chrome/firefox extension which provides small im
 Full documentation is available at [https://alan-null.github.io/sc_ext/](https://alan-null.github.io/sc_ext/).
 
 - [Launcher](https://alan-null.github.io/sc_ext/launcher/) - launch Sitecore commands using command omnibox,
-- Favorites - save Content Editor items for a specific instance, any instance, or hosts matching a wildcard pattern such as `*.cm`. Edit hostnames and patterns and choose the default scope under Options → Modules → Favorites, or use the launcher command “Change favorite scope” for the current item. Patterns match the whole hostname, ignoring case and port; matching favorites open on the current host,
-- GUID formats - copy the current item ID in common GUID formats or generate a new GUID,
-- [Collapse all sections](https://github.com/alan-null/sc_ext/wiki/Section-Switches) - you can collapse all opened sections in Content Editor with just one click,
-- [Expand all sections](https://github.com/alan-null/sc_ext/wiki/Section-Switches) - you can expand all opened sections in Content Editor with just one click,
-- [Database name](https://alan-null.github.io/sc_ext/database-name/) - Displays current database name in the Content Editor header,
-- [Database color](https://alan-null.github.io/sc_ext/database-color/) - Change the global header color depending on current database,
+- [Favorites](https://alan-null.github.io/sc_ext/modules/favorites/) - save Content Editor items for a specific instance, any instance, or hosts matching a wildcard pattern such as `*.cm`. Edit hostnames and patterns and choose the default scope under Options → Modules → Favorites, or use the launcher command “Change favorite scope” for the current item. Patterns match the whole hostname, ignoring case and port; matching favorites open on the current host,
+- [GUID formats](https://alan-null.github.io/sc_ext/modules/guid/) - copy the current item ID in common GUID formats or generate a new GUID,
+- [Collapse all sections](https://alan-null.github.io/sc_ext/modules/section-switches/) - you can collapse all opened sections in Content Editor with just one click,
+- [Expand all sections](https://alan-null.github.io/sc_ext/modules/section-switches/) - you can expand all opened sections in Content Editor with just one click,
+- [Database name](https://alan-null.github.io/sc_ext/modules/database-name/) - Displays current database name in the Content Editor header,
+- [Database color](https://alan-null.github.io/sc_ext/modules/database-color/) - Change the global header color depending on current database,
 - Icon color - changes color to red when using Sitecore on current tab, otherwise will be grayed,
-- [Field Search](https://alan-null.github.io/sc_ext/field-search/) - quickly find a field or section in the Content view in Content Editor,
-- [Restore Last Location](https://alan-null.github.io/sc_ext/restore-last-location/) - restores last opened item in Content Editor,
-- [Toggle Ribbon](https://alan-null.github.io/sc_ext/toggle-ribbon/) - small button which allows you to hide whole ribbon while working in Experience Editor,
-- [Tree Auto Expand](https://alan-null.github.io/sc_ext/tree-auto-expand/) - it will automatically expand tree structure if there is only one child under expanded item,
-- [Tree Scope](https://alan-null.github.io/sc_ext/tree-scope/) - give an ability to scope a content tree to the currently selected item,
-- [Field Inspector](https://alan-null.github.io/sc_ext/field-inspector/) - go to field, inspect field name, reset value to `__Standard values`,
-- [Add Here](https://alan-null.github.io/sc_ext/add-here/) - extends AddHere button in ExperienceEditor with placeholder name,
-- [Treelist Field](https://alan-null.github.io/sc_ext/treelist-field/) - extension adds path of the item inside treelist field,
-- [Go to item](https://alan-null.github.io/sc_ext/go-to-datasource/) - quickly navigate to an item selected in link fields (`DropLink`, `Name Lookup Value List`, `TreeList`, `MultiList`),
-- [Placeholder](https://alan-null.github.io/sc_ext/empty-placeholder/) - remove all renderings from the placeholder with one click,
-- [Quick Info Extender](https://alan-null.github.io/sc_ext/header-quickinfo-extender/) - additional buttons for quick info section in Content Editor,
+- [Field Search](https://alan-null.github.io/sc_ext/modules/field-search/) - quickly find a field or section in the Content view in Content Editor,
+- [Restore Last Location](https://alan-null.github.io/sc_ext/modules/restore-last-location/) - restores last opened item in Content Editor,
+- [Toggle Ribbon](https://alan-null.github.io/sc_ext/modules/toggle-ribbon/) - small button which allows you to hide whole ribbon while working in Experience Editor,
+- [Tree Auto Expand](https://alan-null.github.io/sc_ext/modules/tree-auto-expand/) - it will automatically expand tree structure if there is only one child under expanded item,
+- [Tree Scope](https://alan-null.github.io/sc_ext/modules/tree-scope/) - give an ability to scope a content tree to the currently selected item,
+- [Field Inspector](https://alan-null.github.io/sc_ext/modules/field-inspector/) - go to field, inspect field name, reset value to `__Standard values`,
+- [Add Here](https://alan-null.github.io/sc_ext/modules/add-here/) - extends AddHere button in ExperienceEditor with placeholder name,
+- [Treelist Field](https://alan-null.github.io/sc_ext/modules/treelist-field/) - extension adds path of the item inside treelist field,
+- [Go to item](https://alan-null.github.io/sc_ext/modules/go-to-datasource/) - quickly navigate to an item selected in link fields (`DropLink`, `Name Lookup Value List`, `TreeList`, `MultiList`),
+- [Placeholder](https://alan-null.github.io/sc_ext/modules/empty-placeholder/) - remove all renderings from the placeholder with one click,
+- [Quick Info Extender](https://alan-null.github.io/sc_ext/modules/header-quickinfo-extender/) - additional buttons for quick info section in Content Editor,
 - Scroll To Item - automatically scrolls to the active tree node in Content Editor upon item change
 
 More information about all available features with `gif` demos can be found in the [documentation](https://alan-null.github.io/sc_ext/).
@@ -56,7 +56,7 @@ If you are interested in fixing issues and contributing directly to the code bas
 
 Follow steps below if you want to start coding.
 
-Read [Architecture](docs/architecture.md) first - it explains the two execution worlds, the page bridge and how to add a new module.
+Read [Architecture](docs/contributing/architecture.md) first - it explains the two execution worlds, the page bridge and how to add a new module.
 
 ### Prerequisites
 

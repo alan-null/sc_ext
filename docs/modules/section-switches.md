@@ -2,7 +2,7 @@
 layout: default
 title: Section Switches
 parent: Modules
-nav_order: 6
+nav_order: 14
 ---
 
 ## Overview

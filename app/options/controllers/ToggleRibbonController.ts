@@ -6,7 +6,7 @@ module SitecoreExtensions.Options {
         constructor($scope: any, formlyVersion: string) {
             super($scope, formlyVersion, 'Toggle Ribbon');
             $scope.vm.title = 'Toggle Ribbon module';
-            $scope.vm.link = 'https://github.com/alan-null/sc_ext/wiki/Toggle-Ribbon';
+            $scope.vm.link = 'https://alan-null.github.io/sc_ext/modules/toggle-ribbon/';
         }
 
         getFields() {

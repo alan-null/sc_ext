@@ -29,22 +29,24 @@ Sitecore Extensions is a browser extension for Chrome, Firefox, and other Chromi
 
 Browse the complete [module list]({{ site.baseurl }}{% link modules/index.md %}) or use site search to find a feature:
 
-- [Launcher]({{ site.baseurl }}{% link modules/launcher/index.md %})
+- [Add Here]({{ site.baseurl }}{% link modules/add-here.md %})
 - [Database Color]({{ site.baseurl }}{% link modules/database-color.md %})
 - [Database Name]({{ site.baseurl }}{% link modules/database-name.md %})
+- [Database Selector]({{ site.baseurl }}{% link modules/database-selector.md %})
+- [Empty Placeholder]({{ site.baseurl }}{% link modules/empty-placeholder.md %})
+- [Favorites]({{ site.baseurl }}{% link modules/favorites.md %})
+- [Field Inspector]({{ site.baseurl }}{% link modules/field-inspector.md %})
 - [Field Search]({{ site.baseurl }}{% link modules/field-search.md %})
+- [Go To Datasource]({{ site.baseurl }}{% link modules/go-to-datasource.md %})
+- [GUID Formats]({{ site.baseurl }}{% link modules/guid.md %})
+- [Header QuickInfo Extender]({{ site.baseurl }}{% link modules/header-quickinfo-extender.md %})
+- [Launcher]({{ site.baseurl }}{% link modules/launcher/index.md %})
 - [Restore Last Location]({{ site.baseurl }}{% link modules/restore-last-location.md %})
 - [Section Switches]({{ site.baseurl }}{% link modules/section-switches.md %})
-- [Treelist Field]({{ site.baseurl }}{% link modules/treelist-field.md %})
-- [Field Inspector]({{ site.baseurl }}{% link modules/field-inspector.md %})
 - [Toggle Ribbon]({{ site.baseurl }}{% link modules/toggle-ribbon.md %})
-- [Database Selector]({{ site.baseurl }}{% link modules/database-selector.md %})
-- [Go To Datasource]({{ site.baseurl }}{% link modules/go-to-datasource.md %})
-- [Tree Scope]({{ site.baseurl }}{% link modules/tree-scope.md %})
 - [Tree Auto Expand]({{ site.baseurl }}{% link modules/tree-auto-expand.md %})
-- [Add Here]({{ site.baseurl }}{% link modules/add-here.md %})
-- [Empty Placeholder]({{ site.baseurl }}{% link modules/empty-placeholder.md %})
-- [Header QuickInfo Extender]({{ site.baseurl }}{% link modules/header-quickinfo-extender.md %})
+- [Tree Scope]({{ site.baseurl }}{% link modules/tree-scope.md %})
+- [Treelist Field]({{ site.baseurl }}{% link modules/treelist-field.md %})
 
 ## Contributing
 

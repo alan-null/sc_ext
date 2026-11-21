@@ -2,7 +2,7 @@
 layout: default
 title: Database Color
 parent: Modules
-nav_order: 1
+nav_order: 2
 ---
 
 ## Overview

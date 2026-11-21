@@ -2,7 +2,7 @@
 layout: default
 title: Tree Scope
 parent: Modules
-nav_order: 12
+nav_order: 17
 ---
 
 ## Overview
