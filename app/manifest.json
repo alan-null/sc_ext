@@ -1,7 +1,8 @@
 {
     "name": "__MSG_appName__",
     "short_name": "sc_ext",
-    "version": "4.1.0",
+    "version": "5.0.0",
+    "version_name": "5.0.0 - The Last",
     "manifest_version": 3,
     "description": "__MSG_appDescription__",
     "icons": {
